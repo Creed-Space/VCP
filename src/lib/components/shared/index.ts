@@ -8,3 +8,4 @@ export { default as ContextIndicator } from './ContextIndicator.svelte';
 export { default as AuditPanel } from './AuditPanel.svelte';
 export { default as Breadcrumb } from './Breadcrumb.svelte';
 export { default as NextSteps } from './NextSteps.svelte';
+export { default as ProsaicContextPanel } from './ProsaicContextPanel.svelte';

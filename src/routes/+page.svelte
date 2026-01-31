@@ -25,6 +25,7 @@
 		<p class="page-hero-explainer">
 			You need quiet practice mode. They don't need to know it's because of thin apartment walls.
 			You have a tight budget. They don't need your financial history.
+			You're in a hurry, or grieving, or overwhelmed — the AI adapts without needing the backstory.
 			<strong>VCP transmits the flag, not the story behind it.</strong>
 		</p>
 		<div class="hero-cta">
@@ -38,6 +39,54 @@
 
 	<!-- How It Works - BEFORE the demos -->
 	<HowItWorks />
+
+	<!-- Three-Layer Model -->
+	<section class="three-layer-section">
+		<h2 class="section-title">Three Layers of Context</h2>
+		<p class="section-description">
+			VCP organizes context at three timescales — from stable rules to moment-to-moment state.
+		</p>
+
+		<div class="three-layer-stack">
+			<div class="layer-card layer-constitutional">
+				<div class="layer-emoji">📜</div>
+				<div class="layer-content">
+					<h4>Constitutional Rules</h4>
+					<p>What the AI should and shouldn't do. Personas, adherence levels, scopes.</p>
+					<span class="layer-timing">Changes: rarely</span>
+				</div>
+			</div>
+			<div class="layer-connector"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> applied within</div>
+			<div class="layer-card layer-situational">
+				<div class="layer-emoji">🌍</div>
+				<div class="layer-content">
+					<h4>Situational Context</h4>
+					<p>Where, when, who, what occasion. Morning vs. evening, home vs. work.</p>
+					<span class="layer-timing">Changes: session-scale</span>
+				</div>
+			</div>
+			<div class="layer-connector"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> modulated by</div>
+			<div class="layer-card layer-personal">
+				<div class="layer-emoji">💫</div>
+				<div class="layer-content">
+					<h4>Personal State</h4>
+					<p>"I'm in a hurry" • "I'm grieving" • "Sensory overload" — the <strong>prosaic</strong> dimensions.</p>
+					<span class="layer-timing">Changes: moment-to-moment</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="prosaic-highlight">
+			<div class="prosaic-dims">
+				<span class="prosaic-dim">⚡ Urgency</span>
+				<span class="prosaic-dim">💊 Health</span>
+				<span class="prosaic-dim">🧩 Cognitive</span>
+				<span class="prosaic-dim">💭 Affect</span>
+			</div>
+			<p>Personal state modulates <em>expression</em>, never <em>boundaries</em>. The AI communicates differently when you're rushed — but safety rules don't relax.</p>
+			<a href="/docs/concepts" class="btn btn-ghost btn-sm">Learn about prosaic dimensions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+		</div>
+	</section>
 
 	<!-- Demo Selector -->
 	<section class="demo-selector">
@@ -419,6 +468,112 @@
 		color: var(--color-primary);
 	}
 
+	/* Three-layer section */
+	.three-layer-section {
+		padding: var(--space-2xl) 0;
+		margin-bottom: var(--space-xl);
+	}
+
+	.three-layer-stack {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-sm);
+		max-width: 600px;
+		margin: 0 auto var(--space-xl);
+	}
+
+	.layer-card {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-md);
+		width: 100%;
+		padding: var(--space-md) var(--space-lg);
+		border-radius: var(--radius-lg);
+		border: 1px solid;
+	}
+
+	.layer-constitutional {
+		background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+		border-color: rgba(139, 92, 246, 0.3);
+	}
+
+	.layer-situational {
+		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+		border-color: rgba(59, 130, 246, 0.3);
+	}
+
+	.layer-personal {
+		background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+		border-color: rgba(16, 185, 129, 0.3);
+	}
+
+	.layer-emoji {
+		font-size: 1.5rem;
+		flex-shrink: 0;
+	}
+
+	.layer-content h4 {
+		margin: 0 0 var(--space-xs);
+		font-size: 1rem;
+	}
+
+	.layer-content p {
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: 1.5;
+	}
+
+	.layer-timing {
+		display: inline-block;
+		margin-top: var(--space-xs);
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		font-style: italic;
+	}
+
+	.layer-connector {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+	}
+
+	.prosaic-highlight {
+		text-align: center;
+		padding: var(--space-lg);
+		background: var(--color-bg-card);
+		border-radius: var(--radius-lg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.prosaic-dims {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-md);
+		flex-wrap: wrap;
+		margin-bottom: var(--space-md);
+	}
+
+	.prosaic-dim {
+		font-size: var(--text-sm);
+		padding: var(--space-xs) var(--space-sm);
+		background: rgba(16, 185, 129, 0.1);
+		border-radius: var(--radius-sm);
+		border: 1px solid rgba(16, 185, 129, 0.3);
+	}
+
+	.prosaic-highlight p {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		margin-bottom: var(--space-md);
+		line-height: 1.5;
+	}
+
 	@media (max-width: 768px) {
 		.hero-cta {
 			flex-direction: column;
@@ -447,6 +602,15 @@
 		.learn-more-links {
 			flex-direction: column;
 			align-items: stretch;
+		}
+
+		.layer-card {
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.prosaic-dims {
+			gap: var(--space-xs);
 		}
 	}
 </style>

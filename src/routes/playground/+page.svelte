@@ -3,7 +3,7 @@
 	 * VCP Playground - Interactive token builder and inspector
 	 */
 	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary } from '$lib/vcp/token';
-	import type { VCPContext, ConstraintFlags, PortablePreferences } from '$lib/vcp/types';
+	import type { VCPContext, ConstraintFlags, PortablePreferences, ProsaicDimensions } from '$lib/vcp/types';
 	import { Breadcrumb } from '$lib/components/shared';
 
 	const breadcrumbItems = [
@@ -46,6 +46,12 @@
 			_note: 'Private context - never transmitted',
 			work_type: 'office_worker',
 			housing: 'apartment'
+		},
+		prosaic: {
+			urgency: 0.3,
+			health: 0.1,
+			cognitive: 0.2,
+			affect: 0.2
 		}
 	});
 
@@ -69,6 +75,10 @@
 
 	function updatePreference(key: keyof PortablePreferences, value: string) {
 		context.portable_preferences = { ...context.portable_preferences, [key]: value };
+	}
+
+	function updateProsaic(key: keyof ProsaicDimensions, value: number) {
+		context.prosaic = { ...context.prosaic, [key]: value };
 	}
 
 	// Copy feedback state
@@ -110,7 +120,7 @@
 				experience: 'beginner',
 				learning_style: 'hands_on',
 				pace: 'steady',
-				motivation: ''
+				motivation: undefined
 			},
 			constraints: {
 				time_limited: false,
@@ -124,6 +134,12 @@
 				session_length: '30_minutes',
 				budget_range: 'medium',
 				feedback_style: 'encouraging'
+			},
+			prosaic: {
+				urgency: 0.0,
+				health: 0.0,
+				cognitive: 0.0,
+				affect: 0.0
 			}
 		};
 	}
@@ -138,7 +154,7 @@
 					experience: 'advanced',
 					learning_style: 'reading',
 					pace: 'intensive',
-					motivation: 'career_growth'
+					motivation: 'career'
 				},
 				constraints: {
 					time_limited: true,
@@ -153,6 +169,12 @@
 					persona: 'ambassador',
 					adherence: 4,
 					scopes: ['work', 'education']
+				},
+				prosaic: {
+					urgency: 0.7,
+					health: 0.2,
+					cognitive: 0.5,
+					affect: 0.4
 				}
 			};
 		} else {
@@ -185,6 +207,12 @@
 					persona: 'muse',
 					adherence: 3,
 					scopes: ['creativity', 'health', 'privacy']
+				},
+				prosaic: {
+					urgency: 0.2,
+					health: 0.3,
+					cognitive: 0.3,
+					affect: 0.2
 				}
 			};
 		}
@@ -383,6 +411,114 @@
 							<option value="free_only">Free Only</option>
 						</select>
 					</div>
+				</div>
+			</section>
+
+			<!-- Prosaic Dimensions Section -->
+			<section class="control-section prosaic-section">
+				<h3>Personal State <span class="badge badge-new">New</span></h3>
+				<p class="prosaic-intro">How are you right now? These shape <em>how</em> the AI communicates.</p>
+
+				<div class="prosaic-sliders">
+					<div class="prosaic-slider-group">
+						<div class="prosaic-slider-header">
+							<span class="prosaic-emoji">⚡</span>
+							<label class="label" for="urgency">Urgency</label>
+							<span class="prosaic-value">{(context.prosaic?.urgency ?? 0).toFixed(1)}</span>
+						</div>
+						<input
+							id="urgency"
+							type="range"
+							min="0"
+							max="1"
+							step="0.1"
+							value={context.prosaic?.urgency ?? 0}
+							oninput={(e) => updateProsaic('urgency', parseFloat(e.currentTarget.value))}
+							class="slider prosaic-range"
+						/>
+						<div class="prosaic-hint">
+							{context.prosaic?.urgency && context.prosaic.urgency >= 0.7 ? '"I\'m in a hurry"' : context.prosaic?.urgency && context.prosaic.urgency >= 0.4 ? 'Some time pressure' : 'No rush'}
+						</div>
+					</div>
+
+					<div class="prosaic-slider-group">
+						<div class="prosaic-slider-header">
+							<span class="prosaic-emoji">💊</span>
+							<label class="label" for="health">Health</label>
+							<span class="prosaic-value">{(context.prosaic?.health ?? 0).toFixed(1)}</span>
+						</div>
+						<input
+							id="health"
+							type="range"
+							min="0"
+							max="1"
+							step="0.1"
+							value={context.prosaic?.health ?? 0}
+							oninput={(e) => updateProsaic('health', parseFloat(e.currentTarget.value))}
+							class="slider prosaic-range"
+						/>
+						<div class="prosaic-hint">
+							{context.prosaic?.health && context.prosaic.health >= 0.7 ? '"Not feeling well"' : context.prosaic?.health && context.prosaic.health >= 0.4 ? 'Some fatigue/discomfort' : 'Feeling fine'}
+						</div>
+					</div>
+
+					<div class="prosaic-slider-group">
+						<div class="prosaic-slider-header">
+							<span class="prosaic-emoji">🧩</span>
+							<label class="label" for="cognitive">Cognitive Load</label>
+							<span class="prosaic-value">{(context.prosaic?.cognitive ?? 0).toFixed(1)}</span>
+						</div>
+						<input
+							id="cognitive"
+							type="range"
+							min="0"
+							max="1"
+							step="0.1"
+							value={context.prosaic?.cognitive ?? 0}
+							oninput={(e) => updateProsaic('cognitive', parseFloat(e.currentTarget.value))}
+							class="slider prosaic-range"
+						/>
+						<div class="prosaic-hint">
+							{context.prosaic?.cognitive && context.prosaic.cognitive >= 0.7 ? '"Too many options"' : context.prosaic?.cognitive && context.prosaic.cognitive >= 0.4 ? 'Some mental load' : 'Clear headed'}
+						</div>
+					</div>
+
+					<div class="prosaic-slider-group">
+						<div class="prosaic-slider-header">
+							<span class="prosaic-emoji">💭</span>
+							<label class="label" for="affect">Emotional State</label>
+							<span class="prosaic-value">{(context.prosaic?.affect ?? 0).toFixed(1)}</span>
+						</div>
+						<input
+							id="affect"
+							type="range"
+							min="0"
+							max="1"
+							step="0.1"
+							value={context.prosaic?.affect ?? 0}
+							oninput={(e) => updateProsaic('affect', parseFloat(e.currentTarget.value))}
+							class="slider prosaic-range"
+						/>
+						<div class="prosaic-hint">
+							{context.prosaic?.affect && context.prosaic.affect >= 0.7 ? 'High emotional intensity' : context.prosaic?.affect && context.prosaic.affect >= 0.4 ? 'Some stress/emotion' : 'Calm, neutral'}
+						</div>
+					</div>
+				</div>
+
+				<div class="prosaic-presets">
+					<span class="preset-label">Quick states:</span>
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.9, health: 0.0, cognitive: 0.3, affect: 0.2 }; }}>
+						In a hurry
+					</button>
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.2, health: 0.7, cognitive: 0.4, affect: 0.3 }; }}>
+						Not well
+					</button>
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.3, health: 0.2, cognitive: 0.8, affect: 0.5 }; }}>
+						Overwhelmed
+					</button>
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.1, health: 0.3, cognitive: 0.4, affect: 0.8, sub_signals: { emotional_state: 'grieving' } }; }}>
+						Grieving
+					</button>
 				</div>
 			</section>
 		</div>
@@ -734,6 +870,99 @@
 		}
 	}
 
+	/* Prosaic section styles */
+	.prosaic-section h3 {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.badge-new {
+		background: linear-gradient(135deg, var(--color-primary), #8b5cf6);
+		color: white;
+		font-size: 0.625rem;
+		padding: 2px 6px;
+		border-radius: var(--radius-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 600;
+	}
+
+	.prosaic-intro {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-md);
+	}
+
+	.prosaic-sliders {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.prosaic-slider-group {
+		background: rgba(255, 255, 255, 0.02);
+		padding: var(--space-sm) var(--space-md);
+		border-radius: var(--radius-md);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.prosaic-slider-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-xs);
+	}
+
+	.prosaic-emoji {
+		font-size: 1.125rem;
+	}
+
+	.prosaic-slider-header .label {
+		flex: 1;
+		margin: 0;
+	}
+
+	.prosaic-value {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--color-primary);
+		min-width: 2rem;
+		text-align: right;
+	}
+
+	.prosaic-range {
+		width: 100%;
+		margin: var(--space-xs) 0;
+	}
+
+	.prosaic-hint {
+		font-size: 0.6875rem;
+		color: var(--color-text-muted);
+		font-style: italic;
+		min-height: 1rem;
+	}
+
+	.prosaic-presets {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-xs);
+		margin-top: var(--space-md);
+		padding-top: var(--space-md);
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.preset-label {
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+	}
+
+	.btn-xs {
+		padding: var(--space-xs) var(--space-sm);
+		font-size: 0.6875rem;
+	}
+
 	@media (max-width: 640px) {
 		.control-row {
 			grid-template-columns: 1fr;
@@ -754,6 +983,11 @@
 
 		.panel-actions {
 			flex-wrap: wrap;
+		}
+
+		.prosaic-presets {
+			flex-direction: column;
+			align-items: flex-start;
 		}
 	}
 </style>

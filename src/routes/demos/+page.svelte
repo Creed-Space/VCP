@@ -26,6 +26,10 @@
 		<p class="page-hero-subtitle">
 			See VCP in action. Each demo shows a different aspect of privacy-preserving context sharing.
 		</p>
+		<div class="prosaic-mention">
+			<span class="prosaic-dims">⚡ 💊 🧩 💭</span>
+			<span>Many demos now show <strong>prosaic dimensions</strong> — how urgency, health, cognitive load, and affect shape AI adaptation.</span>
+		</div>
 	</section>
 
 	<!-- Featured Demos -->
@@ -140,6 +144,26 @@
 </div>
 
 <style>
+	/* Prosaic mention */
+	.prosaic-mention {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-md);
+		margin-top: var(--space-md);
+		padding: var(--space-sm) var(--space-lg);
+		background: rgba(16, 185, 129, 0.1);
+		border: 1px solid rgba(16, 185, 129, 0.3);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		flex-wrap: wrap;
+	}
+
+	.prosaic-dims {
+		font-size: 1.125rem;
+	}
+
 	/* Section intro text */
 	.section-intro {
 		color: var(--color-text-muted);

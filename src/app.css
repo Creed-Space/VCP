@@ -124,6 +124,18 @@ a:hover {
 	text-decoration: underline;
 }
 
+/* WCAG FIX 2026-01-30: Focus-visible styles for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible:not([tabindex="-1"]) {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
 /* ============================================
    Layout Utilities
    ============================================ */

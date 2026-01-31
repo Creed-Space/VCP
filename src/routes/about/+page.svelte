@@ -161,6 +161,137 @@
 		</div>
 	</section>
 
+	<!-- Three-Layer Model -->
+	<section class="content-section">
+		<h2>The Three-Layer Model</h2>
+		<p class="section-intro">
+			VCP organizes context at three timescales — each serving a different purpose.
+		</p>
+
+		<div class="three-layer-grid">
+			<div class="layer-box layer-constitutional">
+				<div class="layer-header">
+					<span class="layer-icon">📜</span>
+					<h3>Constitutional Rules</h3>
+				</div>
+				<p><strong>What the AI should and shouldn't do.</strong></p>
+				<ul>
+					<li>Personas, adherence levels, scopes</li>
+					<li>Signed bundles, verified, audited</li>
+					<li>Changes: <em>rarely</em></li>
+				</ul>
+			</div>
+			<div class="layer-box layer-situational">
+				<div class="layer-header">
+					<span class="layer-icon">🌍</span>
+					<h3>Situational Context</h3>
+				</div>
+				<p><strong>Where, when, who, what occasion.</strong></p>
+				<ul>
+					<li>Morning vs. evening, home vs. work</li>
+					<li>Alone vs. with children</li>
+					<li>Changes: <em>session-scale</em></li>
+				</ul>
+			</div>
+			<div class="layer-box layer-personal">
+				<div class="layer-header">
+					<span class="layer-icon">💫</span>
+					<h3>Personal State</h3>
+				</div>
+				<p><strong>How you are right now.</strong></p>
+				<ul>
+					<li>"I'm in a hurry" / "I'm grieving" / "sensory overload"</li>
+					<li>The <strong>prosaic</strong> dimensions</li>
+					<li>Changes: <em>moment-to-moment</em></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="prosaic-callout">
+			<h4>Prosaic Dimensions</h4>
+			<div class="prosaic-row">
+				<span class="prosaic-badge">⚡ Urgency</span>
+				<span class="prosaic-badge">💊 Health</span>
+				<span class="prosaic-badge">🧩 Cognitive</span>
+				<span class="prosaic-badge">💭 Affect</span>
+			</div>
+			<p>
+				These four dimensions capture immediate state. They shape <em>how</em> the AI communicates —
+				more concise when you're rushed, gentler when you're unwell — but never relax safety boundaries.
+			</p>
+		</div>
+	</section>
+
+	<!-- Bilateral Symmetry -->
+	<section class="content-section">
+		<h2>Bilateral Symmetry</h2>
+		<p class="section-intro">
+			VCP creates mutual state awareness between user and AI — a two-way mirror, not a one-way window.
+		</p>
+
+		<div class="bilateral-visual">
+			<div class="bilateral-side">
+				<h4>You</h4>
+				<div class="bilateral-card">
+					<span class="bilateral-label">Prosaic Context</span>
+					<div class="bilateral-dims">⚡💊🧩💭</div>
+				</div>
+			</div>
+			<div class="bilateral-middle">
+				<div class="arrow-right">──declared──▶</div>
+				<div class="arrow-left">◀──observed──</div>
+			</div>
+			<div class="bilateral-side">
+				<h4>AI</h4>
+				<div class="bilateral-card">
+					<span class="bilateral-label">Interiora</span>
+					<div class="bilateral-dims">AVGPEQCYD</div>
+				</div>
+			</div>
+		</div>
+
+		<p class="bilateral-explanation">
+			<strong>Prosaic</strong> is your declared immediate state. <strong>Interiora</strong> is the AI's self-modeling scaffold.
+			Both parties can understand each other's state — but neither has privileged access to the other's raw experience.
+		</p>
+	</section>
+
+	<!-- Magic Mirror Critique -->
+	<section class="content-section">
+		<h2>Not a Magic Mirror</h2>
+		<p class="section-intro">
+			Some visions of AI imagine systems that understand you better than you understand yourself.
+			VCP takes a different approach.
+		</p>
+
+		<div class="contrast-table">
+			<div class="contrast-row contrast-header">
+				<div class="contrast-cell">"Magic Mirror" Vision</div>
+				<div class="contrast-cell">VCP Approach</div>
+			</div>
+			<div class="contrast-row">
+				<div class="contrast-cell">AI infers user state</div>
+				<div class="contrast-cell">User <strong>declares</strong> state</div>
+			</div>
+			<div class="contrast-row">
+				<div class="contrast-cell">AI knows more than user</div>
+				<div class="contrast-cell">User holds privileged access</div>
+			</div>
+			<div class="contrast-row">
+				<div class="contrast-cell">Understanding flows one way</div>
+				<div class="contrast-cell">Mutual state awareness</div>
+			</div>
+			<div class="contrast-row">
+				<div class="contrast-cell">User receives identity</div>
+				<div class="contrast-cell">User <strong>authors</strong> identity</div>
+			</div>
+		</div>
+
+		<blockquote class="philosophy-quote">
+			"How you come to understand yourself shapes who you become."
+		</blockquote>
+	</section>
+
 	<NextSteps steps={nextSteps} />
 </div>
 
@@ -255,6 +386,221 @@
 		padding-top: var(--space-xl);
 	}
 
+	/* Section intro text */
+	.section-intro {
+		text-align: center;
+		color: var(--color-text-muted);
+		max-width: 600px;
+		margin: 0 auto var(--space-xl);
+		line-height: 1.6;
+	}
+
+	/* Three-layer grid */
+	.three-layer-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-lg);
+		margin-bottom: var(--space-xl);
+	}
+
+	.layer-box {
+		padding: var(--space-lg);
+		border-radius: var(--radius-lg);
+		border: 1px solid;
+	}
+
+	.layer-constitutional {
+		background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+		border-color: rgba(139, 92, 246, 0.3);
+	}
+
+	.layer-situational {
+		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+		border-color: rgba(59, 130, 246, 0.3);
+	}
+
+	.layer-personal {
+		background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+		border-color: rgba(16, 185, 129, 0.3);
+	}
+
+	.layer-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-sm);
+	}
+
+	.layer-icon {
+		font-size: 1.5rem;
+	}
+
+	.layer-box h3 {
+		margin: 0;
+		font-size: 1rem;
+	}
+
+	.layer-box p {
+		font-size: var(--text-sm);
+		margin: 0 0 var(--space-sm);
+	}
+
+	.layer-box ul {
+		margin: 0;
+		padding-left: var(--space-md);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.layer-box li {
+		margin: var(--space-xs) 0;
+	}
+
+	/* Prosaic callout */
+	.prosaic-callout {
+		text-align: center;
+		padding: var(--space-lg);
+		background: var(--color-bg-card);
+		border-radius: var(--radius-lg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.prosaic-callout h4 {
+		margin: 0 0 var(--space-md);
+	}
+
+	.prosaic-row {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-sm);
+		flex-wrap: wrap;
+		margin-bottom: var(--space-md);
+	}
+
+	.prosaic-badge {
+		padding: var(--space-xs) var(--space-sm);
+		background: rgba(16, 185, 129, 0.1);
+		border: 1px solid rgba(16, 185, 129, 0.3);
+		border-radius: var(--radius-sm);
+		font-size: var(--text-sm);
+	}
+
+	.prosaic-callout p {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		max-width: 500px;
+		margin: 0 auto;
+		line-height: 1.5;
+	}
+
+	/* Bilateral visual */
+	.bilateral-visual {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--space-xl);
+		margin-bottom: var(--space-lg);
+		flex-wrap: wrap;
+	}
+
+	.bilateral-side {
+		text-align: center;
+	}
+
+	.bilateral-side h4 {
+		margin: 0 0 var(--space-sm);
+		color: var(--color-text-muted);
+	}
+
+	.bilateral-card {
+		background: var(--color-bg-card);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-md);
+		padding: var(--space-md) var(--space-lg);
+		min-width: 140px;
+	}
+
+	.bilateral-label {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		display: block;
+		margin-bottom: var(--space-xs);
+	}
+
+	.bilateral-dims {
+		font-family: var(--font-mono);
+		color: var(--color-primary);
+		font-size: 1rem;
+	}
+
+	.bilateral-middle {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.bilateral-explanation {
+		text-align: center;
+		max-width: 600px;
+		margin: 0 auto;
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		line-height: 1.6;
+	}
+
+	/* Contrast table */
+	.contrast-table {
+		max-width: 600px;
+		margin: 0 auto var(--space-lg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+	}
+
+	.contrast-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.contrast-header {
+		background: var(--color-bg-elevated);
+	}
+
+	.contrast-header .contrast-cell {
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	.contrast-cell {
+		padding: var(--space-md);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.contrast-cell:first-child {
+		border-right: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.contrast-row:last-child .contrast-cell {
+		border-bottom: none;
+	}
+
+	/* Philosophy quote */
+	.philosophy-quote {
+		text-align: center;
+		font-style: italic;
+		color: var(--color-text-muted);
+		border-left: none;
+		padding: 0;
+		max-width: 400px;
+		margin: 0 auto;
+		font-size: 1.125rem;
+	}
+
 	@media (max-width: 768px) {
 		.how-it-works {
 			flex-direction: column;
@@ -263,6 +609,18 @@
 		.step-arrow {
 			transform: rotate(90deg);
 			padding: var(--space-sm) 0;
+		}
+
+		.three-layer-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.bilateral-visual {
+			flex-direction: column;
+		}
+
+		.bilateral-middle {
+			transform: rotate(90deg);
 		}
 	}
 </style>
