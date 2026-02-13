@@ -234,7 +234,7 @@
 		<h2>See Privacy in Action</h2>
 		<p>Watch how different stakeholders see different views of the same context.</p>
 		<div class="cta-buttons">
-			<a href="/professional/audit" class="btn btn-primary">
+			<a href="/demos/campion" class="btn btn-primary">
 				<i class="fa-solid fa-eye" aria-hidden="true"></i>
 				View Dual Audit Trail
 			</a>

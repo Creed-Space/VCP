@@ -1,6 +1,7 @@
 <script lang="ts">
 	/**
-	 * About VCP - Overview page for all audiences
+	 * About VCP - Overview page explaining the protocol
+	 * Leads with the portability/adaptation/liveness triangle
 	 */
 	import { Breadcrumb, NextSteps } from '$lib/components/shared';
 
@@ -8,155 +9,243 @@
 		{ label: 'About VCP', icon: 'fa-circle-info' }
 	];
 
+	const pillars = [
+		{
+			icon: 'fa-suitcase-rolling',
+			title: 'Portability',
+			description: 'Define your context once. Every AI and service you use receives it automatically — no re-entry, no repetition.',
+			color: 'var(--color-primary)'
+		},
+		{
+			icon: 'fa-arrows-rotate',
+			title: 'Adaptation',
+			description: 'Context switches with your situation. Work mode at the office, personal mode at home — the right profile activates automatically.',
+			color: 'var(--color-professional, #059669)'
+		},
+		{
+			icon: 'fa-signal',
+			title: 'Liveness',
+			description: 'Your real-time state shapes AI guidance moment to moment. Rushed? Stressed? The AI adjusts its tone and depth instantly.',
+			color: '#3b82f6'
+		}
+	];
+
+	const layers = [
+		{
+			icon: 'fa-scroll',
+			title: 'Constitutional Rules',
+			subtitle: 'What the AI should and should not do.',
+			examples: 'Personas, safety boundaries, adherence levels',
+			timescale: 'Changes rarely',
+			colorClass: 'layer-constitutional'
+		},
+		{
+			icon: 'fa-location-dot',
+			title: 'Situational Context',
+			subtitle: 'Where, when, who, what occasion.',
+			examples: 'Morning vs. evening, alone vs. with children, home vs. work',
+			timescale: 'Changes per session',
+			colorClass: 'layer-situational'
+		},
+		{
+			icon: 'fa-heart-pulse',
+			title: 'Personal State',
+			subtitle: 'How you are right now.',
+			examples: 'Cognitive load, emotional tone, energy, urgency, body state',
+			timescale: 'Changes moment to moment',
+			colorClass: 'layer-personal'
+		}
+	];
+
+	const demos = [
+		{
+			href: '/demos/gentian',
+			icon: 'fa-guitar',
+			pillar: 'Portability',
+			title: "Gentian's Guitar Journey",
+			description: 'One learner, four apps, zero re-entry'
+		},
+		{
+			href: '/demos/campion',
+			icon: 'fa-briefcase',
+			pillar: 'Adaptation',
+			title: "Campion's Corporate Training",
+			description: 'Dual profiles that switch automatically'
+		},
+		{
+			href: '/demos/marta',
+			icon: 'fa-handshake-angle',
+			pillar: 'Liveness',
+			title: "Marta's Family Decision",
+			description: 'Real-time state shapes live AI guidance'
+		},
+		{
+			href: '/demos/ren',
+			icon: 'fa-bolt',
+			pillar: 'Multi-Agent',
+			title: "Ren's Energy Cooperative",
+			description: 'AI agents carry values into negotiation'
+		},
+		{
+			href: '/demos/noor',
+			icon: 'fa-scale-balanced',
+			pillar: 'Governance',
+			title: "Noor's School District",
+			description: 'Values become enforceable AI constraints'
+		},
+		{
+			href: '/demos/hana',
+			icon: 'fa-stethoscope',
+			pillar: 'Epistemics',
+			title: "Dr. Hana's Diagnostic Tool",
+			description: 'See what the AI actually knows vs. guesses'
+		}
+	];
+
 	const nextSteps = [
 		{
-			href: '/professional',
-			icon: 'fa-briefcase',
-			title: 'See It In Action',
-			description: 'Follow Campion through a corporate training scenario',
+			href: '/demos',
+			icon: 'fa-play-circle',
+			title: 'Try the Demos',
+			description: 'See VCP in action across six real scenarios',
 			primary: true
 		},
 		{
 			href: '/playground',
 			icon: 'fa-sliders',
-			title: 'Build Your Own Token',
+			title: 'Build a Token',
 			description: 'Create and inspect VCP tokens interactively'
 		},
 		{
-			href: '/docs/personas',
-			icon: 'fa-masks-theater',
-			title: 'Learn About Personas',
-			description: 'Understand the 6 behavioral profiles'
+			href: '/docs',
+			icon: 'fa-book',
+			title: 'Read the Docs',
+			description: 'Protocol specification and integration guides'
 		}
 	];
 </script>
 
 <svelte:head>
 	<title>About VCP - Value Context Protocol</title>
-	<meta name="description" content="Learn about the Value Context Protocol - privacy-preserving context sharing for AI interactions." />
+	<meta name="description" content="Learn about the Value Context Protocol — a context protocol that lets your preferences, constraints, and state travel with you across every AI and service." />
 </svelte:head>
 
 <div class="container">
 	<Breadcrumb items={breadcrumbItems} />
 
+	<!-- Hero -->
 	<section class="page-hero">
 		<h1>What is VCP?</h1>
 		<p class="page-hero-subtitle">
-			A protocol that lets you share your preferences with AI and platforms — without revealing your private circumstances.
+			A protocol for portable, adaptive, live context across AI and services.
 		</p>
 		<p class="page-hero-explainer">
-			VCP encodes what you need (quiet mode, tight budget, flexible schedule) as simple flags.
-			Platforms adapt to serve you better. They never learn <em>why</em> you need these things.
+			VCP is not a product. It is an open protocol that lets you define your preferences,
+			constraints, and current state once — and have every compatible AI and service adapt
+			to you automatically, in real time.
 		</p>
 	</section>
 
+	<!-- Three Pillars -->
 	<section class="content-section">
-		<h2>The Problem</h2>
-		<div class="problem-grid">
-			<div class="problem-card">
-				<span class="problem-icon"><i class="fa-solid fa-lock-open" aria-hidden="true"></i></span>
-				<h3>Privacy Erosion</h3>
-				<p>
-					To get personalized experiences, you currently have to expose your personal details.
-					Platforms know <em>why</em> you need accommodations, not just <em>that</em> you need them.
-				</p>
-			</div>
-			<div class="problem-card">
-				<span class="problem-icon"><i class="fa-solid fa-rotate" aria-hidden="true"></i></span>
-				<h3>Context Fragmentation</h3>
-				<p>
-					Every platform asks the same questions. Your preferences, constraints, and goals
-					are scattered across dozens of systems that don't talk to each other.
-				</p>
-			</div>
-			<div class="problem-card">
-				<span class="problem-icon"><i class="fa-solid fa-robot" aria-hidden="true"></i></span>
-				<h3>Opaque AI</h3>
-				<p>
-					AI systems make decisions about you based on context you can't see or control.
-					There's no standard way to share your values and preferences with AI.
-				</p>
-			</div>
+		<h2>Three Properties That Matter</h2>
+		<p class="section-intro">
+			Today your context is fragmented across services, static, and invisible.
+			VCP makes it portable, adaptive, and live.
+		</p>
+
+		<div class="pillar-grid">
+			{#each pillars as pillar}
+				<div class="pillar-card">
+					<span class="pillar-icon" style="color: {pillar.color}">
+						<i class="fa-solid {pillar.icon}" aria-hidden="true"></i>
+					</span>
+					<h3>{pillar.title}</h3>
+					<p>{pillar.description}</p>
+				</div>
+			{/each}
 		</div>
 	</section>
 
-	<section class="content-section">
-		<h2>How VCP Solves This</h2>
-		<div class="solution-grid">
-			<div class="solution-card">
-				<span class="solution-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
-				<h3>Flags, Not Stories</h3>
-				<p>
-					Platforms see <code>noise_restricted: true</code> — not "thin walls, noise-sensitive neighbor."
-					They see <code>budget_limited: true</code> — not your financial situation. The flag travels. Your story stays home.
-				</p>
-			</div>
-			<div class="solution-card">
-				<span class="solution-icon"><i class="fa-solid fa-rotate" aria-hidden="true"></i></span>
-				<h3>Set Once, Use Everywhere</h3>
-				<p>
-					Define your preferences once. Every compatible platform instantly knows how to serve you —
-					no more answering the same onboarding questions across a dozen apps.
-				</p>
-			</div>
-			<div class="solution-card">
-				<span class="solution-icon"><i class="fa-solid fa-receipt" aria-hidden="true"></i></span>
-				<h3>See What They See</h3>
-				<p>
-					Complete audit trail of every transmission. Know exactly what each platform received,
-					what was withheld, and which flags influenced their recommendations.
-				</p>
-			</div>
-			<div class="solution-card">
-				<span class="solution-icon"><i class="fa-solid fa-masks-theater" aria-hidden="true"></i></span>
-				<h3>
-					<span class="has-tooltip" data-tooltip="Different behavioral profiles for different contexts — work mode vs. personal mode">Values Profiles</span>
-				</h3>
-				<p>
-					Different contexts need different approaches. Your work profile shares career goals with HR.
-					Your personal profile protects that same information. Context-appropriate behavior, automatically.
-				</p>
-			</div>
-		</div>
-	</section>
-
+	<!-- How It Works -->
 	<section class="content-section">
 		<h2>How It Works</h2>
+		<p class="section-intro">
+			You declare your context. VCP encodes it as structured data.
+			Services read the flags and adapt — without seeing the private reasons behind them.
+		</p>
+
 		<div class="how-it-works">
 			<div class="step">
 				<div class="step-number">1</div>
-				<h3>Set Your Preferences</h3>
+				<h3>You Set Context</h3>
 				<p>
-					Tell VCP your goals, constraints, and preferences. Mark what's okay to share publicly,
-					what needs permission, and what should never leave your device.
+					Define your goals, constraints, and current state.
+					Mark what is shareable and what stays private.
 				</p>
 			</div>
-			<div class="step-arrow">→</div>
+			<div class="step-arrow">
+				<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+			</div>
 			<div class="step">
 				<div class="step-number">2</div>
-				<h3>Private → Flags</h3>
+				<h3>VCP Encodes It</h3>
 				<p>
-					Your private circumstances become simple boolean flags.
-					"Thin walls" becomes <code>noise_restricted</code>. "Tight budget" becomes <code>budget_limited</code>.
+					Private circumstances become categorical flags.
+					"Thin walls" becomes <code>noise_restricted</code>.
+					The flag travels. Your story stays home.
 				</p>
 			</div>
-			<div class="step-arrow">→</div>
+			<div class="step-arrow">
+				<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+			</div>
 			<div class="step">
 				<div class="step-number">3</div>
-				<h3>Platforms Adapt</h3>
+				<h3>Services Adapt</h3>
 				<p>
-					Apps and AI see the flags and adjust their behavior.
-					They recommend quiet exercises and free resources — without knowing why you need them.
+					Every compatible app and AI reads the flags and adjusts.
+					When your state changes, every service updates in real time.
 				</p>
 			</div>
-			<div class="step-arrow">→</div>
+		</div>
+	</section>
+
+	<!-- Protocol Stack -->
+	<section class="content-section">
+		<h2>The Protocol Stack</h2>
+		<p class="section-intro">
+			VCP is a four-layer protocol stack — like the OSI model but for AI values.
+		</p>
+
+		<div class="how-it-works" style="justify-content: center;">
 			<div class="step">
-				<div class="step-number">4</div>
-				<h3>You Stay Informed</h3>
-				<p>
-					See exactly what was shared with whom. Audit trails show every transmission.
-					No surprises, no black boxes.
-				</p>
+				<div class="step-number" style="background: rgba(139, 92, 246, 0.8);">I</div>
+				<h3>VCP/I — Identity</h3>
+				<p>Token naming, namespaces, and registry. <em>What is it called?</em></p>
+			</div>
+			<div class="step-arrow">
+				<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+			</div>
+			<div class="step">
+				<div class="step-number" style="background: rgba(59, 130, 246, 0.8);">T</div>
+				<h3>VCP/T — Transport</h3>
+				<p>Signed bundles, verify-then-inject. <em>How is it delivered safely?</em></p>
+			</div>
+			<div class="step-arrow">
+				<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+			</div>
+			<div class="step">
+				<div class="step-number" style="background: rgba(16, 185, 129, 0.8);">S</div>
+				<h3>VCP/S — Semantics</h3>
+				<p>CSM-1 grammar, personas, composition. <em>What does it mean?</em></p>
+			</div>
+			<div class="step-arrow">
+				<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+			</div>
+			<div class="step">
+				<div class="step-number" style="background: rgba(251, 191, 36, 0.8);">A</div>
+				<h3>VCP/A — Adaptation</h3>
+				<p>Context encoding, state tracking. <em>When and how does it apply?</em></p>
 			</div>
 		</div>
 	</section>
@@ -165,131 +254,82 @@
 	<section class="content-section">
 		<h2>The Three-Layer Model</h2>
 		<p class="section-intro">
-			VCP organizes context at three timescales — each serving a different purpose.
+			Within the Adaptation layer, VCP organizes context at three timescales — stable rules, shifting situations,
+			and moment-to-moment state.
 		</p>
 
 		<div class="three-layer-grid">
-			<div class="layer-box layer-constitutional">
-				<div class="layer-header">
-					<span class="layer-icon">📜</span>
-					<h3>Constitutional Rules</h3>
+			{#each layers as layer}
+				<div class="layer-box {layer.colorClass}">
+					<div class="layer-header">
+						<span class="layer-icon">
+							<i class="fa-solid {layer.icon}" aria-hidden="true"></i>
+						</span>
+						<h3>{layer.title}</h3>
+					</div>
+					<p><strong>{layer.subtitle}</strong></p>
+					<p class="layer-examples">{layer.examples}</p>
+					<p class="layer-timescale"><em>{layer.timescale}</em></p>
 				</div>
-				<p><strong>What the AI should and shouldn't do.</strong></p>
-				<ul>
-					<li>Personas, adherence levels, scopes</li>
-					<li>Signed bundles, verified, audited</li>
-					<li>Changes: <em>rarely</em></li>
-				</ul>
-			</div>
-			<div class="layer-box layer-situational">
-				<div class="layer-header">
-					<span class="layer-icon">🌍</span>
-					<h3>Situational Context</h3>
-				</div>
-				<p><strong>Where, when, who, what occasion.</strong></p>
-				<ul>
-					<li>Morning vs. evening, home vs. work</li>
-					<li>Alone vs. with children</li>
-					<li>Changes: <em>session-scale</em></li>
-				</ul>
-			</div>
-			<div class="layer-box layer-personal">
-				<div class="layer-header">
-					<span class="layer-icon">💫</span>
-					<h3>Personal State</h3>
-				</div>
-				<p><strong>How you are right now.</strong></p>
-				<ul>
-					<li>"I'm in a hurry" / "I'm grieving" / "sensory overload"</li>
-					<li>The <strong>prosaic</strong> dimensions</li>
-					<li>Changes: <em>moment-to-moment</em></li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="prosaic-callout">
-			<h4>Prosaic Dimensions</h4>
-			<div class="prosaic-row">
-				<span class="prosaic-badge">⚡ Urgency</span>
-				<span class="prosaic-badge">💊 Health</span>
-				<span class="prosaic-badge">🧩 Cognitive</span>
-				<span class="prosaic-badge">💭 Affect</span>
-			</div>
-			<p>
-				These four dimensions capture immediate state. They shape <em>how</em> the AI communicates —
-				more concise when you're rushed, gentler when you're unwell — but never relax safety boundaries.
-			</p>
+			{/each}
 		</div>
 	</section>
 
-	<!-- Bilateral Symmetry -->
-	<section class="content-section">
-		<h2>Bilateral Symmetry</h2>
-		<p class="section-intro">
-			VCP creates mutual state awareness between user and AI — a two-way mirror, not a one-way window.
-		</p>
-
-		<div class="bilateral-visual">
-			<div class="bilateral-side">
-				<h4>You</h4>
-				<div class="bilateral-card">
-					<span class="bilateral-label">Prosaic Context</span>
-					<div class="bilateral-dims">⚡💊🧩💭</div>
-				</div>
-			</div>
-			<div class="bilateral-middle">
-				<div class="arrow-right">──declared──▶</div>
-				<div class="arrow-left">◀──observed──</div>
-			</div>
-			<div class="bilateral-side">
-				<h4>AI</h4>
-				<div class="bilateral-card">
-					<span class="bilateral-label">Interiora</span>
-					<div class="bilateral-dims">AVGPEQCYD</div>
-				</div>
-			</div>
-		</div>
-
-		<p class="bilateral-explanation">
-			<strong>Prosaic</strong> is your declared immediate state. <strong>Interiora</strong> is the AI's self-modeling scaffold.
-			Both parties can understand each other's state — but neither has privileged access to the other's raw experience.
-		</p>
-	</section>
-
-	<!-- Magic Mirror Critique -->
+	<!-- What Makes It Different -->
 	<section class="content-section">
 		<h2>Not a Magic Mirror</h2>
 		<p class="section-intro">
-			Some visions of AI imagine systems that understand you better than you understand yourself.
-			VCP takes a different approach.
+			VCP does not try to infer who you are. You declare your context.
+			The AI adapts to what you share, not to what it guesses.
 		</p>
 
 		<div class="contrast-table">
 			<div class="contrast-row contrast-header">
-				<div class="contrast-cell">"Magic Mirror" Vision</div>
+				<div class="contrast-cell">Common Approaches</div>
 				<div class="contrast-cell">VCP Approach</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">AI infers user state</div>
-				<div class="contrast-cell">User <strong>declares</strong> state</div>
+				<div class="contrast-cell">AI infers your state</div>
+				<div class="contrast-cell">You <strong>declare</strong> your state</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">AI knows more than user</div>
-				<div class="contrast-cell">User holds privileged access</div>
+				<div class="contrast-cell">Context locked to one platform</div>
+				<div class="contrast-cell">Context <strong>travels</strong> across platforms</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">Understanding flows one way</div>
-				<div class="contrast-cell">Mutual state awareness</div>
+				<div class="contrast-cell">Static profile, set and forget</div>
+				<div class="contrast-cell"><strong>Live</strong> state, always current</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">User receives identity</div>
-				<div class="contrast-cell">User <strong>authors</strong> identity</div>
+				<div class="contrast-cell">Platform decides what to share</div>
+				<div class="contrast-cell">You <strong>control</strong> what is shared</div>
 			</div>
 		</div>
+	</section>
 
-		<blockquote class="philosophy-quote">
-			"How you come to understand yourself shapes who you become."
-		</blockquote>
+	<!-- Demo Links -->
+	<section class="content-section">
+		<h2>See It In Action</h2>
+		<p class="section-intro">
+			Six scenarios showing portability, adaptation, and liveness in practice.
+		</p>
+
+		<div class="demo-link-grid">
+			{#each demos as demo}
+				<a href={demo.href} class="demo-link-card">
+					<div class="demo-link-left">
+						<span class="demo-link-icon">
+							<i class="fa-solid {demo.icon}" aria-hidden="true"></i>
+						</span>
+						<div>
+							<h3>{demo.title}</h3>
+							<p>{demo.description}</p>
+						</div>
+					</div>
+					<span class="demo-link-pillar">{demo.pillar}</span>
+				</a>
+			{/each}
+		</div>
 	</section>
 
 	<NextSteps steps={nextSteps} />
@@ -305,40 +345,47 @@
 		margin-bottom: var(--space-xl);
 	}
 
-	.problem-grid,
-	.solution-grid {
+	.section-intro {
+		text-align: center;
+		color: var(--color-text-muted);
+		max-width: 600px;
+		margin: 0 auto var(--space-xl);
+		line-height: 1.6;
+	}
+
+	/* Pillars */
+	.pillar-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		grid-template-columns: repeat(3, 1fr);
 		gap: var(--space-lg);
 	}
 
-	.problem-card,
-	.solution-card {
+	.pillar-card {
 		background: var(--color-bg-card);
 		border-radius: var(--radius-lg);
 		padding: var(--space-xl);
 		border: 1px solid rgba(255, 255, 255, 0.1);
+		text-align: center;
 	}
 
-	.problem-icon,
-	.solution-icon {
+	.pillar-icon {
 		font-size: 2.5rem;
 		display: block;
 		margin-bottom: var(--space-md);
 	}
 
-	.problem-card h3,
-	.solution-card h3 {
+	.pillar-card h3 {
 		margin-bottom: var(--space-sm);
+		font-size: 1.25rem;
 	}
 
-	.problem-card p,
-	.solution-card p {
+	.pillar-card p {
 		color: var(--color-text-muted);
 		font-size: 0.9375rem;
 		line-height: 1.6;
 	}
 
+	/* How It Works */
 	.how-it-works {
 		display: flex;
 		align-items: flex-start;
@@ -382,17 +429,8 @@
 
 	.step-arrow {
 		color: var(--color-primary);
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		padding-top: var(--space-xl);
-	}
-
-	/* Section intro text */
-	.section-intro {
-		text-align: center;
-		color: var(--color-text-muted);
-		max-width: 600px;
-		margin: 0 auto var(--space-xl);
-		line-height: 1.6;
 	}
 
 	/* Three-layer grid */
@@ -400,7 +438,6 @@
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: var(--space-lg);
-		margin-bottom: var(--space-xl);
 	}
 
 	.layer-box {
@@ -432,7 +469,19 @@
 	}
 
 	.layer-icon {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
+	}
+
+	.layer-constitutional .layer-icon {
+		color: rgba(139, 92, 246, 0.8);
+	}
+
+	.layer-situational .layer-icon {
+		color: rgba(59, 130, 246, 0.8);
+	}
+
+	.layer-personal .layer-icon {
+		color: rgba(16, 185, 129, 0.8);
 	}
 
 	.layer-box h3 {
@@ -442,113 +491,16 @@
 
 	.layer-box p {
 		font-size: var(--text-sm);
-		margin: 0 0 var(--space-sm);
+		margin: 0 0 var(--space-xs);
 	}
 
-	.layer-box ul {
-		margin: 0;
-		padding-left: var(--space-md);
-		font-size: var(--text-sm);
+	.layer-examples {
 		color: var(--color-text-muted);
 	}
 
-	.layer-box li {
-		margin: var(--space-xs) 0;
-	}
-
-	/* Prosaic callout */
-	.prosaic-callout {
-		text-align: center;
-		padding: var(--space-lg);
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.prosaic-callout h4 {
-		margin: 0 0 var(--space-md);
-	}
-
-	.prosaic-row {
-		display: flex;
-		justify-content: center;
-		gap: var(--space-sm);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-md);
-	}
-
-	.prosaic-badge {
-		padding: var(--space-xs) var(--space-sm);
-		background: rgba(16, 185, 129, 0.1);
-		border: 1px solid rgba(16, 185, 129, 0.3);
-		border-radius: var(--radius-sm);
-		font-size: var(--text-sm);
-	}
-
-	.prosaic-callout p {
+	.layer-timescale {
 		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		max-width: 500px;
-		margin: 0 auto;
-		line-height: 1.5;
-	}
-
-	/* Bilateral visual */
-	.bilateral-visual {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: var(--space-xl);
-		margin-bottom: var(--space-lg);
-		flex-wrap: wrap;
-	}
-
-	.bilateral-side {
-		text-align: center;
-	}
-
-	.bilateral-side h4 {
-		margin: 0 0 var(--space-sm);
-		color: var(--color-text-muted);
-	}
-
-	.bilateral-card {
-		background: var(--color-bg-card);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: var(--radius-md);
-		padding: var(--space-md) var(--space-lg);
-		min-width: 140px;
-	}
-
-	.bilateral-label {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		display: block;
-		margin-bottom: var(--space-xs);
-	}
-
-	.bilateral-dims {
-		font-family: var(--font-mono);
-		color: var(--color-primary);
-		font-size: 1rem;
-	}
-
-	.bilateral-middle {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-	}
-
-	.bilateral-explanation {
-		text-align: center;
-		max-width: 600px;
-		margin: 0 auto;
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		line-height: 1.6;
+		font-size: 0.8125rem;
 	}
 
 	/* Contrast table */
@@ -589,19 +541,75 @@
 		border-bottom: none;
 	}
 
-	/* Philosophy quote */
-	.philosophy-quote {
-		text-align: center;
-		font-style: italic;
-		color: var(--color-text-muted);
-		border-left: none;
-		padding: 0;
-		max-width: 400px;
-		margin: 0 auto;
-		font-size: 1.125rem;
+	/* Demo links */
+	.demo-link-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-md);
 	}
 
+	.demo-link-card {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-md);
+		padding: var(--space-md) var(--space-lg);
+		background: var(--color-bg-card);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-lg);
+		text-decoration: none;
+		color: var(--color-text);
+		transition: all var(--transition-fast);
+	}
+
+	.demo-link-card:hover {
+		border-color: var(--color-primary);
+		text-decoration: none;
+	}
+
+	.demo-link-left {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	.demo-link-icon {
+		font-size: 1.25rem;
+		color: var(--color-primary);
+		flex-shrink: 0;
+		width: 2rem;
+		text-align: center;
+	}
+
+	.demo-link-card h3 {
+		font-size: var(--text-sm);
+		margin: 0 0 var(--space-xs);
+	}
+
+	.demo-link-card p {
+		font-size: 0.8125rem;
+		color: var(--color-text-muted);
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	.demo-link-pillar {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--color-primary);
+		white-space: nowrap;
+		padding: var(--space-xs) var(--space-sm);
+		background: rgba(99, 102, 241, 0.1);
+		border-radius: var(--radius-sm);
+	}
+
+	/* Responsive */
 	@media (max-width: 768px) {
+		.pillar-grid,
+		.three-layer-grid {
+			grid-template-columns: 1fr;
+		}
+
 		.how-it-works {
 			flex-direction: column;
 		}
@@ -609,18 +617,20 @@
 		.step-arrow {
 			transform: rotate(90deg);
 			padding: var(--space-sm) 0;
+			text-align: center;
 		}
 
-		.three-layer-grid {
+		.demo-link-grid {
 			grid-template-columns: 1fr;
 		}
 
-		.bilateral-visual {
+		.demo-link-card {
 			flex-direction: column;
+			align-items: flex-start;
 		}
 
-		.bilateral-middle {
-			transform: rotate(90deg);
+		.demo-link-pillar {
+			align-self: flex-start;
 		}
 	}
 </style>

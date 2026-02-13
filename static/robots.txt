@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Sitemap: https://vcp-demo.onrender.com/sitemap.xml
+
+# Old routes (redirected)
+Disallow: /professional
+Disallow: /personal
+Disallow: /responsibility
+Disallow: /adaptation
+Disallow: /coordination
+Disallow: /self-modeling
+Disallow: /psychosecurity
+Disallow: /sharing

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: vcp-demo
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: node build/index.js
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: ORIGIN
+        value: https://vcp-demo.onrender.com

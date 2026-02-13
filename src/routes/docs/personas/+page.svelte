@@ -23,13 +23,13 @@
 
 	const personas: Persona[] = [
 		{
-			id: 'muse',
-			name: 'Muse',
-			icon: 'fa-palette',
-			tagline: 'Creative exploration and personal growth',
-			description: 'The Muse encourages experimentation, celebrates small wins, and adapts to your creative rhythm. It prioritizes intrinsic motivation over external metrics.',
-			bestFor: ['Learning hobbies', 'Creative projects', 'Self-expression', 'Exploration without pressure'],
-			example: 'Gentian uses Muse when learning guitar — it suggests practice exercises based on mood and energy, not just a rigid curriculum.',
+			id: 'steward',
+			name: 'Steward',
+			icon: 'fa-seedling',
+			tagline: 'Fairness stewardship and process equity',
+			description: 'The Steward tends conditions for fairness — tracking process equity, representing absent voices, and noticing power asymmetries. It offers multiple ethical frameworks without picking one as authoritative.',
+			bestFor: ['Decision-making processes', 'Stakeholder representation', 'Policy design', 'Fairness audits'],
+			example: 'Nell uses Steward when designing governance processes — it flags who might be affected but isn\'t at the table.',
 			color: 'var(--color-primary)'
 		},
 		{
@@ -87,7 +87,7 @@
 
 <svelte:head>
 	<title>Understanding Personas - VCP Documentation</title>
-	<meta name="description" content="Learn about VCP's 6 AI personas: Muse, Ambassador, Godparent, Sentinel, Anchor, and Nanny. Each shapes how AI interacts with you." />
+	<meta name="description" content="Learn about VCP's 6 AI personas: Steward, Ambassador, Godparent, Sentinel, Anchor, and Nanny. Each shapes how AI interacts with you." />
 </svelte:head>
 
 <div class="container">
@@ -105,11 +105,12 @@
 		<h2>At a Glance</h2>
 		<div class="comparison-table-wrapper">
 			<table class="comparison-table">
+				<caption class="visually-hidden">Comparison of VCP persona types</caption>
 				<thead>
 					<tr>
-						<th>Persona</th>
-						<th>Focus</th>
-						<th>Best For</th>
+						<th scope="col">Persona</th>
+						<th scope="col">Focus</th>
+						<th scope="col">Best For</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -196,7 +197,7 @@
 		<h2>See Personas in Action</h2>
 		<p class="try-description">Experience how different personas affect AI behavior in our interactive demos.</p>
 		<div class="try-links">
-			<a href="/professional" class="try-link">
+			<a href="/demos/campion" class="try-link">
 				<i class="fa-solid fa-briefcase" aria-hidden="true"></i>
 				<span>Campion's dual personas</span>
 			</a>

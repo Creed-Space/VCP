@@ -3,8 +3,8 @@
 	 * VCP Playground - Interactive token builder and inspector
 	 */
 	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary } from '$lib/vcp/token';
-	import type { VCPContext, ConstraintFlags, PortablePreferences, ProsaicDimensions } from '$lib/vcp/types';
-	import { Breadcrumb } from '$lib/components/shared';
+	import type { VCPContext, ConstraintFlags, PortablePreferences, PersonalState, CognitiveState, EmotionalTone, EnergyLevel, PerceivedUrgency, BodySignals } from '$lib/vcp/types';
+	import { Breadcrumb, ContextLifecycleIndicator } from '$lib/components/shared';
 
 	const breadcrumbItems = [
 		{ label: 'Playground', icon: 'fa-sliders' }
@@ -47,11 +47,12 @@
 			work_type: 'office_worker',
 			housing: 'apartment'
 		},
-		prosaic: {
-			urgency: 0.3,
-			health: 0.1,
-			cognitive: 0.2,
-			affect: 0.2
+		personal_state: {
+			cognitive_state: { value: 'focused', intensity: 3 },
+			emotional_tone: { value: 'calm', intensity: 2 },
+			energy_level: { value: 'rested', intensity: 3 },
+			perceived_urgency: { value: 'unhurried', intensity: 2 },
+			body_signals: { value: 'neutral', intensity: 1 }
 		}
 	});
 
@@ -66,7 +67,8 @@
 		{ id: 'godparent', name: 'Godparent', iconClass: 'fa-shield' },
 		{ id: 'sentinel', name: 'Sentinel', iconClass: 'fa-eye' },
 		{ id: 'anchor', name: 'Anchor', iconClass: 'fa-anchor' },
-		{ id: 'nanny', name: 'Nanny', iconClass: 'fa-child' }
+		{ id: 'nanny', name: 'Nanny', iconClass: 'fa-child' },
+		{ id: 'steward', name: 'Steward', iconClass: 'fa-handshake-angle' }
 	];
 
 	function updateConstraint(key: keyof ConstraintFlags, value: boolean) {
@@ -77,24 +79,101 @@
 		context.portable_preferences = { ...context.portable_preferences, [key]: value };
 	}
 
-	function updateProsaic(key: keyof ProsaicDimensions, value: number) {
-		context.prosaic = { ...context.prosaic, [key]: value };
+	// v3.1 personal state dimension definitions
+	const personalStateDims = [
+		{ key: 'cognitive_state' as const, emoji: '🧠', label: 'Cognitive State', options: ['focused', 'distracted', 'overloaded', 'foggy', 'reflective'] as CognitiveState[] },
+		{ key: 'emotional_tone' as const, emoji: '💭', label: 'Emotional Tone', options: ['calm', 'tense', 'frustrated', 'neutral', 'uplifted'] as EmotionalTone[] },
+		{ key: 'energy_level' as const, emoji: '🔋', label: 'Energy Level', options: ['rested', 'low_energy', 'fatigued', 'wired', 'depleted'] as EnergyLevel[] },
+		{ key: 'perceived_urgency' as const, emoji: '⚡', label: 'Perceived Urgency', options: ['unhurried', 'time_aware', 'pressured', 'critical'] as PerceivedUrgency[] },
+		{ key: 'body_signals' as const, emoji: '🩺', label: 'Body Signals', options: ['neutral', 'discomfort', 'pain', 'unwell', 'recovering'] as BodySignals[] }
+	];
+
+	function updatePersonalState(key: keyof PersonalState, field: 'value' | 'intensity', newValue: string | number) {
+		const current = context.personal_state?.[key] ?? { value: '', intensity: 3 };
+		context.personal_state = {
+			...context.personal_state,
+			[key]: { ...current, [field]: newValue, declared_at: new Date().toISOString() }
+		};
+	}
+
+	function togglePin(dimension: string, pinned: boolean) {
+		const key = dimension as keyof PersonalState;
+		const current = context.personal_state?.[key];
+		if (!current) return;
+		context.personal_state = {
+			...context.personal_state,
+			[key]: { ...current, pinned }
+		};
+	}
+
+	function getIntensityLabel(intensity: number): string {
+		if (intensity >= 4) return 'High';
+		if (intensity >= 3) return 'Moderate';
+		if (intensity >= 2) return 'Low';
+		return 'Minimal';
 	}
 
 	// Copy feedback state
 	let copyFeedback = $state('');
 	let copyTimeout: ReturnType<typeof setTimeout>;
 
-	function copyToken() {
-		navigator.clipboard.writeText(token);
-		copyFeedback = 'Copied!';
+	/**
+	 * ACCESSIBILITY FIX 2026-02-03: Clipboard copy with fallback for HTTP contexts
+	 * navigator.clipboard requires HTTPS or localhost. Fallback uses legacy execCommand.
+	 */
+	async function copyToClipboard(text: string): Promise<boolean> {
+		// Try modern clipboard API first
+		if (navigator.clipboard && window.isSecureContext) {
+			try {
+				await navigator.clipboard.writeText(text);
+				return true;
+			} catch (err) {
+				console.warn('Clipboard API failed, trying fallback:', err);
+			}
+		}
+
+		// Fallback for HTTP or older browsers using execCommand
+		try {
+			const textArea = document.createElement('textarea');
+			textArea.value = text;
+			textArea.style.position = 'fixed';
+			textArea.style.left = '-9999px';
+			textArea.style.top = '-9999px';
+			textArea.setAttribute('readonly', '');
+			document.body.appendChild(textArea);
+			textArea.select();
+			textArea.setSelectionRange(0, text.length);
+
+			const success = document.execCommand('copy');
+			document.body.removeChild(textArea);
+
+			if (success) {
+				return true;
+			}
+		} catch (err) {
+			console.error('Fallback clipboard copy failed:', err);
+		}
+
+		return false;
+	}
+
+	async function copyToken() {
+		const success = await copyToClipboard(token);
+		if (success) {
+			copyFeedback = 'Copied!';
+		} else {
+			// Show helpful message for users on HTTP
+			copyFeedback = window.isSecureContext
+				? 'Copy failed - please try again'
+				: 'Copy requires HTTPS. Please select and copy manually.';
+		}
 		clearTimeout(copyTimeout);
 		copyTimeout = setTimeout(() => {
 			copyFeedback = '';
-		}, 2000);
+		}, success ? 2000 : 4000);
 	}
 
-	function sharePlayground() {
+	async function sharePlayground() {
 		// Encode current context as URL parameter
 		const encoded = btoa(JSON.stringify({
 			p: context.public_profile,
@@ -103,8 +182,11 @@
 			const: context.constitution
 		}));
 		const url = `${window.location.origin}/playground?ctx=${encoded}`;
-		navigator.clipboard.writeText(url);
-		copyFeedback = 'Link copied!';
+		const success = await copyToClipboard(url);
+		copyFeedback = success ? 'Link copied!' : 'Copy failed - URL shown in console';
+		if (!success) {
+			console.log('Share URL:', url);
+		}
 		clearTimeout(copyTimeout);
 		copyTimeout = setTimeout(() => {
 			copyFeedback = '';
@@ -135,16 +217,17 @@
 				budget_range: 'medium',
 				feedback_style: 'encouraging'
 			},
-			prosaic: {
-				urgency: 0.0,
-				health: 0.0,
-				cognitive: 0.0,
-				affect: 0.0
+			personal_state: {
+				cognitive_state: { value: 'focused', intensity: 3 },
+				emotional_tone: { value: 'neutral', intensity: 2 },
+				energy_level: { value: 'rested', intensity: 2 },
+				perceived_urgency: { value: 'unhurried', intensity: 1 },
+				body_signals: { value: 'neutral', intensity: 1 }
 			}
 		};
 	}
 
-	function loadExample(type: 'campion' | 'gentian') {
+	function loadExample(type: 'campion' | 'gentian' | 'marta') {
 		if (type === 'campion') {
 			context = {
 				...context,
@@ -170,14 +253,15 @@
 					adherence: 4,
 					scopes: ['work', 'education']
 				},
-				prosaic: {
-					urgency: 0.7,
-					health: 0.2,
-					cognitive: 0.5,
-					affect: 0.4
+				personal_state: {
+					cognitive_state: { value: 'focused', intensity: 4 },
+					emotional_tone: { value: 'tense', intensity: 3 },
+					energy_level: { value: 'fatigued', intensity: 3 },
+					perceived_urgency: { value: 'pressured', intensity: 4 },
+					body_signals: { value: 'neutral', intensity: 1 }
 				}
 			};
-		} else {
+		} else if (type === 'gentian') {
 			context = {
 				...context,
 				public_profile: {
@@ -208,11 +292,45 @@
 					adherence: 3,
 					scopes: ['creativity', 'health', 'privacy']
 				},
-				prosaic: {
-					urgency: 0.2,
-					health: 0.3,
-					cognitive: 0.3,
-					affect: 0.2
+				personal_state: {
+					cognitive_state: { value: 'foggy', intensity: 3 },
+					emotional_tone: { value: 'calm', intensity: 2 },
+					energy_level: { value: 'low_energy', intensity: 3 },
+					perceived_urgency: { value: 'unhurried', intensity: 2 },
+					body_signals: { value: 'neutral', intensity: 1 }
+				}
+			};
+		} else {
+			context = {
+				...context,
+				public_profile: {
+					display_name: 'Marta',
+					goal: 'balance_family_support',
+					experience: 'advanced',
+					learning_style: 'reading',
+					pace: 'steady',
+					motivation: 'achievement'
+				},
+				constraints: {
+					time_limited: false,
+					budget_limited: true,
+					noise_restricted: false,
+					energy_variable: true,
+					schedule_irregular: false
+				},
+				constitution: {
+					id: 'personal.responsibility.balance',
+					version: '1.0.0',
+					persona: 'steward',
+					adherence: 4,
+					scopes: ['stewardship', 'privacy']
+				},
+				personal_state: {
+					cognitive_state: { value: 'reflective', intensity: 4 },
+					emotional_tone: { value: 'tense', intensity: 4 },
+					energy_level: { value: 'low_energy', intensity: 3 },
+					perceived_urgency: { value: 'time_aware', intensity: 2 },
+					body_signals: { value: 'neutral', intensity: 1 }
 				}
 			};
 		}
@@ -233,7 +351,7 @@
 			Build context tokens interactively. Toggle constraints, change preferences, and watch the token update in real-time.
 		</p>
 		<p class="page-hero-explainer">
-			See exactly what gets transmitted to platforms — and what stays private.
+			See exactly what each service receives — compact flags, not personal details.
 			<a href="/docs/csm1-specification">Learn about the token format</a>
 		</p>
 	</section>
@@ -246,6 +364,9 @@
 		</button>
 		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('gentian')}>
 			<i class="fa-solid fa-guitar" aria-hidden="true"></i> Gentian (Personal)
+		</button>
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('marta')}>
+			<i class="fa-solid fa-handshake-angle" aria-hidden="true"></i> Marta (Responsibility)
 		</button>
 	</section>
 
@@ -306,12 +427,31 @@
 				<h3>Constitution</h3>
 				<fieldset class="control-group">
 					<legend class="label">Persona</legend>
-					<div class="persona-grid">
-						{#each personas as persona}
+					<div class="persona-grid" role="radiogroup" aria-label="Select persona">
+						{#each personas as persona, index}
 							<button
 								class="persona-btn"
 								class:active={context.constitution.persona === persona.id}
 								onclick={() => (context.constitution.persona = persona.id as any)}
+								onkeydown={(e) => {
+									const btns = e.currentTarget.parentElement?.querySelectorAll('.persona-btn');
+									if (!btns) return;
+									let nextIndex = index;
+									if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+										e.preventDefault();
+										nextIndex = (index + 1) % personas.length;
+									} else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+										e.preventDefault();
+										nextIndex = (index - 1 + personas.length) % personas.length;
+									}
+									if (nextIndex !== index) {
+										(btns[nextIndex] as HTMLElement)?.focus();
+										context.constitution.persona = personas[nextIndex].id as any;
+									}
+								}}
+								role="radio"
+								aria-checked={context.constitution.persona === persona.id}
+								tabindex={context.constitution.persona === persona.id ? 0 : -1}
 							>
 								<span class="persona-icon"><i class="fa-solid {persona.iconClass}" aria-hidden="true"></i></span>
 								<span class="persona-name">{persona.name}</span>
@@ -414,113 +554,78 @@
 				</div>
 			</section>
 
-			<!-- Prosaic Dimensions Section -->
-			<section class="control-section prosaic-section">
-				<h3>Personal State <span class="badge badge-new">New</span></h3>
-				<p class="prosaic-intro">How are you right now? These shape <em>how</em> the AI communicates.</p>
+			<!-- Personal State Dimensions (v3.1) -->
+			<section class="control-section personal-state-section">
+				<h3>
+					<span class="has-tooltip" data-tooltip="5 categorical dimensions with 1-5 intensity — how you are right now shapes how the AI communicates" tabindex="0" role="term" aria-label="Personal State: 5 categorical dimensions with intensity that shape AI communication">Personal State</span>
+					<span class="badge badge-new">v3.1</span>
+				</h3>
+				<p class="personal-state-intro">How are you right now? These shape <em>how</em> the AI communicates.</p>
 
-				<div class="prosaic-sliders">
-					<div class="prosaic-slider-group">
-						<div class="prosaic-slider-header">
-							<span class="prosaic-emoji">⚡</span>
-							<label class="label" for="urgency">Urgency</label>
-							<span class="prosaic-value">{(context.prosaic?.urgency ?? 0).toFixed(1)}</span>
-						</div>
-						<input
-							id="urgency"
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={context.prosaic?.urgency ?? 0}
-							oninput={(e) => updateProsaic('urgency', parseFloat(e.currentTarget.value))}
-							class="slider prosaic-range"
-						/>
-						<div class="prosaic-hint">
-							{context.prosaic?.urgency && context.prosaic.urgency >= 0.7 ? '"I\'m in a hurry"' : context.prosaic?.urgency && context.prosaic.urgency >= 0.4 ? 'Some time pressure' : 'No rush'}
-						</div>
-					</div>
-
-					<div class="prosaic-slider-group">
-						<div class="prosaic-slider-header">
-							<span class="prosaic-emoji">💊</span>
-							<label class="label" for="health">Health</label>
-							<span class="prosaic-value">{(context.prosaic?.health ?? 0).toFixed(1)}</span>
-						</div>
-						<input
-							id="health"
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={context.prosaic?.health ?? 0}
-							oninput={(e) => updateProsaic('health', parseFloat(e.currentTarget.value))}
-							class="slider prosaic-range"
-						/>
-						<div class="prosaic-hint">
-							{context.prosaic?.health && context.prosaic.health >= 0.7 ? '"Not feeling well"' : context.prosaic?.health && context.prosaic.health >= 0.4 ? 'Some fatigue/discomfort' : 'Feeling fine'}
-						</div>
-					</div>
-
-					<div class="prosaic-slider-group">
-						<div class="prosaic-slider-header">
-							<span class="prosaic-emoji">🧩</span>
-							<label class="label" for="cognitive">Cognitive Load</label>
-							<span class="prosaic-value">{(context.prosaic?.cognitive ?? 0).toFixed(1)}</span>
-						</div>
-						<input
-							id="cognitive"
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={context.prosaic?.cognitive ?? 0}
-							oninput={(e) => updateProsaic('cognitive', parseFloat(e.currentTarget.value))}
-							class="slider prosaic-range"
-						/>
-						<div class="prosaic-hint">
-							{context.prosaic?.cognitive && context.prosaic.cognitive >= 0.7 ? '"Too many options"' : context.prosaic?.cognitive && context.prosaic.cognitive >= 0.4 ? 'Some mental load' : 'Clear headed'}
-						</div>
-					</div>
-
-					<div class="prosaic-slider-group">
-						<div class="prosaic-slider-header">
-							<span class="prosaic-emoji">💭</span>
-							<label class="label" for="affect">Emotional State</label>
-							<span class="prosaic-value">{(context.prosaic?.affect ?? 0).toFixed(1)}</span>
-						</div>
-						<input
-							id="affect"
-							type="range"
-							min="0"
-							max="1"
-							step="0.1"
-							value={context.prosaic?.affect ?? 0}
-							oninput={(e) => updateProsaic('affect', parseFloat(e.currentTarget.value))}
-							class="slider prosaic-range"
-						/>
-						<div class="prosaic-hint">
-							{context.prosaic?.affect && context.prosaic.affect >= 0.7 ? 'High emotional intensity' : context.prosaic?.affect && context.prosaic.affect >= 0.4 ? 'Some stress/emotion' : 'Calm, neutral'}
-						</div>
-					</div>
-				</div>
-
-				<div class="prosaic-presets">
+				<div class="personal-state-presets">
 					<span class="preset-label">Quick states:</span>
-					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.9, health: 0.0, cognitive: 0.3, affect: 0.2 }; }}>
-						In a hurry
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.personal_state = { cognitive_state: { value: 'focused', intensity: 3 }, emotional_tone: { value: 'calm', intensity: 2 }, energy_level: { value: 'rested', intensity: 3 }, perceived_urgency: { value: 'unhurried', intensity: 2 }, body_signals: { value: 'neutral', intensity: 1 } }; }}>
+						Normal
 					</button>
-					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.2, health: 0.7, cognitive: 0.4, affect: 0.3 }; }}>
-						Not well
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.personal_state = { cognitive_state: { value: 'overloaded', intensity: 4 }, emotional_tone: { value: 'tense', intensity: 4 }, energy_level: { value: 'fatigued', intensity: 3 }, perceived_urgency: { value: 'pressured', intensity: 4 }, body_signals: { value: 'discomfort', intensity: 2 } }; }}>
+						Stressed
 					</button>
-					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.3, health: 0.2, cognitive: 0.8, affect: 0.5 }; }}>
-						Overwhelmed
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.personal_state = { cognitive_state: { value: 'overloaded', intensity: 5 }, emotional_tone: { value: 'frustrated', intensity: 5 }, energy_level: { value: 'depleted', intensity: 4 }, perceived_urgency: { value: 'critical', intensity: 5 }, body_signals: { value: 'unwell', intensity: 3 } }; }}>
+						Crisis
 					</button>
-					<button class="btn btn-ghost btn-xs" onclick={() => { context.prosaic = { urgency: 0.1, health: 0.3, cognitive: 0.4, affect: 0.8, sub_signals: { emotional_state: 'grieving' } }; }}>
+					<button class="btn btn-ghost btn-xs" onclick={() => { context.personal_state = { cognitive_state: { value: 'foggy', intensity: 3 }, emotional_tone: { value: 'neutral', intensity: 4 }, energy_level: { value: 'depleted', intensity: 4 }, perceived_urgency: { value: 'unhurried', intensity: 1 }, body_signals: { value: 'unwell', intensity: 3 } }; }}>
 						Grieving
 					</button>
 				</div>
+
+				<div class="personal-state-dims">
+					{#each personalStateDims as dim}
+						{@const current = context.personal_state?.[dim.key]}
+						{@const currentValue = current?.value ?? dim.options[0]}
+						{@const intensity = current?.intensity ?? 3}
+						<div class="ps-dim-group" class:high={intensity >= 4} class:medium={intensity === 3}>
+							<div class="ps-dim-header">
+								<span class="ps-emoji">{dim.emoji}</span>
+								<label class="label" for="ps-{dim.key}">{dim.label}</label>
+								<span class="ps-intensity" style="color: {intensity >= 4 ? 'var(--color-danger)' : intensity >= 3 ? 'var(--color-warning)' : 'var(--color-success)'}">
+									{intensity}/5 · {getIntensityLabel(intensity)}
+								</span>
+							</div>
+							<select
+								id="ps-{dim.key}"
+								class="ps-select"
+								value={currentValue}
+								onchange={(e) => updatePersonalState(dim.key, 'value', e.currentTarget.value)}
+								aria-label="{dim.label} category"
+							>
+								{#each dim.options as opt}
+									<option value={opt}>{opt.replace(/_/g, ' ')}</option>
+								{/each}
+							</select>
+							<input
+								type="range"
+								min="1"
+								max="5"
+								step="1"
+								value={intensity}
+								oninput={(e) => updatePersonalState(dim.key, 'intensity', parseInt(e.currentTarget.value))}
+								class="slider ps-range"
+								aria-label="{dim.label} intensity"
+							/>
+						</div>
+					{/each}
+				</div>
 			</section>
+
+			<!-- Context Lifecycle Indicator -->
+			{#if context.personal_state}
+				<section class="control-section">
+					<ContextLifecycleIndicator
+						personalState={context.personal_state}
+						onTogglePin={togglePin}
+					/>
+				</section>
+			{/if}
 		</div>
 
 		<!-- Token Panel -->
@@ -531,7 +636,7 @@
 					{#if copyFeedback}
 						<span class="copy-feedback">{copyFeedback}</span>
 					{/if}
-					<button class="btn btn-ghost btn-sm" onclick={sharePlayground} title="Copy shareable link">
+					<button class="btn btn-ghost btn-sm" onclick={sharePlayground} title="Copy shareable link" aria-label="Copy shareable link">
 						<i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
 					</button>
 					<button class="btn btn-primary btn-sm" onclick={copyToken}>
@@ -595,6 +700,29 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Try in a Demo -->
+	<section class="try-demo-section">
+		<h3><i class="fa-solid fa-play" aria-hidden="true"></i> Try This Context in a Demo</h3>
+		<p class="text-muted">See how the context you've built here would work in a real scenario.</p>
+		<div class="demo-links">
+			<a href="/demos/gentian" class="demo-link-card">
+				<i class="fa-solid fa-guitar" aria-hidden="true"></i>
+				<span>Gentian — Guitar Learning</span>
+				<span class="demo-link-concept">Portability across platforms</span>
+			</a>
+			<a href="/demos/campion" class="demo-link-card">
+				<i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+				<span>Campion — Corporate Training</span>
+				<span class="demo-link-concept">Automatic context switching</span>
+			</a>
+			<a href="/demos/marta" class="demo-link-card">
+				<i class="fa-solid fa-handshake-angle" aria-hidden="true"></i>
+				<span>Marta — Responsibility</span>
+				<span class="demo-link-concept">Live state-aware guidance</span>
+			</a>
+		</div>
+	</section>
 </div>
 
 <style>
@@ -870,8 +998,8 @@
 		}
 	}
 
-	/* Prosaic section styles */
-	.prosaic-section h3 {
+	/* Personal state section styles */
+	.personal-state-section h3 {
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
@@ -888,69 +1016,83 @@
 		font-weight: 600;
 	}
 
-	.prosaic-intro {
+	.personal-state-intro {
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
 		margin-bottom: var(--space-md);
 	}
 
-	.prosaic-sliders {
+	.personal-state-dims {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
 	}
 
-	.prosaic-slider-group {
+	.ps-dim-group {
 		background: rgba(255, 255, 255, 0.02);
 		padding: var(--space-sm) var(--space-md);
 		border-radius: var(--radius-md);
 		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-left: 3px solid var(--color-success);
+		transition: border-color var(--transition-fast);
 	}
 
-	.prosaic-slider-header {
+	.ps-dim-group.medium {
+		border-left-color: var(--color-warning);
+	}
+
+	.ps-dim-group.high {
+		border-left-color: var(--color-danger);
+	}
+
+	.ps-dim-header {
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
 		margin-bottom: var(--space-xs);
 	}
 
-	.prosaic-emoji {
+	.ps-emoji {
 		font-size: 1.125rem;
 	}
 
-	.prosaic-slider-header .label {
+	.ps-dim-header .label {
 		flex: 1;
 		margin: 0;
 	}
 
-	.prosaic-value {
+	.ps-intensity {
 		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		color: var(--color-primary);
-		min-width: 2rem;
+		font-size: var(--text-xs);
+		min-width: 5rem;
 		text-align: right;
 	}
 
-	.prosaic-range {
+	.ps-select {
+		width: 100%;
+		padding: var(--space-xs) var(--space-sm);
+		background: var(--color-bg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-sm);
+		color: var(--color-text);
+		font-size: var(--text-sm);
+		margin-bottom: var(--space-xs);
+		text-transform: capitalize;
+	}
+
+	.ps-range {
 		width: 100%;
 		margin: var(--space-xs) 0;
 	}
 
-	.prosaic-hint {
-		font-size: 0.6875rem;
-		color: var(--color-text-muted);
-		font-style: italic;
-		min-height: 1rem;
-	}
-
-	.prosaic-presets {
+	.personal-state-presets {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-xs);
-		margin-top: var(--space-md);
-		padding-top: var(--space-md);
-		border-top: 1px solid rgba(255, 255, 255, 0.05);
+		margin-bottom: var(--space-md);
+		padding-bottom: var(--space-md);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	}
 
 	.preset-label {
@@ -985,9 +1127,67 @@
 			flex-wrap: wrap;
 		}
 
-		.prosaic-presets {
+		.personal-state-presets {
 			flex-direction: column;
 			align-items: flex-start;
+		}
+	}
+
+	/* Try Demo Section */
+	.try-demo-section {
+		margin-top: var(--space-2xl);
+		padding-top: var(--space-xl);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.try-demo-section h3 {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-sm);
+	}
+
+	.demo-links {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-md);
+		margin-top: var(--space-md);
+	}
+
+	.demo-link-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-lg);
+		background: var(--color-bg-card);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-lg);
+		text-decoration: none;
+		color: var(--color-text);
+		text-align: center;
+		transition: all var(--transition-normal);
+	}
+
+	.demo-link-card:hover {
+		border-color: var(--color-primary);
+		transform: translateY(-2px);
+		text-decoration: none;
+	}
+
+	.demo-link-card i {
+		font-size: 1.5rem;
+		color: var(--color-primary);
+	}
+
+	.demo-link-concept {
+		font-size: 0.75rem;
+		color: var(--color-text-muted);
+	}
+
+	@media (max-width: 768px) {
+		.demo-links {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

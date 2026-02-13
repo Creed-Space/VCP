@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Neon bubble gradient: cyan → magenta -->
+    <linearGradient id="neon" x1="0%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#00d4ff" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ff2d9b" />
+    </linearGradient>
+
+    <!-- Crystal face gradients -->
+    <linearGradient id="c-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ddd6fe" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="c-right" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ede9fe" />
+      <stop offset="100%" stop-color="#a78bfa" />
+    </linearGradient>
+    <linearGradient id="c-top" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c7d2fe" />
+      <stop offset="100%" stop-color="#f0eeff" />
+    </linearGradient>
+    <linearGradient id="c-bot" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#5b21b6" />
+    </linearGradient>
+
+    <!-- Strong neon glow -->
+    <filter id="neon-glow">
+      <feGaussianBlur stdDeviation="3" result="b1" />
+      <feGaussianBlur stdDeviation="6" result="b2" />
+      <feMerge>
+        <feMergeNode in="b2" />
+        <feMergeNode in="b1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Beam glow -->
+    <filter id="beam-glow">
+      <feGaussianBlur stdDeviation="2" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Crystal glow -->
+    <filter id="crystal-glow">
+      <feGaussianBlur stdDeviation="1.5" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ====== RAINBOW BEAMS (behind crystal, bold and wide) ====== -->
+  <g filter="url(#beam-glow)">
+    <!-- Red beam -->
+    <polygon points="138,88 200,12 192,22" fill="#ff1744" opacity="0.95"/>
+    <polygon points="138,88 200,12 196,6 190,16" fill="#ff1744" opacity="0.5"/>
+
+    <!-- Orange beam -->
+    <polygon points="140,84 200,26 194,36" fill="#ff6d00" opacity="0.95"/>
+    <polygon points="140,84 202,22 198,32" fill="#ff6d00" opacity="0.45"/>
+
+    <!-- Yellow beam -->
+    <polygon points="142,80 200,40 196,50" fill="#ffd600" opacity="0.9"/>
+    <polygon points="142,80 204,36 200,46" fill="#ffd600" opacity="0.4"/>
+
+    <!-- Green beam -->
+    <polygon points="143,76 198,50 195,60" fill="#00e676" opacity="0.9"/>
+    <polygon points="143,76 202,48 198,58" fill="#00e676" opacity="0.4"/>
+
+    <!-- Cyan beam -->
+    <polygon points="143,72 196,56 193,66" fill="#00e5ff" opacity="0.9"/>
+    <polygon points="143,72 200,54 196,64" fill="#00e5ff" opacity="0.4"/>
+
+    <!-- Blue beam -->
+    <polygon points="142,68 192,58 190,68" fill="#2979ff" opacity="0.85"/>
+    <polygon points="142,68 196,56 194,66" fill="#2979ff" opacity="0.4"/>
+
+    <!-- Violet beam -->
+    <polygon points="140,65 188,58 186,68" fill="#7c4dff" opacity="0.8"/>
+    <polygon points="140,65 192,56 190,66" fill="#7c4dff" opacity="0.35"/>
+  </g>
+
+  <!-- Wider secondary beam layer for more presence -->
+  <g opacity="0.35">
+    <polygon points="136,90 198,8 186,20" fill="#ff1744" />
+    <polygon points="139,85 200,22 190,34" fill="#ff9100" />
+    <polygon points="141,80 200,38 192,48" fill="#ffea00" />
+    <polygon points="142,76 198,48 190,58" fill="#00e676" />
+    <polygon points="142,72 196,54 188,64" fill="#00b0ff" />
+    <polygon points="140,68 190,56 184,66" fill="#651fff" />
+  </g>
+
+  <!-- ====== SPEECH BUBBLE (angular, neon outline) ====== -->
+  <g filter="url(#neon-glow)">
+    <path d="M38 50
+             L52 34
+             L128 34
+             L142 50
+             L142 108
+             L128 122
+             L78 122
+             L52 152
+             L58 122
+             L52 122
+             L38 108
+             Z"
+          fill="none" stroke="url(#neon)" stroke-width="3" stroke-linejoin="round" />
+  </g>
+
+  <!-- ====== PULSE LINE inside bubble ====== -->
+  <g filter="url(#neon-glow)">
+    <polyline points="50,82 60,82 68,82 74,65 80,96 86,58 92,102 98,72 104,82 115,82 128,82"
+              fill="none" stroke="url(#neon)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- ====== CRYSTAL PRISM (larger, overlapping bubble edge) ====== -->
+  <g filter="url(#crystal-glow)">
+    <!-- Main left face -->
+    <path d="M124,48 L108,88 L130,130 L138,78 Z" fill="url(#c-left)" opacity="0.8" />
+    <!-- Main right face -->
+    <path d="M124,48 L138,78 L130,130 L155,88 Z" fill="url(#c-right)" opacity="0.85" />
+    <!-- Top highlight facet -->
+    <path d="M124,48 L108,88 L138,78 Z" fill="url(#c-top)" opacity="0.75" />
+    <!-- Bottom left facet -->
+    <path d="M108,88 L130,130 L138,78 Z" fill="url(#c-bot)" opacity="0.55" />
+    <!-- Bottom right facet -->
+    <path d="M138,78 L130,130 L155,88 Z" fill="#5b21b6" opacity="0.5" />
+
+    <!-- Crisp edge lines -->
+    <line x1="124" y1="48" x2="108" y2="88" stroke="white" stroke-width="1" opacity="0.6" />
+    <line x1="124" y1="48" x2="155" y2="88" stroke="white" stroke-width="0.8" opacity="0.4" />
+    <line x1="124" y1="48" x2="138" y2="78" stroke="white" stroke-width="1" opacity="0.7" />
+    <line x1="108" y1="88" x2="130" y2="130" stroke="white" stroke-width="0.7" opacity="0.35" />
+    <line x1="155" y1="88" x2="130" y2="130" stroke="white" stroke-width="0.7" opacity="0.3" />
+    <line x1="138" y1="78" x2="130" y2="130" stroke="white" stroke-width="0.7" opacity="0.4" />
+
+    <!-- Specular highlights -->
+    <path d="M126,56 L116,76 L134,72 Z" fill="white" opacity="0.3" />
+    <path d="M140,80 L136,90 L148,86 Z" fill="white" opacity="0.15" />
+  </g>
+</svg>

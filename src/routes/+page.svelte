@@ -1,224 +1,138 @@
 <script lang="ts">
 	/**
 	 * VCP Demo Landing Page
-	 * Entry point with clear explanation and demo paths
+	 * 5 lean sections: Hero → Problem → Flow → Demo Cards → CTA
 	 */
 	import { HowItWorks } from '$lib/components/shared';
 </script>
 
 <svelte:head>
-	<title>VCP - Share What You Need, Keep Why You Need It</title>
-	<meta name="description" content="Share your preferences with AI and platforms without revealing private circumstances. VCP transmits the flag, not the story behind it." />
-	<meta property="og:title" content="VCP - Privacy-Preserving Context Sharing" />
-	<meta property="og:description" content="Tell AI your needs without explaining your circumstances. Quiet mode, tight budget, flexible schedule — they see the flag, not your life story." />
+	<title>VCP - Context That Travels With You</title>
+	<meta name="description" content="VCP is a protocol that lets your context — preferences, constraints, values, and current state — travel with you across every AI and service. Define it once, carry it everywhere." />
+	<meta property="og:title" content="VCP - Context That Travels With You" />
+	<meta property="og:description" content="Set your preferences once. Every AI and service adapts — in real time, across platforms, always current." />
 	<meta property="og:type" content="website" />
+	<meta property="og:image" content="/vcp-logo.png" />
 </svelte:head>
 
 <div class="container">
-	<!-- Hero with clear explanation -->
+	<!-- Section 1: Hero -->
 	<section class="page-hero page-hero-landing">
 		<p class="hero-eyebrow">Value Context Protocol</p>
-		<h1>Reliably Porting Context<br />Where It Needs to Be</h1>
+		<h1>Context That Travels With You</h1>
 		<p class="page-hero-subtitle">
-			Tell AI and platforms your preferences without revealing your private circumstances.
-		</p>
-		<p class="page-hero-explainer">
-			You need quiet practice mode. They don't need to know it's because of thin apartment walls.
-			You have a tight budget. They don't need your financial history.
-			You're in a hurry, or grieving, or overwhelmed — the AI adapts without needing the backstory.
-			<strong>VCP transmits the flag, not the story behind it.</strong>
+			Set your preferences once. Every AI and service adapts &mdash;
+			in real time, across platforms, always current.
 		</p>
 		<div class="hero-cta">
-			<a href="/playground" class="btn btn-cta">
+			<a href="/demos" class="btn btn-cta">
 				<i class="fa-solid fa-play" aria-hidden="true"></i>
-				Try the Playground
+				See It In Action
 			</a>
-			<a href="/demos" class="btn btn-secondary btn-lg">See It In Action</a>
+			<a href="/about" class="btn btn-secondary btn-lg">Learn How It Works</a>
 		</div>
 	</section>
 
-	<!-- How It Works - BEFORE the demos -->
+	<!-- Section 2: Value Props -->
+	<section class="problem-section">
+		<h2 class="section-title">Set It Once. Carry It Everywhere.</h2>
+		<div class="problem-row">
+			<div class="problem-item">
+				<span class="problem-icon"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></span>
+				<p>One profile, every platform &mdash; your preferences travel with you</p>
+			</div>
+			<div class="problem-item">
+				<span class="problem-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+				<p>Your context stays current &mdash; change once, everything adapts</p>
+			</div>
+			<div class="problem-item">
+				<span class="problem-icon"><i class="fa-solid fa-user-check" aria-hidden="true"></i></span>
+				<p>AI that knows your situation &mdash; and responds accordingly</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Section 3: The Flow (reworked HowItWorks) -->
 	<HowItWorks />
 
-	<!-- Three-Layer Model -->
-	<section class="three-layer-section">
-		<h2 class="section-title">Three Layers of Context</h2>
-		<p class="section-description">
-			VCP organizes context at three timescales — from stable rules to moment-to-moment state.
-		</p>
-
-		<div class="three-layer-stack">
-			<div class="layer-card layer-constitutional">
-				<div class="layer-emoji">📜</div>
-				<div class="layer-content">
-					<h4>Constitutional Rules</h4>
-					<p>What the AI should and shouldn't do. Personas, adherence levels, scopes.</p>
-					<span class="layer-timing">Changes: rarely</span>
-				</div>
-			</div>
-			<div class="layer-connector"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> applied within</div>
-			<div class="layer-card layer-situational">
-				<div class="layer-emoji">🌍</div>
-				<div class="layer-content">
-					<h4>Situational Context</h4>
-					<p>Where, when, who, what occasion. Morning vs. evening, home vs. work.</p>
-					<span class="layer-timing">Changes: session-scale</span>
-				</div>
-			</div>
-			<div class="layer-connector"><i class="fa-solid fa-arrow-down" aria-hidden="true"></i> modulated by</div>
-			<div class="layer-card layer-personal">
-				<div class="layer-emoji">💫</div>
-				<div class="layer-content">
-					<h4>Personal State</h4>
-					<p>"I'm in a hurry" • "I'm grieving" • "Sensory overload" — the <strong>prosaic</strong> dimensions.</p>
-					<span class="layer-timing">Changes: moment-to-moment</span>
-				</div>
-			</div>
-		</div>
-
-		<div class="prosaic-highlight">
-			<div class="prosaic-dims">
-				<span class="prosaic-dim">⚡ Urgency</span>
-				<span class="prosaic-dim">💊 Health</span>
-				<span class="prosaic-dim">🧩 Cognitive</span>
-				<span class="prosaic-dim">💭 Affect</span>
-			</div>
-			<p>Personal state modulates <em>expression</em>, never <em>boundaries</em>. The AI communicates differently when you're rushed — but safety rules don't relax.</p>
-			<a href="/docs/concepts" class="btn btn-ghost btn-sm">Learn about prosaic dimensions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-		</div>
-	</section>
-
-	<!-- Demo Selector -->
+	<!-- Section 4: Demo Cards -->
 	<section class="demo-selector">
 		<h2 class="section-title">See It In Action</h2>
 		<p class="section-description">
-			Real scenarios where privacy matters. Watch how VCP protects personal details while enabling personalized experiences.
+			Real scenarios showing how context shapes AI behavior — portable across platforms, live in the moment, enforced by hooks.
 		</p>
 
-		<div class="grid grid-2 gap-lg">
-			<!-- Professional Demo Card -->
-			<a href="/professional" class="card card-hover demo-card demo-card-professional">
-				<div class="demo-badge-category"><span class="badge badge-success">Enterprise</span></div>
-				<div class="demo-icon"><i class="fa-solid fa-briefcase" aria-hidden="true"></i></div>
-				<h3 class="demo-title">Campion's Corporate Training</h3>
-				<p class="demo-description">
-					<strong>The situation:</strong> Campion needs flexible training schedules for personal reasons.
-					<strong>The privacy need:</strong> HR sees her career goals, not why she can't do 9-to-5 study blocks.
-					<strong>What she's protecting:</strong> Health situation that's none of her employer's business.
-				</p>
-				<div class="demo-features">
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-building" aria-hidden="true"></i></span>
-						HR sees goals, not circumstances
-					</span>
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-eye" aria-hidden="true"></i></span>
-						Full audit trail of what's shared
-					</span>
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-masks-theater" aria-hidden="true"></i></span>
-						Dual work/personal profiles
-					</span>
-				</div>
-				<div class="demo-cta">
-					<span class="btn btn-primary">Meet Campion <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-				</div>
-			</a>
-
-			<!-- Personal Demo Card -->
-			<a href="/personal" class="card card-hover demo-card demo-card-personal">
+		<div class="grid grid-3 gap-lg">
+			<!-- Gentian — Portability -->
+			<a href="/demos/gentian" class="card card-hover demo-card demo-card-personal">
 				<div class="demo-badge-category"><span class="badge badge-primary">Consumer</span></div>
 				<div class="demo-icon"><i class="fa-solid fa-guitar" aria-hidden="true"></i></div>
 				<h3 class="demo-title">Gentian's Guitar Journey</h3>
-				<p class="demo-description">
-					<strong>The situation:</strong> Factory worker learning guitar across four different apps.
-					<strong>The privacy need:</strong> Apps adapt to his budget without knowing he's barely making rent.
-					<strong>What he's protecting:</strong> Shift schedules, thin walls, tight finances.
-				</p>
+				<p class="demo-scenario">Learning guitar across 4 different apps</p>
+				<p class="demo-value">Set preferences once &mdash; every platform adapts instantly</p>
 				<div class="demo-features">
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-rotate" aria-hidden="true"></i></span>
-						Set preferences once, use everywhere
-					</span>
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
-						Community sees progress, not struggles
-					</span>
-					<span class="demo-feature">
-						<span class="feature-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
-						Apps see flags, not life story
-					</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Cross-platform portability</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Zero re-entry</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Automatic adaptation</span>
 				</div>
 				<div class="demo-cta">
-					<span class="btn btn-primary">Meet Gentian <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+					<span class="btn btn-primary">Try This Demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+				</div>
+			</a>
+
+			<!-- Campion — Adaptation -->
+			<a href="/demos/campion" class="card card-hover demo-card demo-card-professional">
+				<div class="demo-badge-category"><span class="badge badge-success">Enterprise</span></div>
+				<div class="demo-icon"><i class="fa-solid fa-briefcase" aria-hidden="true"></i></div>
+				<h3 class="demo-title">Campion's Corporate Training</h3>
+				<p class="demo-scenario">Senior engineer with work and personal contexts</p>
+				<p class="demo-value">Context switches automatically with your situation</p>
+				<div class="demo-features">
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Dual profiles</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Automatic switching</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Full audit trail</span>
+				</div>
+				<div class="demo-cta">
+					<span class="btn btn-primary">Try This Demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+				</div>
+			</a>
+
+			<!-- Marta — Liveness -->
+			<a href="/demos/marta" class="card card-hover demo-card demo-card-responsibility">
+				<div class="demo-badge-category"><span class="badge badge-info">Values & Decisions</span></div>
+				<div class="demo-icon"><i class="fa-solid fa-handshake-angle" aria-hidden="true"></i></div>
+				<h3 class="demo-title">Marta's Responsibility Journey</h3>
+				<p class="demo-scenario">Navigating family financial obligations with AI guidance</p>
+				<p class="demo-value">Your values and real-time state shape AI guidance moment to moment</p>
+				<div class="demo-features">
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Live LLM guidance</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Value-aware adaptation</span>
+					<span class="demo-feature"><i class="fa-solid fa-check" aria-hidden="true"></i> Real-time state</span>
+				</div>
+				<div class="demo-cta">
+					<span class="btn btn-primary">Try This Demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
 				</div>
 			</a>
 		</div>
 
-		<!-- More demos link -->
 		<div class="more-demos">
 			<a href="/demos" class="btn btn-ghost">
 				<i class="fa-solid fa-grid-2" aria-hidden="true"></i>
-				Explore All 12 Demos
+				Explore All Demos
 			</a>
 		</div>
 	</section>
 
-	<!-- Value Props -->
-	<section class="value-props">
-		<h2 class="section-title">Why This Matters</h2>
-		<p class="section-description">
-			The current choice — give up privacy or miss out on personalization — is a false one.
-		</p>
-		<div class="grid grid-2 gap-lg">
-			<div class="value-card">
-				<div class="value-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
-				<h4>Your Story Stays Yours</h4>
-				<p>
-					Platforms see <code>budget_limited: true</code> — not "single parent between jobs."
-					They see <code>noise_restricted: true</code> — not "thin walls, noise-sensitive neighbor."
-					The flag travels. The story stays home.
-				</p>
-			</div>
-			<div class="value-card">
-				<div class="value-icon"><i class="fa-solid fa-rotate" aria-hidden="true"></i></div>
-				<h4>Stop Repeating Yourself</h4>
-				<p>
-					Every app asks the same onboarding questions. With VCP, you define your preferences once.
-					Every compatible platform instantly knows how to serve you — no repetitive forms, no inconsistent data.
-				</p>
-			</div>
-			<div class="value-card">
-				<div class="value-icon"><i class="fa-solid fa-receipt" aria-hidden="true"></i></div>
-				<h4>See What They See</h4>
-				<p>
-					Complete audit trail of every transmission. Know exactly what each platform received,
-					what was withheld, and which flags influenced their decisions.
-					<em>You're not in the dark.</em>
-				</p>
-			</div>
-			<div class="value-card">
-				<div class="value-icon"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i></div>
-				<h4>Privacy + Accountability</h4>
-				<p>
-					Your coach sees you're making progress. Your employer sees you're on track.
-					The community sees your streak. None of them need to know what you're juggling behind the scenes.
-				</p>
-			</div>
-		</div>
-	</section>
-
-	<!-- Playground CTA -->
+	<!-- Section 5: CTA + Learn More -->
 	<section class="playground-cta">
 		<div class="playground-card card card-featured">
 			<div class="playground-content">
 				<div class="playground-icon"><i class="fa-solid fa-sliders" aria-hidden="true"></i></div>
 				<div class="playground-text">
-					<h3>Build Your Own Context Token</h3>
+					<h3>Build Your Own Context Interaction</h3>
 					<p>
 						Create, inspect, and experiment with VCP tokens in real-time.
 						Toggle constraints, change preferences, and watch the compact token update instantly.
-						See exactly what gets transmitted — and what stays private.
 					</p>
 				</div>
 			</div>
@@ -228,7 +142,6 @@
 		</div>
 	</section>
 
-	<!-- Learn More -->
 	<section class="learn-more">
 		<h2 class="section-title">Want to Understand the Details?</h2>
 		<div class="learn-more-links">
@@ -240,26 +153,28 @@
 				<i class="fa-solid fa-book" aria-hidden="true"></i>
 				<span>Technical Documentation</span>
 			</a>
-			<a href="/docs/personas" class="learn-link">
-				<i class="fa-solid fa-masks-theater" aria-hidden="true"></i>
-				<span>Understanding Personas</span>
-			</a>
 		</div>
 	</section>
 </div>
 
 <style>
-	/* Hero eyebrow */
+	/* Hero */
 	.hero-eyebrow {
-		font-size: var(--text-sm);
+		font-size: var(--text-xs);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-primary);
-		margin-bottom: var(--space-md);
+		letter-spacing: 0.2em;
+		color: var(--color-accent);
+		margin-bottom: var(--space-lg);
 		font-weight: 500;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-xs) var(--space-md);
+		background: rgba(167, 139, 250, 0.1);
+		border: 1px solid rgba(167, 139, 250, 0.2);
+		border-radius: 100px;
 	}
 
-	/* Hero CTA area */
 	.hero-cta {
 		display: flex;
 		gap: var(--space-md);
@@ -268,12 +183,59 @@
 		flex-wrap: wrap;
 	}
 
-	/* Demo category badge */
-	.demo-badge-category {
-		margin-bottom: var(--space-sm);
+	/* Problem section */
+	.problem-section {
+		padding: var(--space-2xl) 0 var(--space-lg);
 	}
 
-	/* Demo selector section */
+	.problem-row {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-lg);
+		margin-top: var(--space-xl);
+	}
+
+	.problem-item {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		max-width: 320px;
+		padding: var(--space-md) var(--space-lg);
+		background: rgba(30, 30, 48, 0.4);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: var(--radius-lg);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		transition: all var(--transition-normal);
+	}
+
+	.problem-item:hover {
+		border-color: rgba(255, 255, 255, 0.12);
+		background: rgba(30, 30, 48, 0.6);
+		transform: translateY(-2px);
+	}
+
+	.problem-icon {
+		font-size: 1.25rem;
+		color: var(--color-accent);
+		flex-shrink: 0;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(167, 139, 250, 0.1);
+		border-radius: var(--radius-md);
+	}
+
+	.problem-item p {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	/* Demo cards */
 	.demo-selector {
 		margin-bottom: var(--space-2xl);
 	}
@@ -289,35 +251,66 @@
 		text-decoration: none;
 	}
 
+	.demo-badge-category {
+		margin-bottom: var(--space-sm);
+	}
+
 	.demo-card-professional {
-		border-color: var(--color-professional);
+		border-color: rgba(5, 150, 105, 0.3);
 	}
 
 	.demo-card-professional:hover {
-		border-color: var(--color-professional);
-		box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
+		border-color: rgba(5, 150, 105, 0.6);
+		box-shadow: 0 12px 40px rgba(5, 150, 105, 0.15), 0 0 30px rgba(5, 150, 105, 0.1);
 	}
 
 	.demo-card-personal {
-		border-color: var(--color-primary);
+		border-color: rgba(99, 102, 241, 0.3);
 	}
 
 	.demo-card-personal:hover {
-		border-color: var(--color-primary);
-		box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+		border-color: rgba(99, 102, 241, 0.6);
+		box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15), 0 0 30px rgba(99, 102, 241, 0.1);
+	}
+
+	.demo-card-responsibility {
+		border-color: rgba(59, 130, 246, 0.3);
+	}
+
+	.demo-card-responsibility:hover {
+		border-color: rgba(59, 130, 246, 0.6);
+		box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15), 0 0 30px rgba(59, 130, 246, 0.1);
+	}
+
+	.demo-card-responsibility .demo-icon {
+		color: #3b82f6;
+		background: rgba(59, 130, 246, 0.1);
+	}
+
+	:global(.badge-info) {
+		background: rgba(59, 130, 246, 0.15);
+		color: #3b82f6;
 	}
 
 	.demo-icon {
-		font-size: 3rem;
+		font-size: 2.5rem;
 		margin-bottom: var(--space-md);
+		width: 64px;
+		height: 64px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-lg);
 	}
 
 	.demo-card-professional .demo-icon {
 		color: var(--color-professional);
+		background: rgba(5, 150, 105, 0.1);
 	}
 
 	.demo-card-personal .demo-icon {
 		color: var(--color-primary);
+		background: rgba(99, 102, 241, 0.1);
 	}
 
 	.demo-title {
@@ -325,31 +318,39 @@
 		margin-bottom: var(--space-sm);
 	}
 
-	.demo-description {
+	.demo-scenario {
 		color: var(--color-text-muted);
 		font-size: 0.875rem;
-		margin-bottom: var(--space-lg);
-		flex: 1;
-		line-height: 1.6;
+		margin-bottom: var(--space-xs);
+		line-height: 1.5;
+	}
+
+	.demo-value {
+		color: var(--color-primary);
+		font-size: 0.8125rem;
+		font-weight: 500;
+		margin-bottom: var(--space-md);
+		line-height: 1.4;
 	}
 
 	.demo-features {
 		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
+		flex-wrap: wrap;
+		gap: var(--space-xs) var(--space-md);
 		margin-bottom: var(--space-lg);
 	}
 
 	.demo-feature {
 		display: flex;
 		align-items: center;
-		gap: var(--space-sm);
-		font-size: 0.875rem;
+		gap: var(--space-xs);
+		font-size: 0.75rem;
 		color: var(--color-text-muted);
 	}
 
-	.feature-icon {
+	.demo-feature i {
 		color: var(--color-success);
+		font-size: 0.625rem;
 	}
 
 	.demo-cta {
@@ -359,42 +360,6 @@
 	.more-demos {
 		text-align: center;
 		margin-top: var(--space-xl);
-	}
-
-	/* Value props */
-	.value-props {
-		padding-bottom: var(--space-2xl);
-	}
-
-	.value-card {
-		padding: var(--space-lg);
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.value-icon {
-		font-size: 1.5rem;
-		color: var(--color-primary);
-		margin-bottom: var(--space-md);
-	}
-
-	.value-card h4 {
-		margin-bottom: var(--space-sm);
-	}
-
-	.value-card p {
-		color: var(--color-text-muted);
-		font-size: 0.875rem;
-		line-height: 1.6;
-	}
-
-	.value-card code {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		padding: 1px 4px;
-		background: var(--color-bg);
-		border-radius: var(--radius-sm);
 	}
 
 	/* Playground CTA */
@@ -416,9 +381,16 @@
 	}
 
 	.playground-icon {
-		font-size: 2.5rem;
+		font-size: 2rem;
 		color: var(--color-primary);
 		flex-shrink: 0;
+		width: 56px;
+		height: 56px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(99, 102, 241, 0.1);
+		border-radius: var(--radius-lg);
 	}
 
 	.playground-text h3 {
@@ -431,7 +403,7 @@
 		line-height: 1.5;
 	}
 
-	/* Learn More section */
+	/* Learn More */
 	.learn-more {
 		padding: var(--space-xl) 0 var(--space-2xl);
 		text-align: center;
@@ -448,146 +420,115 @@
 	.learn-link {
 		display: flex;
 		align-items: center;
-		gap: var(--space-sm);
-		padding: var(--space-md) var(--space-lg);
-		background: var(--color-bg-card);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: var(--radius-md);
+		gap: var(--space-md);
+		padding: var(--space-md) var(--space-xl);
+		background: rgba(30, 30, 48, 0.4);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: var(--radius-lg);
 		color: var(--color-text);
 		text-decoration: none;
-		transition: all var(--transition-fast);
+		transition: all var(--transition-normal);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
 	}
 
 	.learn-link:hover {
-		border-color: var(--color-primary);
-		color: var(--color-primary);
+		border-color: rgba(99, 102, 241, 0.4);
+		color: var(--color-text);
 		text-decoration: none;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(99, 102, 241, 0.1);
 	}
 
 	.learn-link i {
 		color: var(--color-primary);
+		font-size: 1.25rem;
 	}
 
-	/* Three-layer section */
-	.three-layer-section {
-		padding: var(--space-2xl) 0;
-		margin-bottom: var(--space-xl);
-	}
+	/* Responsive */
+	@media (max-width: 900px) {
+		:global(.grid-3) {
+			grid-template-columns: 1fr;
+		}
 
-	.three-layer-stack {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-sm);
-		max-width: 600px;
-		margin: 0 auto var(--space-xl);
-	}
-
-	.layer-card {
-		display: flex;
-		align-items: flex-start;
-		gap: var(--space-md);
-		width: 100%;
-		padding: var(--space-md) var(--space-lg);
-		border-radius: var(--radius-lg);
-		border: 1px solid;
-	}
-
-	.layer-constitutional {
-		background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
-		border-color: rgba(139, 92, 246, 0.3);
-	}
-
-	.layer-situational {
-		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
-		border-color: rgba(59, 130, 246, 0.3);
-	}
-
-	.layer-personal {
-		background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-		border-color: rgba(16, 185, 129, 0.3);
-	}
-
-	.layer-emoji {
-		font-size: 1.5rem;
-		flex-shrink: 0;
-	}
-
-	.layer-content h4 {
-		margin: 0 0 var(--space-xs);
-		font-size: 1rem;
-	}
-
-	.layer-content p {
-		margin: 0;
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		line-height: 1.5;
-	}
-
-	.layer-timing {
-		display: inline-block;
-		margin-top: var(--space-xs);
-		font-size: var(--text-xs);
-		color: var(--color-text-muted);
-		font-style: italic;
-	}
-
-	.layer-connector {
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		display: flex;
-		align-items: center;
-		gap: var(--space-xs);
-	}
-
-	.prosaic-highlight {
-		text-align: center;
-		padding: var(--space-lg);
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	.prosaic-dims {
-		display: flex;
-		justify-content: center;
-		gap: var(--space-md);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-md);
-	}
-
-	.prosaic-dim {
-		font-size: var(--text-sm);
-		padding: var(--space-xs) var(--space-sm);
-		background: rgba(16, 185, 129, 0.1);
-		border-radius: var(--radius-sm);
-		border: 1px solid rgba(16, 185, 129, 0.3);
-	}
-
-	.prosaic-highlight p {
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		margin-bottom: var(--space-md);
-		line-height: 1.5;
+		.problem-row {
+			flex-direction: column;
+			align-items: center;
+			gap: var(--space-md);
+		}
 	}
 
 	@media (max-width: 768px) {
+		.demo-icon {
+			font-size: 2.5rem;
+		}
+
+		.demo-title {
+			font-size: var(--text-lg);
+		}
+
+		.demo-scenario {
+			font-size: 0.8125rem;
+		}
+
+		.demo-value {
+			font-size: 0.75rem;
+		}
+
+		.demo-feature {
+			font-size: 0.6875rem;
+		}
+
+		.playground-icon {
+			font-size: 2rem;
+		}
+
+		.playground-text h3 {
+			font-size: var(--text-lg);
+		}
+
+		.playground-text p {
+			font-size: 0.875rem;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero-eyebrow {
+			font-size: 0.6875rem;
+		}
+
+		.page-hero-subtitle {
+			font-size: var(--text-lg);
+		}
+
+		.problem-item {
+			max-width: 100%;
+		}
+
+		.problem-icon {
+			font-size: 1rem;
+		}
+
+		.problem-item p {
+			font-size: 0.8125rem;
+		}
+
 		.hero-cta {
 			flex-direction: column;
 			align-items: stretch;
+			gap: var(--space-md);
 		}
 
 		.hero-cta .btn {
 			width: 100%;
 			justify-content: center;
+			padding: var(--space-md) var(--space-lg);
 		}
 
 		.playground-card {
 			flex-direction: column;
 			text-align: center;
+			gap: var(--space-lg);
 		}
 
 		.playground-content {
@@ -595,22 +536,35 @@
 			align-items: center;
 		}
 
+		.playground-icon {
+			font-size: 1.5rem;
+		}
+
 		.playground-text {
 			text-align: center;
+		}
+
+		.playground-text h3 {
+			font-size: var(--text-base);
+		}
+
+		.playground-text p {
+			font-size: 0.8125rem;
 		}
 
 		.learn-more-links {
 			flex-direction: column;
 			align-items: stretch;
+			gap: var(--space-md);
 		}
 
-		.layer-card {
-			flex-direction: column;
-			text-align: center;
+		.learn-link {
+			padding: var(--space-md);
+			font-size: 0.875rem;
 		}
 
-		.prosaic-dims {
-			gap: var(--space-xs);
+		.learn-link i {
+			font-size: 1.25rem;
 		}
 	}
 </style>

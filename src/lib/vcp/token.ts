@@ -14,7 +14,8 @@
  * S:<private_markers>
  */
 
-import type { VCPContext, ConstraintFlags, PortablePreferences, ProsaicDimensions } from './types';
+import type { VCPContext, ConstraintFlags, PortablePreferences, ProsaicDimensions, PersonalState } from './types';
+import { computeEffectiveIntensity, computeLifecycleState, getDefaultDecayPolicy } from './decay';
 
 // ============================================
 // Emoji Shortcodes
@@ -53,6 +54,15 @@ export const PROSAIC_EMOJI = {
 	affect: '💭'
 } as const;
 
+// Personal state dimension emoji (v3.1)
+export const PERSONAL_STATE_EMOJI = {
+	cognitive_state: '🧠',
+	emotional_tone: '💭',
+	energy_level: '🔋',
+	perceived_urgency: '⚡',
+	body_signals: '🩺'
+} as const;
+
 // ============================================
 // CSM-1 Encoding
 // ============================================
@@ -61,6 +71,11 @@ export const PROSAIC_EMOJI = {
  * Encode a VCP context into CSM-1 format
  */
 export function encodeContextToCSM1(ctx: VCPContext): string {
+	if (!ctx.constitution?.id) {
+		console.warn('VCP token: missing constitution ID');
+		return '';
+	}
+
 	const lines: string[] = [];
 
 	// Line 1: VCP header
@@ -87,13 +102,108 @@ export function encodeContextToCSM1(ctx: VCPContext): string {
 	// Line 7: Private markers (show categories, not values)
 	lines.push(encodePrivateMarkers(ctx.private_context));
 
-	// Line 8: Prosaic dimensions (if present)
-	const prosaicLine = encodeProsaicDimensions(ctx.prosaic);
-	if (prosaicLine !== 'R:none') {
-		lines.push(prosaicLine);
+	// Line 8: System context (if present)
+	if (ctx.system_context) {
+		lines.push(`SC:${ctx.system_context}`);
+	}
+
+	// Line 9: Personal state dimensions (v3.1) - preferred over prosaic
+	const personalStateLine = encodePersonalState(ctx.personal_state);
+	if (personalStateLine !== 'PS:none') {
+		lines.push(personalStateLine);
+		// Line 9: Lifecycle state for each dimension
+		const lcLine = encodeLifecycleLine(ctx.personal_state);
+		if (lcLine) {
+			lines.push(lcLine);
+		}
+	} else {
+		// Fallback to legacy prosaic encoding
+		const prosaicLine = encodeProsaicDimensions(ctx.prosaic);
+		if (prosaicLine !== 'R:none') {
+			lines.push(prosaicLine);
+		}
 	}
 
 	return lines.join('\n');
+}
+
+/**
+ * Encode v3.1 personal state dimensions
+ * Format: PS:🧠focused:3|💭calm:2|🔋fatigued:3|⚡unhurried:2|🩺neutral:1
+ */
+function encodePersonalState(personalState?: PersonalState): string {
+	if (!personalState) return 'PS:none';
+
+	const parts: string[] = [];
+	const dims = [
+		{ key: 'cognitive_state', emoji: '🧠' },
+		{ key: 'emotional_tone', emoji: '💭' },
+		{ key: 'energy_level', emoji: '🔋' },
+		{ key: 'perceived_urgency', emoji: '⚡' },
+		{ key: 'body_signals', emoji: '🩺' }
+	] as const;
+
+	const now = new Date();
+	for (const dim of dims) {
+		const d = personalState[dim.key];
+		if (d) {
+			let intensity = d.intensity ?? 3;
+			if (d.declared_at) {
+				const policy = d.decay_policy ?? getDefaultDecayPolicy(dim.key);
+				intensity = computeEffectiveIntensity(
+					intensity,
+					new Date(d.declared_at),
+					policy,
+					now
+				);
+			}
+			const ext = d.extended ? `:${d.extended}` : '';
+			parts.push(`${dim.emoji}${d.value}:${intensity}${ext}`);
+		}
+	}
+
+	return parts.length > 0 ? `PS:${parts.join('|')}` : 'PS:none';
+}
+
+function encodeLifecycleLine(personalState?: PersonalState): string {
+	if (!personalState) return '';
+
+	const dims = [
+		{ key: 'cognitive_state', emoji: '🧠' },
+		{ key: 'emotional_tone', emoji: '💭' },
+		{ key: 'energy_level', emoji: '🔋' },
+		{ key: 'perceived_urgency', emoji: '⚡' },
+		{ key: 'body_signals', emoji: '🩺' }
+	] as const;
+
+	const stateCodeMap: Record<string, string> = {
+		set: 'S',
+		active: 'A',
+		decaying: 'D',
+		stale: 'T',
+		expired: 'X'
+	};
+
+	const parts: string[] = [];
+	const now = new Date();
+
+	for (const dim of dims) {
+		const d = personalState[dim.key];
+		if (!d) continue;
+
+		const policy = d.decay_policy ?? getDefaultDecayPolicy(dim.key);
+		if (d.pinned || policy.pinned) {
+			parts.push(`${dim.emoji}P`);
+			continue;
+		}
+
+		const declaredAt = d.declared_at ? new Date(d.declared_at) : now;
+		const elapsed = Math.round((now.getTime() - declaredAt.getTime()) / 1000);
+		const state = computeLifecycleState(d.intensity ?? 3, declaredAt, policy, now);
+		parts.push(`${dim.emoji}${stateCodeMap[state] ?? 'A'}:${elapsed}s`);
+	}
+
+	return parts.length > 0 ? `LC:${parts.join('|')}` : '';
 }
 
 /**
@@ -256,11 +366,15 @@ export function getEmojiLegend(): { emoji: string; meaning: string }[] {
 		{ emoji: '📅', meaning: 'irregular schedule' },
 		{ emoji: '🔒', meaning: 'private (hidden value)' },
 		{ emoji: '✓', meaning: 'shared' },
-		// Prosaic dimensions
-		{ emoji: '⚡', meaning: 'urgency level' },
+		// Prosaic dimensions (legacy)
 		{ emoji: '💊', meaning: 'health state' },
 		{ emoji: '🧩', meaning: 'cognitive load' },
-		{ emoji: '💭', meaning: 'emotional affect' }
+		// Personal state dimensions (v3.1)
+		{ emoji: '🧠', meaning: 'cognitive state' },
+		{ emoji: '⚡', meaning: 'urgency / perceived urgency' },
+		{ emoji: '💭', meaning: 'emotional tone / affect' },
+		{ emoji: '🔋', meaning: 'energy level' },
+		{ emoji: '🩺', meaning: 'body signals' }
 	];
 }
 
@@ -320,8 +434,18 @@ export function getTransmissionSummary(ctx: VCPContext): {
 		}
 	}
 
-	// Prosaic dimensions - influencing (declared state shapes response)
-	if (ctx.prosaic) {
+	// Personal state (v3.1) - influencing
+	if (ctx.personal_state) {
+		const ps = ctx.personal_state;
+		if (ps.cognitive_state) influencing.push(`🧠 ${ps.cognitive_state.value}:${ps.cognitive_state.intensity ?? 3}`);
+		if (ps.emotional_tone) influencing.push(`💭 ${ps.emotional_tone.value}:${ps.emotional_tone.intensity ?? 3}`);
+		if (ps.energy_level) influencing.push(`🔋 ${ps.energy_level.value}:${ps.energy_level.intensity ?? 3}`);
+		if (ps.perceived_urgency) influencing.push(`⚡ ${ps.perceived_urgency.value}:${ps.perceived_urgency.intensity ?? 3}`);
+		if (ps.body_signals) influencing.push(`🩺 ${ps.body_signals.value}:${ps.body_signals.intensity ?? 3}`);
+	}
+
+	// Prosaic dimensions - influencing (declared state shapes response) - legacy fallback
+	if (!ctx.personal_state && ctx.prosaic) {
 		if (ctx.prosaic.urgency && ctx.prosaic.urgency > 0) influencing.push('⚡ urgency');
 		if (ctx.prosaic.health && ctx.prosaic.health > 0) influencing.push('💊 health');
 		if (ctx.prosaic.cognitive && ctx.prosaic.cognitive > 0) influencing.push('🧩 cognitive');
@@ -331,14 +455,25 @@ export function getTransmissionSummary(ctx: VCPContext): {
 	return { transmitted, withheld, influencing };
 }
 
+/**
+ * Encode context to compact wire format using ‖ separator (spec §3.1).
+ * CSM-1 uses \n for LLM readability; wire format uses ‖ for machine parsing.
+ */
+export function toWireFormat(ctx: VCPContext): string {
+	const csm1 = encodeContextToCSM1(ctx);
+	return csm1.split('\n').join('‖');
+}
+
 export default {
 	encodeContextToCSM1,
+	toWireFormat,
 	formatTokenForDisplay,
 	getEmojiLegend,
 	parseCSM1Token,
 	getTransmissionSummary,
 	CONSTRAINT_EMOJI,
 	PROSAIC_EMOJI,
+	PERSONAL_STATE_EMOJI,
 	PRIVATE_MARKER,
 	SHARED_MARKER
 };

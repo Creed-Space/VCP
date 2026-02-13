@@ -41,8 +41,8 @@
 </script>
 
 <div class="token-inspector" class:expanded>
-	<button class="token-toggle" onclick={() => (expanded = !expanded)}>
-		<span class="toggle-icon">{expanded ? '▼' : '▶'}</span>
+	<button class="token-toggle" onclick={() => (expanded = !expanded)} aria-expanded={expanded} aria-label="Toggle VCP token inspector">
+		<span class="toggle-icon" aria-hidden="true">{expanded ? '▼' : '▶'}</span>
 		<span class="toggle-text">Inspect VCP Token</span>
 		<span class="vcp-badge-mini">CSM-1</span>
 	</button>
@@ -141,6 +141,11 @@
 
 	.token-toggle:hover {
 		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.token-toggle:focus-visible {
+		outline: none;
+		box-shadow: inset 0 0 0 2px var(--color-primary);
 	}
 
 	.toggle-icon {
@@ -271,6 +276,16 @@
 	.field-tag-influence {
 		background: var(--color-warning-muted);
 		color: var(--color-warning);
+	}
+
+	.field-tag-shared {
+		background: var(--color-success-muted);
+		color: var(--color-success);
+	}
+
+	.field-tag-withheld {
+		background: var(--color-danger-muted);
+		color: var(--color-danger);
 	}
 
 	.token-footer {

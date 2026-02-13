@@ -33,7 +33,8 @@
   availability?: Availability;
   sharing_settings?: SharingSettings;
   private_context?: PrivateContext;
-  prosaic?: ProsaicDimensions;   // Immediate user state (⚡💊🧩💭)
+  prosaic?: ProsaicDimensions;       // Legacy immediate user state (⚡💊🧩💭)
+  personal_state?: PersonalState;    // Personal state (🧠💭🔋⚡🩺)
 }`}</code></pre>
 
 		<h3>ConstitutionReference</h3>
@@ -88,14 +89,36 @@
   [key: string]: unknown; // Any private values
 }`}</code></pre>
 
-		<h3>ProsaicDimensions</h3>
-		<p>Immediate user state dimensions (Extended Enneagram Protocol). All values 0.0-1.0.</p>
+		<h3>ProsaicDimensions (Legacy)</h3>
+		<div style="border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.1); padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem;">
+			<div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+				<i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;" aria-hidden="true"></i>
+				<strong style="color: #ef4444;">DEPRECATED</strong>
+			</div>
+			<p style="margin: 0;">Legacy immediate user state dimensions (Extended Enneagram Protocol). All values 0.0-1.0. <strong>Deprecated in v3.1 — use PersonalState instead.</strong></p>
+			<p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">Migration: Convert float values (0.0-1.0) to categorical values with intensity (1-5). See PersonalState below.</p>
+		</div>
 		<pre><code>{`interface ProsaicDimensions {
   urgency?: number;     // ⚡ Time pressure, brevity preference
   health?: number;      // 💊 Physical wellness, fatigue, pain
   cognitive?: number;   // 🧩 Mental bandwidth, cognitive load
   affect?: number;      // 💭 Emotional intensity, stress
   sub_signals?: ProsaicSubSignals;
+}`}</code></pre>
+
+		<h3>PersonalState (v3.1)</h3>
+		<p>Categorical personal state dimensions with intensity 1-5. Replaces float-based prosaic dimensions.</p>
+		<pre><code>{`interface PersonalState {
+  cognitive_state?: PersonalDimension<CognitiveState>;   // 🧠 focused | distracted | overloaded | foggy | reflective
+  emotional_tone?: PersonalDimension<EmotionalTone>;     // 💭 calm | tense | frustrated | neutral | uplifted
+  energy_level?: PersonalDimension<EnergyLevel>;         // 🔋 rested | low_energy | fatigued | wired | depleted
+  perceived_urgency?: PersonalDimension<PerceivedUrgency>; // ⚡ unhurried | time_aware | pressured | critical
+  body_signals?: PersonalDimension<BodySignals>;         // 🩺 neutral | discomfort | pain | unwell | recovering
+}
+
+interface PersonalDimension<T> {
+  value: T;
+  intensity?: number; // 1-5, defaults to 3
 }`}</code></pre>
 
 		<h3>ProsaicSubSignals</h3>
@@ -122,10 +145,62 @@
   valence?: number; // -1.0 to 1.0
 }`}</code></pre>
 
-		<h4>Wire Format</h4>
-		<p>Prosaic dimensions in CSM-1 token format:</p>
-		<pre><code>{`R:⚡0.8|💊0.2|🧩0.6|💭0.3
-R:⚡0.9:PT5M|💊0.6:migraine|🧩0.7:overwhelmed|💭0.8:grieving`}</code></pre>
+		<h4>Wire Format (v3.1)</h4>
+		<p>Personal state dimensions use <code>|</code> (pipe) separator within the R-line of a CSM-1 token:</p>
+		<pre><code>{`R:🧠overloaded:4|💭tense:3|🔋fatigued:3|⚡pressured:4|🩺neutral:1`}</code></pre>
+		<p>
+			In the context wire format, personal state follows a <code>‖</code> (double bar) separator
+			after situational dimensions:
+		</p>
+		<pre><code>{`⏰🌅|📍🏡|👥👶|📡💻‖🧠overloaded:4|💭tense:3|🔋fatigued:3|⚡pressured:4|🩺neutral:1`}</code></pre>
+		<p>Legacy float format (deprecated):</p>
+		<pre><code>{`R:⚡0.8|💊0.2|🧩0.6|💭0.3`}</code></pre>
+
+		<h3>Hook (v3.1)</h3>
+		<p>Deterministic hooks that fire reliably when trigger conditions are met.</p>
+		<pre><code>{`interface Hook {
+  id: string;
+  tier: 'constitutional' | 'situational' | 'personal';
+  trigger: string;          // Condition that activates the hook
+  action: string;           // What happens when triggered
+  active?: boolean;         // Current activation state
+}
+
+// Tier enforcement levels:
+// constitutional — Hard Rule, cannot be overridden
+// situational    — Hard Rule, active in specific contexts
+// personal       — Advisory, user-set preferences`}</code></pre>
+
+		<h3>SituationalContext (v3.1)</h3>
+		<p>The 9 situational dimensions from the Extended Enneagram Protocol:</p>
+		<pre><code>{`interface SituationalContext {
+  time?: string;         // ⏰ 🌅morning | 🌙night | 📅weekday | ...
+  space?: string;        // 📍 🏡home | 🏢office | 🏫school | ...
+  company?: string;      // 👥 👤alone | 👶children | 👔colleagues | ...
+  culture?: string;      // 🌍 🇺🇸american | 🌍global | ...
+  occasion?: string;     // 🎭 ➖normal | 🚨emergency | ...
+  environment?: string;  // 🌡️ 🔇quiet | 🥵hot | ...
+  agency?: string;       // 🔷 👑leader | 🤝peer | 🔐limited
+  constraints?: string;  // 🔶 ○minimal | ⚖️legal | 💸economic
+  system_context?: string; // 📡 💻personal_device | 🏢workplace_system
+}`}</code></pre>
+
+		<h3>CSM1Token</h3>
+		<p>Parsed representation of a complete CSM-1 token (8 lines):</p>
+		<pre><code>{`interface CSM1Token {
+  version: string;        // VCP format version (e.g., "1.0")
+  profile_id: string;     // Unique user/profile identifier
+  constitution: string;   // Constitution reference (id@version)
+  persona: PersonaType;   // Active persona
+  adherence: number;      // 1-5
+  goal?: string;          // User goal
+  experience?: string;    // Experience level
+  learning_style?: string;
+  constraints: string[];  // Active constraint emoji flags
+  flags: string[];        // Active boolean flags
+  private_markers: string[]; // Private context categories
+  personal_state?: PersonalState; // v3.1 personal state
+}`}</code></pre>
 
 		<h2>Encoding Functions</h2>
 
@@ -217,13 +292,23 @@ const summary = getTransmissionSummary(context);
   health_considerations: '💊'
 }`}</code></pre>
 
-		<h3>PROSAIC_EMOJI</h3>
-		<p>Mapping of prosaic dimensions to emoji shortcodes.</p>
+		<h3>PROSAIC_EMOJI (Legacy)</h3>
+		<p>Mapping of legacy prosaic dimensions to emoji shortcodes.</p>
 		<pre><code>{`const PROSAIC_EMOJI = {
   urgency: '⚡',
   health: '💊',
   cognitive: '🧩',
   affect: '💭'
+}`}</code></pre>
+
+		<h3>PERSONAL_STATE_EMOJI (v3.1)</h3>
+		<p>Mapping of personal state dimensions to emoji shortcodes.</p>
+		<pre><code>{`const PERSONAL_STATE_EMOJI = {
+  cognitive_state: '🧠',
+  emotional_tone: '💭',
+  energy_level: '🔋',
+  perceived_urgency: '⚡',
+  body_signals: '🩺'
 }`}</code></pre>
 
 		<h3>PRIVATE_MARKER / SHARED_MARKER</h3>
@@ -311,8 +396,8 @@ const SHARED_MARKER = '✓';`}</code></pre>
 		<h2>Next Steps</h2>
 		<ul>
 			<li><a href="/playground">Playground</a> — Test the API interactively</li>
-			<li><a href="/docs/concepts">Core Concepts</a> — Understand the architecture</li>
-			<li><a href="/demos">Demos</a> — See real-world examples</li>
+			<li><a href="/docs/concepts">Core Concepts</a> — Understand the architecture and three pillars</li>
+			<li><a href="/demos">Demos</a> — See VCP in action through persona-driven scenarios (Gentian, Campion, Marta, and more)</li>
 		</ul>
 	{/snippet}
 </DocsLayout>

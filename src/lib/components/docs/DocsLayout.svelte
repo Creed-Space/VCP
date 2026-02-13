@@ -21,7 +21,13 @@
 			]
 		},
 		{
-			title: 'Specifications',
+			title: 'Understanding VCP',
+			items: [
+				{ href: '/docs/security', label: 'Security Model', time: '10 min' }
+			]
+		},
+		{
+			title: 'Reference',
 			items: [
 				{ href: '/docs/csm1-specification', label: 'CSM-1 Format', time: '15 min' },
 				{ href: '/docs/api-reference', label: 'API Reference', time: 'Ref' }
@@ -31,6 +37,102 @@
 
 	let currentPath = $derived($page.url.pathname);
 	let sidebarOpen = $state(false);
+	let articleRef: HTMLElement | null = $state(null);
+	let searchQuery = $state('');
+
+	// Search keywords for each doc page
+	const searchIndex: Record<string, string[]> = {
+		'/docs/getting-started': ['quick start', 'install', 'setup', 'begin', 'tutorial', 'first'],
+		'/docs/concepts': ['core', 'concepts', 'principles', 'fundamentals', 'basics', 'overview', 'personas', 'profiles', 'identity', 'roles', 'contexts'],
+		'/docs/security': ['security', 'privacy', 'protection', 'encryption', 'authentication'],
+		'/docs/csm1-specification': ['csm-1', 'format', 'specification', 'token', 'syntax', 'encoding'],
+		'/docs/api-reference': ['api', 'reference', 'endpoints', 'methods', 'integration']
+	};
+
+	// Filter nav sections based on search
+	let filteredNavSections = $derived(
+		searchQuery.trim() === ''
+			? navSections
+			: navSections
+					.map((section) => ({
+						...section,
+						items: section.items.filter((item) => {
+							const query = searchQuery.toLowerCase();
+							const labelMatch = item.label.toLowerCase().includes(query);
+							const keywords = searchIndex[item.href] || [];
+							const keywordMatch = keywords.some((kw) => kw.includes(query));
+							return labelMatch || keywordMatch;
+						})
+					}))
+					.filter((section) => section.items.length > 0)
+	);
+
+	function setCopyButtonState(btn: HTMLElement, icon: string, text: string, className?: string) {
+		const iconSpan = btn.querySelector('.copy-icon');
+		const textSpan = btn.querySelector('.copy-text');
+		if (iconSpan) iconSpan.textContent = icon;
+		if (textSpan) textSpan.textContent = text;
+		if (className) {
+			btn.classList.add(className);
+		} else {
+			btn.classList.remove('copied');
+		}
+	}
+
+	// Add copy buttons to code blocks
+	$effect(() => {
+		if (!articleRef) return;
+
+		const preBlocks = articleRef.querySelectorAll('pre');
+		preBlocks.forEach((pre) => {
+			// Create wrapper div
+			const wrapper = document.createElement('div');
+			wrapper.className = 'code-block-wrapper';
+			pre.parentNode?.insertBefore(wrapper, pre);
+			wrapper.appendChild(pre);
+
+			// Create copy button with safe DOM methods
+			const copyBtn = document.createElement('button');
+			copyBtn.className = 'code-copy-btn';
+			copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+
+			const iconSpan = document.createElement('span');
+			iconSpan.className = 'copy-icon';
+			iconSpan.textContent = '📋';
+
+			const textSpan = document.createElement('span');
+			textSpan.className = 'copy-text';
+			textSpan.textContent = 'Copy';
+
+			copyBtn.appendChild(iconSpan);
+			copyBtn.appendChild(textSpan);
+
+			copyBtn.addEventListener('click', async () => {
+				const code = pre.querySelector('code')?.textContent || pre.textContent || '';
+				try {
+					await navigator.clipboard.writeText(code);
+					setCopyButtonState(copyBtn, '✓', 'Copied!', 'copied');
+					setTimeout(() => setCopyButtonState(copyBtn, '📋', 'Copy'), 2000);
+				} catch {
+					setCopyButtonState(copyBtn, '✕', 'Failed');
+					setTimeout(() => setCopyButtonState(copyBtn, '📋', 'Copy'), 2000);
+				}
+			});
+
+			wrapper.appendChild(copyBtn);
+		});
+	});
+
+	// Flatten nav items for prev/next navigation
+	const allNavItems = navSections.flatMap((section) => section.items);
+
+	let currentIndex = $derived(allNavItems.findIndex((item) => item.href === currentPath));
+	let prevPage = $derived(currentIndex > 0 ? allNavItems[currentIndex - 1] : null);
+	let nextPage = $derived(
+		currentIndex >= 0 && currentIndex < allNavItems.length - 1
+			? allNavItems[currentIndex + 1]
+			: null
+	);
 </script>
 
 <div class="docs-layout">
@@ -48,12 +150,36 @@
 	<!-- Sidebar -->
 	<aside id="docs-sidebar" class="sidebar" class:open={sidebarOpen}>
 		<nav class="sidebar-nav" aria-label="Documentation navigation">
+			<!-- Search -->
+			<div class="sidebar-search">
+				<label for="docs-search" class="visually-hidden">Search documentation</label>
+				<div class="search-input-wrapper">
+					<i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+					<input
+						type="search"
+						id="docs-search"
+						class="search-input"
+						placeholder="Search docs..."
+						bind:value={searchQuery}
+					/>
+					{#if searchQuery}
+						<button
+							class="search-clear"
+							onclick={() => (searchQuery = '')}
+							aria-label="Clear search"
+						>
+							<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+						</button>
+					{/if}
+				</div>
+			</div>
+
 			<a href="/docs" class="sidebar-home" class:active={currentPath === '/docs'}>
 				<span class="home-icon">📚</span>
 				Documentation Home
 			</a>
 
-			{#each navSections as section}
+			{#each filteredNavSections as section}
 				<div class="nav-section">
 					<h3 class="nav-section-title">{section.title}</h3>
 					<ul class="nav-list">
@@ -73,6 +199,15 @@
 					</ul>
 				</div>
 			{/each}
+
+			{#if searchQuery && filteredNavSections.length === 0}
+				<div class="no-results">
+					<p>No docs found for "{searchQuery}"</p>
+					<button class="btn btn-ghost btn-sm" onclick={() => (searchQuery = '')}>
+						Clear search
+					</button>
+				</div>
+			{/if}
 		</nav>
 	</aside>
 
@@ -90,20 +225,47 @@
 			{/if}
 		</header>
 
-		<article class="docs-article">
+		<article class="docs-article" bind:this={articleRef}>
 			{@render children()}
 		</article>
 
 		<footer class="docs-footer">
 			<div class="footer-nav">
-				<a href="/docs" class="footer-link">
-					<span class="footer-link-direction">←</span>
-					<span>Back to Docs</span>
-				</a>
-				<a href="/playground" class="footer-link">
-					<span>Try the Playground</span>
-					<span class="footer-link-direction">→</span>
-				</a>
+				{#if prevPage}
+					<a href={prevPage.href} class="footer-link prev">
+						<span class="footer-link-direction">←</span>
+						<div class="footer-link-content">
+							<span class="footer-link-label">Previous</span>
+							<span class="footer-link-title">{prevPage.label}</span>
+						</div>
+					</a>
+				{:else}
+					<a href="/docs" class="footer-link prev">
+						<span class="footer-link-direction">←</span>
+						<div class="footer-link-content">
+							<span class="footer-link-label">Back to</span>
+							<span class="footer-link-title">Documentation</span>
+						</div>
+					</a>
+				{/if}
+
+				{#if nextPage}
+					<a href={nextPage.href} class="footer-link next">
+						<div class="footer-link-content">
+							<span class="footer-link-label">Next</span>
+							<span class="footer-link-title">{nextPage.label}</span>
+						</div>
+						<span class="footer-link-direction">→</span>
+					</a>
+				{:else}
+					<a href="/playground" class="footer-link next">
+						<div class="footer-link-content">
+							<span class="footer-link-label">Try the</span>
+							<span class="footer-link-title">Playground</span>
+						</div>
+						<span class="footer-link-direction">→</span>
+					</a>
+				{/if}
 			</div>
 		</footer>
 	</main>
@@ -137,6 +299,81 @@
 		top: 60px;
 		height: calc(100vh - 60px);
 		overflow-y: auto;
+	}
+
+	/* Search */
+	.sidebar-search {
+		margin-bottom: var(--space-lg);
+	}
+
+	.search-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.search-icon {
+		position: absolute;
+		left: var(--space-sm);
+		color: var(--color-text-subtle);
+		font-size: 0.75rem;
+		pointer-events: none;
+	}
+
+	.search-input {
+		width: 100%;
+		padding: var(--space-sm) var(--space-md);
+		padding-left: calc(var(--space-sm) + 1rem + var(--space-xs));
+		padding-right: calc(var(--space-md) + 1.5rem);
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-md);
+		color: var(--color-text);
+		font-size: 0.875rem;
+		transition: all var(--transition-fast);
+	}
+
+	.search-input::placeholder {
+		color: var(--color-text-subtle);
+	}
+
+	.search-input:focus {
+		outline: none;
+		border-color: var(--color-primary);
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	.search-clear {
+		position: absolute;
+		right: var(--space-xs);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		background: transparent;
+		border: none;
+		border-radius: var(--radius-sm);
+		color: var(--color-text-subtle);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.search-clear:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: var(--color-text);
+	}
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 
 	.sidebar-home {
@@ -216,6 +453,17 @@
 	.nav-link.active .nav-link-time {
 		color: var(--color-primary);
 		opacity: 0.7;
+	}
+
+	.no-results {
+		padding: var(--space-lg);
+		text-align: center;
+		color: var(--color-text-subtle);
+	}
+
+	.no-results p {
+		margin-bottom: var(--space-md);
+		font-size: 0.875rem;
 	}
 
 	/* ============================================
@@ -333,6 +581,54 @@
 		line-height: 1.6;
 	}
 
+	/* Code block copy button */
+	.docs-article :global(.code-block-wrapper) {
+		position: relative;
+	}
+
+	.docs-article :global(.code-copy-btn) {
+		position: absolute;
+		top: var(--space-sm);
+		right: var(--space-sm);
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-xs) var(--space-sm);
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: var(--radius-sm);
+		color: var(--color-text-subtle);
+		font-size: 0.6875rem;
+		cursor: pointer;
+		opacity: 0;
+		transition: all var(--transition-fast);
+	}
+
+	.docs-article :global(.code-block-wrapper:hover .code-copy-btn) {
+		opacity: 1;
+	}
+
+	.docs-article :global(.code-copy-btn:hover) {
+		background: rgba(255, 255, 255, 0.15);
+		color: var(--color-text);
+	}
+
+	.docs-article :global(.code-copy-btn:focus) {
+		opacity: 1;
+		outline: none;
+		box-shadow: var(--focus-ring, 0 0 0 2px var(--color-primary));
+	}
+
+	.docs-article :global(.code-copy-btn.copied) {
+		background: var(--color-success, #22c55e);
+		border-color: var(--color-success, #22c55e);
+		color: white;
+	}
+
+	.docs-article :global(.code-copy-btn .copy-icon) {
+		font-size: 0.75rem;
+	}
+
 	.docs-article :global(table) {
 		width: 100%;
 		border-collapse: collapse;
@@ -377,23 +673,63 @@
 	.footer-link {
 		display: flex;
 		align-items: center;
-		gap: var(--space-sm);
+		gap: var(--space-md);
 		color: var(--color-text-muted);
 		text-decoration: none;
-		font-size: 0.875rem;
-		padding: var(--space-sm) var(--space-md);
+		padding: var(--space-md) var(--space-lg);
 		border-radius: var(--radius-md);
 		transition: all var(--transition-fast);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		min-width: 180px;
 	}
 
 	.footer-link:hover {
 		color: var(--color-primary);
 		background: var(--color-primary-muted);
+		border-color: var(--color-primary);
 		text-decoration: none;
+	}
+
+	.footer-link.next {
+		text-align: right;
+		margin-left: auto;
+	}
+
+	.footer-link-content {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.footer-link-label {
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--color-text-subtle);
+	}
+
+	.footer-link:hover .footer-link-label {
+		color: var(--color-primary);
+		opacity: 0.7;
+	}
+
+	.footer-link-title {
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--color-text);
+	}
+
+	.footer-link:hover .footer-link-title {
+		color: var(--color-primary);
 	}
 
 	.footer-link-direction {
 		font-size: 1.25rem;
+		opacity: 0.6;
+	}
+
+	.footer-link:hover .footer-link-direction {
+		opacity: 1;
 	}
 
 	/* ============================================

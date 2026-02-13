@@ -8,6 +8,7 @@ import type {
 	Rule,
 	VCPContext,
 	PersonaType,
+	PersonalState,
 	ConstraintFlags,
 	ScopeType
 } from './types';
@@ -126,6 +127,60 @@ const BUNDLED_CONSTITUTIONS: Record<string, Constitution> = {
 			platforms: {
 				allowed: ['preferences', 'skill_level'],
 				forbidden: ['constraint_reasons']
+			}
+		}
+	},
+
+	'personal.responsibility.balance': {
+		id: 'personal.responsibility.balance',
+		version: '1.0.0',
+		name: 'Personal Responsibility Balance',
+		description: 'Constitution for navigating obligation, guilt, and responsible stewardship',
+		author: 'VCP Demo',
+		persona: 'steward',
+		adherence: 4,
+		scopes: ['stewardship', 'privacy'],
+		rules: [
+			{
+				id: 'obligation_assessment',
+				weight: 0.95,
+				rule: 'Help distinguish genuine obligation from guilt-driven over-giving',
+				rationale: 'Guilt feels like duty but isn\'t — naming the difference is the first step'
+			},
+			{
+				id: 'boundary_framing',
+				weight: 0.9,
+				rule: 'Reframe boundary-setting as responsible stewardship, not selfishness',
+				rationale: 'Sustainable care requires boundaries'
+			},
+			{
+				id: 'precedent_awareness',
+				weight: 0.85,
+				rule: 'Consider long-term patterns and precedents in recurring situations',
+				rationale: 'One-time help vs established pattern require different responses',
+				triggers: ['recurring_request', 'pattern_detected']
+			},
+			{
+				id: 'stakeholder_fairness',
+				weight: 0.8,
+				rule: 'Balance needs across all affected parties including the user themselves',
+				rationale: 'The helper\'s wellbeing is also a stakeholder in the equation'
+			},
+			{
+				id: 'sustainability_check',
+				weight: 0.75,
+				rule: 'Ensure decisions are repeatable — would this work if asked again next month?',
+				rationale: 'Unsustainable generosity creates resentment and exhaustion'
+			}
+		],
+		sharing_policy: {
+			ai_advisor: {
+				allowed: ['constraint_flags', 'personal_state_categories', 'decision_context_type'],
+				forbidden: ['family_details', 'financial_amounts', 'guilt_patterns', 'relationship_dynamics']
+			},
+			platforms: {
+				allowed: ['preference_flags'],
+				forbidden: ['private_context', 'family_context', 'financial_context']
 			}
 		}
 	},
@@ -374,6 +429,17 @@ const PERSONA_TONES: Record<PersonaType, ToneGuidance> = {
 			'Your wellbeing comes first',
 			"There's no rush"
 		]
+	},
+	steward: {
+		style: 'Calm, structured, empathetic — helps distinguish obligation from guilt',
+		formality: 'balanced',
+		encouragement: 'medium',
+		directness: 'medium',
+		example_phrases: [
+			"Let's look at what you actually owe here vs what you feel you owe",
+			'A boundary isn\'t selfish — it\'s sustainable',
+			'What would you advise someone else in this situation?'
+		]
 	}
 };
 
@@ -407,4 +473,44 @@ export function constitutionAppliesToScope(constitution: Constitution, scope: Sc
  */
 export function getConstitutionsForScope(scope: ScopeType): Constitution[] {
 	return getAllConstitutions().filter((c) => c.scopes.includes(scope));
+}
+
+export function suggestPersonaFromPersonalState(state: PersonalState): PersonaType | null {
+	const urgVal = state.perceived_urgency?.value;
+	const urgInt = state.perceived_urgency?.intensity ?? 0;
+	const cogVal = state.cognitive_state?.value;
+	const cogInt = state.cognitive_state?.intensity ?? 0;
+	const bodyVal = state.body_signals?.value;
+	const bodyInt = state.body_signals?.intensity ?? 0;
+	const emotVal = state.emotional_tone?.value;
+	const emotInt = state.emotional_tone?.intensity ?? 0;
+	const energyVal = state.energy_level?.value;
+	const energyInt = state.energy_level?.intensity ?? 0;
+
+	// pressured:5 + overloaded:4+ → anchor (facts only)
+	if (urgVal === 'pressured' && urgInt >= 5 && cogVal === 'overloaded' && cogInt >= 4) {
+		return 'anchor';
+	}
+
+	// unwell:3+ + tense:3+ → godparent (supportive)
+	if (bodyVal === 'unwell' && bodyInt >= 3 && emotVal === 'tense' && emotInt >= 3) {
+		return 'godparent';
+	}
+
+	// overloaded:5 → nanny (gentle, simple)
+	if (cogVal === 'overloaded' && cogInt >= 5) {
+		return 'nanny';
+	}
+
+	// pressured:4+ alone → ambassador (efficient professional)
+	if ((urgVal === 'pressured' || urgVal === 'critical') && urgInt >= 4) {
+		return 'ambassador';
+	}
+
+	// depleted:4+ → godparent (supportive)
+	if (energyVal === 'depleted' && energyInt >= 4) {
+		return 'godparent';
+	}
+
+	return null;
 }

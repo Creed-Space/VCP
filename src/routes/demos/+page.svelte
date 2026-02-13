@@ -1,12 +1,78 @@
 <script lang="ts">
-	/**
-	 * Demos Hub - Index of all interactive demonstrations
-	 * Organized by VCP capability
-	 */
+	/** Demos Hub — Two-tier persona cards: 3 primary + 3 niche */
 	import { Breadcrumb } from '$lib/components/shared';
 
 	const breadcrumbItems = [
 		{ label: 'Interactive Demos', icon: 'fa-play-circle' }
+	];
+
+	const primaryDemos = [
+		{
+			href: '/demos/gentian',
+			icon: 'fa-guitar',
+			iconColor: 'var(--color-primary)',
+			badge: 'Consumer',
+			badgeClass: 'badge-primary',
+			title: "Gentian's Guitar Journey",
+			concept: 'Context travels across platforms',
+			description: 'A factory worker sets his preferences once — every music app adapts instantly. Change one constraint and watch everything update.',
+			features: ['Cross-platform portability', 'Zero re-entry', 'Live updates']
+		},
+		{
+			href: '/demos/campion',
+			icon: 'fa-briefcase',
+			iconColor: 'var(--color-professional, #059669)',
+			badge: 'Enterprise',
+			badgeClass: 'badge-success',
+			title: "Campion's Corporate Training",
+			concept: 'Context switches with your situation',
+			description: 'A senior engineer has work and personal profiles. The AI automatically adapts when her situation changes — no manual switching.',
+			features: ['Dual profiles', 'Automatic switching', 'Audit trail']
+		},
+		{
+			href: '/demos/marta',
+			icon: 'fa-handshake-angle',
+			iconColor: '#3b82f6',
+			badge: 'Values & Decisions',
+			badgeClass: 'badge-info',
+			title: "Marta's Responsibility Journey",
+			concept: 'Context shapes real-time guidance',
+			description: 'A project manager navigates a family loan decision. Her values and moment-to-moment state shape how the AI guides her.',
+			features: ['Live guidance', 'Value-aware', 'Real-time state']
+		}
+	];
+
+	const nicheDemos = [
+		{
+			href: '/demos/ren',
+			icon: 'fa-bolt',
+			iconColor: '#f59e0b',
+			badge: 'Multi-Agent',
+			badgeClass: 'badge-warning',
+			title: "Ren's Energy Cooperative",
+			concept: 'AI agents negotiate with private context',
+			description: 'AI agents bid in energy markets carrying their cooperative\'s values — sustainability over pure profit.',
+		},
+		{
+			href: '/demos/noor',
+			icon: 'fa-scale-balanced',
+			iconColor: '#8b5cf6',
+			badge: 'Governance',
+			badgeClass: 'badge-purple',
+			title: "Noor's School District",
+			concept: 'Values become enforceable hooks',
+			description: 'A school coordinator turns "don\'t do homework for students" from an aspiration into executable VCP hooks that fire at the protocol level.',
+		},
+		{
+			href: '/demos/hana',
+			icon: 'fa-stethoscope',
+			iconColor: '#06b6d4',
+			badge: 'Epistemic',
+			badgeClass: 'badge-cyan',
+			title: "Dr. Hana's Diagnostic Tool",
+			concept: 'See what the AI actually knows',
+			description: 'A rural GP inspects AI diagnostic confidence — distinguishing 92% certainty from 35% speculation.',
+		}
 	];
 </script>
 
@@ -14,116 +80,85 @@
 	<title>Interactive Demos - VCP</title>
 	<meta
 		name="description"
-		content="Explore interactive demonstrations of the Value Context Protocol organized by capability."
+		content="See how context flows through real scenarios — from everyday convenience to advanced AI coordination. Pick a story and try VCP."
 	/>
+	<meta property="og:image" content="/vcp-logo.png" />
 </svelte:head>
 
 <div class="container">
 	<Breadcrumb items={breadcrumbItems} />
 
 	<section class="page-hero">
-		<h1>Interactive Demos</h1>
+		<h1>Pick a Story</h1>
 		<p class="page-hero-subtitle">
-			See VCP in action. Each demo shows a different aspect of privacy-preserving context sharing.
+			See how context flows through real scenarios &mdash;
+			from everyday convenience to enforceable hooks and advanced AI coordination.
 		</p>
-		<div class="prosaic-mention">
-			<span class="prosaic-dims">⚡ 💊 🧩 💭</span>
-			<span>Many demos now show <strong>prosaic dimensions</strong> — how urgency, health, cognitive load, and affect shape AI adaptation.</span>
-		</div>
 	</section>
 
-	<!-- Featured Demos -->
-	<section class="featured-demos">
-		<h2>Start Here</h2>
-		<p class="section-intro">These two demos show the core VCP experience — real scenarios where privacy matters.</p>
-		<div class="featured-grid">
-			<a href="/professional" class="featured-card featured-professional">
-				<div class="featured-badge"><span class="badge badge-success">Enterprise</span></div>
-				<div class="featured-content">
-					<span class="featured-icon"><i class="fa-solid fa-briefcase" aria-hidden="true"></i></span>
-					<div>
-						<h3>Campion's Corporate Training</h3>
-						<p>HR sees career goals, not health circumstances. Dual profiles protect personal boundaries at work.</p>
+	<!-- Primary Demos -->
+	<section class="primary-demos">
+		<div class="primary-grid">
+			{#each primaryDemos as demo}
+				<a href={demo.href} class="primary-card card card-hover">
+					<div class="card-badge"><span class="badge {demo.badgeClass}">{demo.badge}</span></div>
+					<div class="card-icon" style="color: {demo.iconColor}">
+						<i class="fa-solid {demo.icon}" aria-hidden="true"></i>
 					</div>
-				</div>
-				<span class="featured-cta">Start demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-			</a>
-
-			<a href="/personal" class="featured-card featured-personal">
-				<div class="featured-badge"><span class="badge badge-primary">Consumer</span></div>
-				<div class="featured-content">
-					<span class="featured-icon"><i class="fa-solid fa-guitar" aria-hidden="true"></i></span>
-					<div>
-						<h3>Gentian's Guitar Journey</h3>
-						<p>Four apps adapt to his constraints. None know about thin walls, shift work, or tight budget.</p>
+					<h3>{demo.title}</h3>
+					<p class="card-concept">{demo.concept}</p>
+					<p class="card-desc">{demo.description}</p>
+					<div class="card-features">
+						{#each demo.features as feature}
+							<span class="feature-tag">
+								<i class="fa-solid fa-check" aria-hidden="true"></i>
+								{feature}
+							</span>
+						{/each}
 					</div>
-				</div>
-				<span class="featured-cta">Start demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-			</a>
+					<span class="card-cta">
+						Try This Demo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+					</span>
+				</a>
+			{/each}
 		</div>
 	</section>
 
-	<!-- Category Cards -->
-	<section class="category-overview">
-		<h2>Explore by Capability</h2>
-		<div class="category-grid">
-			<div class="category-card category-sharing">
-				<span class="category-icon"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></span>
-				<h3>Sharing</h3>
-				<p>Privacy-preserving context sharing between humans and platforms</p>
-				<div class="category-demos">
-					<a href="/professional">Professional</a>
-					<a href="/personal">Personal</a>
-				</div>
-			</div>
+	<!-- Divider -->
+	<div class="tier-divider">
+		<span class="divider-line"></span>
+		<span class="divider-text">Go Deeper</span>
+		<span class="divider-line"></span>
+	</div>
 
-			<div class="category-card category-coordination">
-				<span class="category-icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></span>
-				<h3>Coordination</h3>
-				<p>AI agents negotiating with mutual VCP context</p>
-				<div class="category-demos">
-					<a href="/demos/multi-agent/auction">Auction</a>
-					<a href="/demos/multi-agent/negotiation">Negotiation</a>
-					<a href="/demos/multi-agent/policy-design">Policy</a>
-				</div>
-			</div>
-
-			<div class="category-card category-self-modeling">
-				<span class="category-icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></span>
-				<h3>Self-Modeling</h3>
-				<p>AI systems encoding and communicating their own states</p>
-				<div class="category-demos">
-					<a href="/demos/self-modeling/interiora">Interiora</a>
-					<a href="/demos/self-modeling/belief-calibration">Beliefs</a>
-					<a href="/demos/self-modeling/reality-grounding">Grounding</a>
-				</div>
-			</div>
-
-			<div class="category-card category-adaptation">
-				<span class="category-icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span>
-				<h3>Adaptation</h3>
-				<p>Context shaping personalized learning experiences</p>
-				<div class="category-demos">
-					<a href="/demos/learning/adaptive-paths">Learning Paths</a>
-					<a href="/demos/learning/cognitive-load">Cognitive Load</a>
-				</div>
-			</div>
-
-			<div class="category-card category-psychosecurity">
-				<span class="category-icon"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
-				<h3>Psychosecurity</h3>
-				<p>Context protecting against manipulation and harm</p>
-				<div class="category-demos">
-					<a href="/demos/safety/attention-protection">Attention</a>
-					<a href="/demos/safety/mental-health">Mental Health</a>
-				</div>
-			</div>
+	<!-- Niche Demos -->
+	<section class="niche-demos">
+		<div class="niche-grid">
+			{#each nicheDemos as demo}
+				<a href={demo.href} class="niche-card card card-hover">
+					<div class="niche-header">
+						<span class="niche-icon" style="color: {demo.iconColor}">
+							<i class="fa-solid {demo.icon}" aria-hidden="true"></i>
+						</span>
+						<span class="badge {demo.badgeClass}">{demo.badge}</span>
+					</div>
+					<h3>{demo.title}</h3>
+					<p class="niche-concept">{demo.concept}</p>
+					<p class="niche-desc">{demo.description}</p>
+					<span class="card-cta">
+						Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+					</span>
+				</a>
+			{/each}
 		</div>
 	</section>
 
-	<!-- Tools -->
-	<section class="tools-section">
-		<h2>Tools</h2>
+	<!-- Build Your Own -->
+	<section class="build-section">
+		<h2>
+			<i class="fa-solid fa-hammer" aria-hidden="true"></i>
+			Build Your Own
+		</h2>
 		<div class="tools-grid">
 			<a href="/playground" class="tool-card">
 				<span class="tool-icon"><i class="fa-solid fa-sliders" aria-hidden="true"></i></span>
@@ -136,7 +171,7 @@
 				<span class="tool-icon"><i class="fa-solid fa-book" aria-hidden="true"></i></span>
 				<div>
 					<h3>Documentation</h3>
-					<p>Technical guides and API reference</p>
+					<p>Protocol specification, API reference, and integration guides</p>
 				</div>
 			</a>
 		</div>
@@ -144,201 +179,194 @@
 </div>
 
 <style>
-	/* Prosaic mention */
-	.prosaic-mention {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-md);
-		margin-top: var(--space-md);
-		padding: var(--space-sm) var(--space-lg);
-		background: rgba(16, 185, 129, 0.1);
-		border: 1px solid rgba(16, 185, 129, 0.3);
-		border-radius: var(--radius-md);
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		flex-wrap: wrap;
+	/* Primary demos */
+	.primary-demos {
+		margin-bottom: var(--space-xl);
 	}
 
-	.prosaic-dims {
-		font-size: 1.125rem;
-	}
-
-	/* Section intro text */
-	.section-intro {
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-lg);
-	}
-
-	/* Featured Demos */
-	.featured-demos {
-		margin-bottom: var(--space-2xl);
-	}
-
-	.featured-demos h2 {
-		margin-bottom: var(--space-sm);
-	}
-
-	.featured-grid {
+	.primary-grid {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 		gap: var(--space-lg);
 	}
 
-	.featured-card {
+	.primary-card {
 		display: flex;
 		flex-direction: column;
-		padding: var(--space-xl);
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		border: 2px solid rgba(255, 255, 255, 0.1);
 		text-decoration: none;
 		color: var(--color-text);
-		transition: all var(--transition-normal);
+		padding: var(--space-xl);
 	}
 
-	.featured-professional {
-		border-color: var(--color-professional);
-		background: linear-gradient(135deg, var(--color-bg-card), rgba(5, 150, 105, 0.1));
-	}
-
-	.featured-personal {
-		border-color: var(--color-primary);
-		background: linear-gradient(135deg, var(--color-bg-card), rgba(99, 102, 241, 0.1));
-	}
-
-	.featured-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+	.primary-card:hover {
 		text-decoration: none;
 	}
 
-	.featured-badge {
+	.card-badge {
+		margin-bottom: var(--space-sm);
+	}
+
+	.card-icon {
+		font-size: 2.5rem;
 		margin-bottom: var(--space-md);
 	}
 
-	.featured-content {
-		display: flex;
-		gap: var(--space-lg);
-		flex: 1;
-		margin-bottom: var(--space-lg);
-	}
-
-	.featured-icon {
-		font-size: 2.5rem;
-		flex-shrink: 0;
-	}
-
-	.featured-professional .featured-icon {
-		color: var(--color-professional);
-	}
-
-	.featured-personal .featured-icon {
-		color: var(--color-primary);
-	}
-
-	.featured-content h3 {
+	.primary-card h3 {
 		font-size: var(--text-xl);
+		margin-bottom: var(--space-xs);
+	}
+
+	.card-concept {
+		color: var(--color-primary);
+		font-size: var(--text-sm);
+		font-weight: 500;
 		margin-bottom: var(--space-sm);
 	}
 
-	.featured-content p {
+	.card-desc {
 		color: var(--color-text-muted);
 		font-size: var(--text-sm);
 		line-height: var(--leading-relaxed);
+		margin-bottom: var(--space-md);
+		flex: 1;
 	}
 
-	.featured-cta {
+	.card-features {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs) var(--space-md);
+		margin-bottom: var(--space-lg);
+	}
+
+	.feature-tag {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-size: 0.75rem;
+		color: var(--color-text-muted);
+	}
+
+	.feature-tag i {
+		color: var(--color-success);
+		font-size: 0.625rem;
+	}
+
+	.card-cta {
 		display: flex;
 		align-items: center;
 		gap: var(--space-sm);
 		color: var(--color-primary);
 		font-weight: 500;
 		font-size: var(--text-sm);
+		margin-top: auto;
 	}
 
-	/* Category Overview */
-	.category-overview {
+	/* Tier divider */
+	.tier-divider {
+		display: flex;
+		align-items: center;
+		gap: var(--space-lg);
+		margin: var(--space-lg) 0 var(--space-xl);
+	}
+
+	.divider-line {
+		flex: 1;
+		height: 1px;
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.divider-text {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--color-text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	/* Niche demos */
+	.niche-demos {
 		margin-bottom: var(--space-2xl);
 	}
 
-	.category-overview h2 {
-		margin-bottom: var(--space-lg);
-	}
-
-	.category-grid {
+	.niche-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-md);
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-lg);
 	}
 
-	.category-card {
+	.niche-card {
+		display: flex;
+		flex-direction: column;
+		text-decoration: none;
+		color: var(--color-text);
 		padding: var(--space-lg);
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-top: 3px solid var(--color-primary);
 	}
 
-	/* Category-specific colors */
-	.category-sharing { border-top-color: var(--color-success); }
-	.category-coordination { border-top-color: #3b82f6; }
-	.category-self-modeling { border-top-color: #a855f7; }
-	.category-adaptation { border-top-color: var(--color-warning); }
-	.category-psychosecurity { border-top-color: var(--color-danger); }
+	.niche-card:hover {
+		text-decoration: none;
+	}
 
-	.category-sharing .category-icon { color: var(--color-success); }
-	.category-coordination .category-icon { color: #3b82f6; }
-	.category-self-modeling .category-icon { color: #a855f7; }
-	.category-adaptation .category-icon { color: var(--color-warning); }
-	.category-psychosecurity .category-icon { color: var(--color-danger); }
-
-	.category-icon {
-		font-size: 1.5rem;
+	.niche-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
 		margin-bottom: var(--space-md);
-		display: block;
 	}
 
-	.category-card h3 {
-		font-size: var(--text-lg);
+	.niche-icon {
+		font-size: 1.5rem;
+	}
+
+	.niche-card h3 {
+		font-size: var(--text-base);
 		margin-bottom: var(--space-xs);
 	}
 
-	.category-card p {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		margin: 0 0 var(--space-md) 0;
-		line-height: var(--leading-relaxed);
-	}
-
-	.category-demos {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-xs);
-	}
-
-	.category-demos a {
-		font-size: var(--text-xs);
-		padding: var(--space-xs) var(--space-sm);
-		background: var(--color-bg);
-		border-radius: var(--radius-sm);
-		color: var(--color-text);
-		text-decoration: none;
-		transition: all var(--transition-fast);
-	}
-
-	.category-demos a:hover {
-		background: var(--color-primary-muted);
+	.niche-concept {
 		color: var(--color-primary);
-		text-decoration: none;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		margin-bottom: var(--space-sm);
 	}
 
-	/* Tools Section */
-	.tools-section {
+	.niche-desc {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		line-height: var(--leading-relaxed);
+		margin-bottom: var(--space-md);
+		flex: 1;
+	}
+
+	/* Badge variants for niche demos */
+	:global(.badge-warning) {
+		background: rgba(245, 158, 11, 0.15);
+		color: #f59e0b;
+	}
+
+	:global(.badge-purple) {
+		background: rgba(139, 92, 246, 0.15);
+		color: #8b5cf6;
+	}
+
+	:global(.badge-cyan) {
+		background: rgba(6, 182, 212, 0.15);
+		color: #06b6d4;
+	}
+
+	:global(.badge-info) {
+		background: rgba(59, 130, 246, 0.15);
+		color: #3b82f6;
+	}
+
+	/* Build section */
+	.build-section {
 		margin-bottom: var(--space-2xl);
 	}
 
-	.tools-section h2 {
+	.build-section h2 {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
 		margin-bottom: var(--space-lg);
 	}
 
@@ -381,20 +409,111 @@
 		color: var(--color-text-muted);
 	}
 
+	/* Responsive */
+	@media (max-width: 900px) {
+		.primary-grid,
+		.niche-grid {
+			gap: var(--space-md);
+		}
+	}
+
 	@media (max-width: 768px) {
-		.featured-grid {
+		.primary-grid,
+		.niche-grid {
 			grid-template-columns: 1fr;
 		}
 
 		.tools-grid {
 			grid-template-columns: 1fr;
 		}
+
+		.primary-card,
+		.niche-card {
+			padding: var(--space-lg);
+		}
+
+		.card-icon {
+			font-size: 2rem;
+		}
+
+		.primary-card h3 {
+			font-size: var(--text-lg);
+		}
+
+		.niche-card h3 {
+			font-size: var(--text-base);
+		}
+
+		.card-concept,
+		.niche-concept {
+			font-size: 0.8125rem;
+		}
+
+		.card-desc,
+		.niche-desc {
+			font-size: 0.8125rem;
+		}
+
+		.feature-tag {
+			font-size: 0.6875rem;
+		}
+
+		.niche-icon {
+			font-size: 1.25rem;
+		}
+
+		.tool-icon {
+			font-size: 1.5rem;
+		}
+
+		.tool-card {
+			flex-direction: column;
+			text-align: center;
+			gap: var(--space-md);
+		}
+
+		.tool-card h3 {
+			font-size: var(--text-base);
+		}
+
+		.tool-card p {
+			font-size: 0.8125rem;
+		}
 	}
 
-	@media (max-width: 480px) {
-		.featured-content {
-			flex-direction: column;
-			gap: var(--space-md);
+	@media (max-width: 640px) {
+		.primary-card {
+			padding: var(--space-md);
+		}
+
+		.niche-card {
+			padding: var(--space-md);
+		}
+
+		.card-icon {
+			font-size: 1.5rem;
+			margin-bottom: var(--space-sm);
+		}
+
+		.primary-card h3 {
+			font-size: var(--text-base);
+		}
+
+		.card-features {
+			gap: var(--space-xs) var(--space-sm);
+		}
+
+		.tier-divider {
+			gap: var(--space-sm);
+			margin: var(--space-lg) 0;
+		}
+
+		.divider-text {
+			font-size: 0.6875rem;
+		}
+
+		.tool-card {
+			padding: var(--space-md);
 		}
 	}
 </style>

@@ -1,35 +1,51 @@
 <script lang="ts">
 	/**
-	 * Prosaic Context Panel - Interactive controls for the 4 prosaic dimensions
-	 * Used across demos to show how immediate user state affects AI adaptation
+	 * Prosaic Context Panel - Interactive controls for personal state dimensions
+	 * Supports both legacy prosaic (0.0-1.0 sliders) and v3.1 personal_state (categorical + intensity)
 	 */
-	import type { ProsaicDimensions } from '$lib/vcp/types';
+	import type { ProsaicDimensions, PersonalState, CognitiveState, EmotionalTone, EnergyLevel, PerceivedUrgency, BodySignals } from '$lib/vcp/types';
 
 	interface Props {
-		prosaic: ProsaicDimensions;
+		prosaic?: ProsaicDimensions;
+		personalState?: PersonalState;
 		onchange?: (prosaic: ProsaicDimensions) => void;
+		onPersonalStateChange?: (state: PersonalState) => void;
 		compact?: boolean;
 		readonly?: boolean;
 		title?: string;
 		showImpact?: boolean;
 		impactSummary?: string[];
+		mode?: 'prosaic' | 'personal_state';
 	}
 
 	let {
 		prosaic = $bindable(),
+		personalState = $bindable(),
 		onchange,
+		onPersonalStateChange,
 		compact = false,
 		readonly = false,
 		title = 'Personal State',
 		showImpact = true,
-		impactSummary = []
+		impactSummary = [],
+		mode = 'prosaic'
 	}: Props = $props();
 
+	// Legacy prosaic dimensions
 	const dimensions = [
 		{ key: 'urgency', emoji: '⚡', label: 'Urgency', lowLabel: 'Relaxed', highLabel: 'Critical' },
 		{ key: 'health', emoji: '💊', label: 'Health Impact', lowLabel: 'Feeling fine', highLabel: 'Unwell' },
 		{ key: 'cognitive', emoji: '🧩', label: 'Cognitive Load', lowLabel: 'Clear headed', highLabel: 'Overwhelmed' },
 		{ key: 'affect', emoji: '💭', label: 'Emotional State', lowLabel: 'Calm', highLabel: 'Intense' }
+	] as const;
+
+	// v3.1 personal state dimension definitions
+	const personalStateDims = [
+		{ key: 'cognitive_state', emoji: '🧠', label: 'Cognitive', options: ['focused', 'distracted', 'overloaded', 'foggy', 'reflective'] as CognitiveState[] },
+		{ key: 'emotional_tone', emoji: '💭', label: 'Emotional', options: ['calm', 'tense', 'frustrated', 'neutral', 'uplifted'] as EmotionalTone[] },
+		{ key: 'energy_level', emoji: '🔋', label: 'Energy', options: ['rested', 'low_energy', 'fatigued', 'wired', 'depleted'] as EnergyLevel[] },
+		{ key: 'perceived_urgency', emoji: '⚡', label: 'Urgency', options: ['unhurried', 'time_aware', 'pressured', 'critical'] as PerceivedUrgency[] },
+		{ key: 'body_signals', emoji: '🩺', label: 'Body', options: ['neutral', 'discomfort', 'pain', 'unwell', 'recovering'] as BodySignals[] }
 	] as const;
 
 	const presets = [
@@ -41,16 +57,44 @@
 		{ id: 'crisis', label: 'Crisis mode', values: { urgency: 0.95, health: 0.6, cognitive: 0.8, affect: 0.8 } }
 	];
 
+	const personalStatePresets = [
+		{ id: 'normal', label: 'Normal', values: { cognitive_state: { value: 'focused' as CognitiveState, intensity: 3 }, emotional_tone: { value: 'calm' as EmotionalTone, intensity: 2 }, energy_level: { value: 'rested' as EnergyLevel, intensity: 3 }, perceived_urgency: { value: 'unhurried' as PerceivedUrgency, intensity: 2 }, body_signals: { value: 'neutral' as BodySignals, intensity: 1 } } },
+		{ id: 'stressed', label: 'Stressed', values: { cognitive_state: { value: 'overloaded' as CognitiveState, intensity: 4 }, emotional_tone: { value: 'tense' as EmotionalTone, intensity: 4 }, energy_level: { value: 'fatigued' as EnergyLevel, intensity: 3 }, perceived_urgency: { value: 'pressured' as PerceivedUrgency, intensity: 4 }, body_signals: { value: 'discomfort' as BodySignals, intensity: 2 } } },
+		{ id: 'crisis', label: 'Crisis', values: { cognitive_state: { value: 'overloaded' as CognitiveState, intensity: 5 }, emotional_tone: { value: 'frustrated' as EmotionalTone, intensity: 5 }, energy_level: { value: 'depleted' as EnergyLevel, intensity: 4 }, perceived_urgency: { value: 'critical' as PerceivedUrgency, intensity: 5 }, body_signals: { value: 'unwell' as BodySignals, intensity: 3 } } }
+	];
+
 	function updateDimension(key: keyof ProsaicDimensions, value: number) {
 		if (readonly) return;
 		prosaic = { ...prosaic, [key]: value };
-		onchange?.(prosaic);
+		onchange?.(prosaic!);
 	}
 
 	function applyPreset(preset: typeof presets[0]) {
 		if (readonly) return;
 		prosaic = { ...prosaic, ...preset.values };
-		onchange?.(prosaic);
+		onchange?.(prosaic!);
+	}
+
+	function updatePersonalStateDim(key: string, field: 'value' | 'intensity', newValue: string | number) {
+		if (readonly || !personalState) return;
+		const current = personalState[key as keyof PersonalState] ?? { value: '', intensity: 3 };
+		personalState = {
+			...personalState,
+			[key]: { ...current, [field]: newValue }
+		};
+		onPersonalStateChange?.(personalState);
+	}
+
+	function applyPersonalStatePreset(preset: typeof personalStatePresets[0]) {
+		if (readonly) return;
+		personalState = { ...preset.values };
+		onPersonalStateChange?.(personalState!);
+	}
+
+	function getIntensityColor(intensity: number): string {
+		if (intensity >= 4) return 'var(--color-danger)';
+		if (intensity >= 3) return 'var(--color-warning)';
+		return 'var(--color-success)';
 	}
 
 	function getHintText(key: string, value: number): string {
@@ -87,53 +131,122 @@
 <div class="prosaic-panel" class:compact class:readonly>
 	<div class="panel-header">
 		<h3>{title}</h3>
-		<span class="prosaic-badge">⚡💊🧩💭</span>
+		<span class="prosaic-badge">{mode === 'personal_state' ? '🧠💭🔋⚡🩺' : '⚡💊🧩💭'}</span>
 	</div>
 
-	{#if !compact}
-		<div class="presets">
-			{#each presets as preset}
-				<button
-					class="preset-btn"
-					onclick={() => applyPreset(preset)}
-					disabled={readonly}
-				>
-					{preset.label}
-				</button>
+	{#if mode === 'personal_state'}
+		<!-- v3.1 Personal State: categorical dropdowns + intensity sliders -->
+		{#if !compact}
+			<div class="presets">
+				{#each personalStatePresets as preset}
+					<button
+						class="preset-btn"
+						onclick={() => applyPersonalStatePreset(preset)}
+						disabled={readonly}
+					>
+						{preset.label}
+					</button>
+				{/each}
+			</div>
+		{/if}
+
+		<div class="dimensions">
+			{#each personalStateDims as dim}
+				{@const current = personalState?.[dim.key as keyof PersonalState]}
+				{@const currentValue = current?.value ?? dim.options[0]}
+				{@const intensity = current?.intensity ?? 3}
+				<div class="dimension" class:high={intensity >= 4} class:medium={intensity === 3}>
+					<div class="dim-header">
+						<span class="dim-emoji">{dim.emoji}</span>
+						<span class="dim-label">{dim.label}</span>
+						<span class="dim-value">{intensity}/5</span>
+					</div>
+					{#if !readonly}
+						<select
+							class="dim-select"
+							value={currentValue}
+							onchange={(e) => updatePersonalStateDim(dim.key, 'value', e.currentTarget.value)}
+							aria-label="{dim.label} category"
+						>
+							{#each dim.options as opt}
+								<option value={opt}>{opt.replace(/_/g, ' ')}</option>
+							{/each}
+						</select>
+						<input
+							type="range"
+							min="1"
+							max="5"
+							step="1"
+							value={intensity}
+							oninput={(e) => updatePersonalStateDim(dim.key, 'intensity', parseInt(e.currentTarget.value))}
+							class="dim-slider"
+							aria-label="{dim.label} intensity: {intensity}"
+							aria-valuemin={1}
+							aria-valuemax={5}
+							aria-valuenow={intensity}
+						/>
+					{:else}
+						<div class="dim-readonly-value">{String(currentValue).replace(/_/g, ' ')}</div>
+						<div class="dim-bar">
+							<div class="dim-bar-fill" style="width: {(intensity / 5) * 100}%; background: {getIntensityColor(intensity)}"></div>
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
+	{:else}
+		<!-- Legacy prosaic mode: 0.0-1.0 float sliders -->
+		{#if !compact}
+			<div class="presets">
+				{#each presets as preset}
+					<button
+						class="preset-btn"
+						onclick={() => applyPreset(preset)}
+						disabled={readonly}
+					>
+						{preset.label}
+					</button>
+				{/each}
+			</div>
+		{/if}
+
+		<div class="dimensions">
+			{#each dimensions as dim}
+				{@const rawValue = prosaic?.[dim.key as keyof ProsaicDimensions]}
+				{@const value = typeof rawValue === 'number' ? rawValue : 0}
+				<div class="dimension" class:high={value >= 0.7} class:medium={value >= 0.4 && value < 0.7}>
+					<div class="dim-header">
+						<span class="dim-emoji">{dim.emoji}</span>
+						<span class="dim-label">{dim.label}</span>
+						<span class="dim-value">{value.toFixed(1)}</span>
+					</div>
+					{#if !readonly}
+						<input
+							type="range"
+							min="0"
+							max="1"
+							step="0.1"
+							value={value}
+							oninput={(e) => updateDimension(dim.key as keyof ProsaicDimensions, parseFloat(e.currentTarget.value))}
+							class="dim-slider"
+							aria-label="{dim.label}: {value.toFixed(1)}"
+							aria-valuemin="0"
+							aria-valuemax="1"
+							aria-valuenow={value}
+							aria-valuetext="{value >= 0.7 ? dim.highLabel : value >= 0.4 ? 'moderate' : dim.lowLabel}"
+						/>
+					{:else}
+						<div class="dim-bar">
+							<div class="dim-bar-fill" style="width: {value * 100}%; background: {getBarColor(value)}"></div>
+						</div>
+					{/if}
+					{#if !compact}
+						<div class="dim-hint">{getHintText(dim.key, value)}</div>
+					{/if}
+				</div>
 			{/each}
 		</div>
 	{/if}
-
-	<div class="dimensions">
-		{#each dimensions as dim}
-			{@const value = prosaic[dim.key as keyof ProsaicDimensions] as number ?? 0}
-			<div class="dimension" class:high={value >= 0.7} class:medium={value >= 0.4 && value < 0.7}>
-				<div class="dim-header">
-					<span class="dim-emoji">{dim.emoji}</span>
-					<span class="dim-label">{dim.label}</span>
-					<span class="dim-value">{value.toFixed(1)}</span>
-				</div>
-				{#if !readonly}
-					<input
-						type="range"
-						min="0"
-						max="1"
-						step="0.1"
-						value={value}
-						oninput={(e) => updateDimension(dim.key as keyof ProsaicDimensions, parseFloat(e.currentTarget.value))}
-						class="dim-slider"
-					/>
-				{:else}
-					<div class="dim-bar">
-						<div class="dim-bar-fill" style="width: {value * 100}%; background: {getBarColor(value)}"></div>
-					</div>
-				{/if}
-				{#if !compact}
-					<div class="dim-hint">{getHintText(dim.key, value)}</div>
-				{/if}
-			</div>
-		{/each}
-	</div>
 
 	{#if showImpact && impactSummary.length > 0}
 		<div class="impact-section">
@@ -263,6 +376,25 @@
 		color: var(--color-primary);
 		min-width: 2rem;
 		text-align: right;
+	}
+
+	.dim-select {
+		width: 100%;
+		padding: var(--space-xs) var(--space-sm);
+		background: var(--color-bg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-sm);
+		color: var(--color-text);
+		font-size: var(--text-sm);
+		margin-bottom: var(--space-xs);
+		text-transform: capitalize;
+	}
+
+	.dim-readonly-value {
+		font-size: var(--text-sm);
+		color: var(--color-text);
+		text-transform: capitalize;
+		margin-bottom: var(--space-xs);
 	}
 
 	.dim-slider {
