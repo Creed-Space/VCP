@@ -52,10 +52,11 @@
 		</div>
 
 		<div class="footer-bottom">
-			<p>&copy; {year} Nell Watson &mdash; Code released under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" class="license-link">MIT License</a></p>
-			<span class="footer-built-by">
-				Created by <a href="https://creed.space" target="_blank" rel="noopener noreferrer">Nell Watson</a>
-			</span>
+			<p>&copy; {year} Creed Space &mdash; Code released under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" class="license-link">MIT License</a></p>
+			<a href="https://creed.space" target="_blank" rel="noopener noreferrer" class="footer-built-by">
+				<img src="/creedspace-logo.png" alt="Creed Space" class="footer-brand-logo" />
+				Creed Space
+			</a>
 			<p class="footer-version">METTLE v2</p>
 		</div>
 	</div>
@@ -207,18 +208,25 @@
 	}
 
 	.footer-built-by {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
 		font-size: 0.75rem;
-		color: var(--color-text-subtle, rgba(255, 255, 255, 0.4));
-	}
-
-	.footer-built-by a {
-		color: #fbbf24;
-		text-decoration: none;
 		font-weight: 600;
+		color: #a78bfa;
+		text-decoration: none;
+		transition: opacity var(--transition-fast);
 	}
 
-	.footer-built-by a:hover {
-		text-decoration: underline;
+	.footer-built-by:hover {
+		opacity: 0.8;
+		text-decoration: none;
+	}
+
+	.footer-brand-logo {
+		width: 18px;
+		height: 18px;
+		border-radius: 4px;
 	}
 
 	.footer-version {

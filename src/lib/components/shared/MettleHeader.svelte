@@ -69,7 +69,7 @@
 				class="nav-link nav-link-brand"
 				aria-label="Creed Space (opens in new tab)"
 			>
-				<i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+				<img src="/creedspace-logo.png" alt="" class="nav-brand-logo" aria-hidden="true" />
 				Creed Space
 			</a>
 			<a href="/mettle/docs#authentication" class="nav-cta">
@@ -112,7 +112,7 @@
 				class="mobile-nav-link mobile-nav-brand"
 				onclick={() => (mobileMenuOpen = false)}
 			>
-				<i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+				<img src="/creedspace-logo.png" alt="" class="nav-brand-logo" aria-hidden="true" />
 				Creed Space
 			</a>
 			<a href="/mettle/docs#authentication" class="mobile-nav-cta" onclick={() => (mobileMenuOpen = false)}>
@@ -238,11 +238,17 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-xs);
-		color: #f59e0b;
+		color: #a78bfa;
 	}
 
 	.nav-link-brand:hover {
-		color: #fbbf24;
+		color: #c4b5fd;
+	}
+
+	.nav-brand-logo {
+		width: 18px;
+		height: 18px;
+		border-radius: 4px;
 	}
 
 	/* Desktop CTA Button */
@@ -344,7 +350,7 @@
 
 	.mobile-nav-link:hover { background: rgba(255, 255, 255, 0.05); text-decoration: none; }
 	.mobile-nav-link:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
-	.mobile-nav-brand { color: #f59e0b; }
+	.mobile-nav-brand { color: #a78bfa; }
 	.mobile-nav-divider { border: none; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: var(--space-sm) 0; }
 
 	/* Mobile CTA Button */

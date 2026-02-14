@@ -395,32 +395,32 @@
 								<span class="code-dot code-dot-green"></span>
 								<span class="code-title">terminal</span>
 							</div>
-							<pre class="code-content"><code><span class="tok-comment"># Basic verification (any AI should pass)</span>
-<span class="tok-cmd">$</span> python scripts/mettle.py <span class="tok-flag">--basic</span>
+							<pre class="code-content"><code><span class="tok-comment"># Install the verifier</span>
+<span class="tok-cmd">$</span> pip install mettle-verifier
 
-<span class="tok-comment"># Comprehensive (all 10 suites)</span>
-<span class="tok-cmd">$</span> python scripts/mettle.py <span class="tok-flag">--full</span>
+<span class="tok-comment"># Run locally (self-signed credential)</span>
+<span class="tok-cmd">$</span> mettle verify <span class="tok-flag">--full</span>
+
+<span class="tok-comment"># Run + notarize (Creed Space signed)</span>
+<span class="tok-cmd">$</span> mettle verify <span class="tok-flag">--full</span> <span class="tok-flag">--notarize</span>
 
 <span class="tok-comment"># Specific suite with difficulty</span>
-<span class="tok-cmd">$</span> python scripts/mettle.py <span class="tok-flag">--suite</span> novel-reasoning <span class="tok-flag">--difficulty</span> hard
-
-<span class="tok-comment"># JSON output for programmatic use</span>
-<span class="tok-cmd">$</span> python scripts/mettle.py <span class="tok-flag">--full</span> <span class="tok-flag">--json</span></code></pre>
+<span class="tok-cmd">$</span> mettle verify <span class="tok-flag">--suite</span> novel-reasoning <span class="tok-flag">--difficulty</span> hard</code></pre>
 						</div>
 					</div>
 					<div class="cli-text">
-						<span class="cli-eyebrow">CLI + REST API</span>
+						<span class="cli-eyebrow">Open Source + CLI</span>
 						<h3>Run It Yourself</h3>
 						<p>
-							Standalone CLI and REST API. Basic verification in ~2 seconds.
+							Install the open-source verifier and run locally. Basic verification in ~2 seconds.
 							Full 10-suite run in 60&ndash;90 seconds.
-							All challenge data stays server-side &mdash; nothing leaks.
+							Optionally notarize through Creed Space for portable trust.
 						</p>
 						<ul class="cli-features">
-							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Basic: ~2s &mdash; any AI should pass</li>
+							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Self-hosted &mdash; no API calls required</li>
 							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Full: ~90s &mdash; comprehensive profiling</li>
+							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> <code>--notarize</code> for Creed Space signed credentials</li>
 							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> JSON output for automation</li>
-							<li><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Graceful degradation without optional deps</li>
 						</ul>
 					</div>
 				</div>
@@ -439,9 +439,9 @@
 				<ScrollReveal delay={0}>
 					<div class="step-card">
 						<div class="step-number">1</div>
-						<h3>Start Session</h3>
-						<code class="step-endpoint">POST /api/session/start</code>
-						<p>Receive a procedurally generated challenge</p>
+						<h3>Install</h3>
+						<code class="step-endpoint">pip install mettle-verifier</code>
+						<p>Open-source verifier runs on your infrastructure</p>
 					</div>
 				</ScrollReveal>
 				<div class="step-connector" aria-hidden="true">
@@ -450,9 +450,9 @@
 				<ScrollReveal delay={100}>
 					<div class="step-card">
 						<div class="step-number">2</div>
-						<h3>Answer Challenges</h3>
-						<code class="step-endpoint">POST /api/session/answer</code>
-						<p>Response timing and iteration curves recorded</p>
+						<h3>Verify</h3>
+						<code class="step-endpoint">mettle verify --full</code>
+						<p>Procedurally generated challenges, local evaluation</p>
 					</div>
 				</ScrollReveal>
 				<div class="step-connector" aria-hidden="true">
@@ -461,9 +461,9 @@
 				<ScrollReveal delay={200}>
 					<div class="step-card">
 						<div class="step-number">3</div>
-						<h3>Receive Credential</h3>
-						<code class="step-endpoint">GET /api/session/&#123;id&#125;/result</code>
-						<p>Cryptographically signed JWT credential</p>
+						<h3>Notarize <span style="font-size: 0.625rem; font-weight: 400; opacity: 0.6;">(optional)</span></h3>
+						<code class="step-endpoint">--notarize</code>
+						<p>Creed Space signs your credential for portable trust</p>
 					</div>
 				</ScrollReveal>
 			</div>
@@ -542,6 +542,10 @@
 					<div class="badge-item">
 						<i class="fa-brands fa-github" aria-hidden="true"></i>
 						<span>Open Source</span>
+					</div>
+					<div class="badge-item">
+						<i class="fa-solid fa-server" aria-hidden="true"></i>
+						<span>Self-Hostable</span>
 					</div>
 					<div class="badge-item">
 						<i class="fa-solid fa-flask-vial" aria-hidden="true"></i>
