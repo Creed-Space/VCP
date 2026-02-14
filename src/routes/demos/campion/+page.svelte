@@ -713,7 +713,7 @@
 		background: var(--color-bg-card);
 		font-weight: 600;
 		font-size: 0.875rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.panel-header i {
@@ -790,7 +790,7 @@
 		font-size: 0.75rem;
 		color: var(--color-text-subtle);
 		padding-top: var(--space-sm);
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	/* Privacy Panel */
@@ -909,7 +909,7 @@
 		font-size: 0.75rem;
 		color: var(--color-text-subtle);
 		padding-top: var(--space-sm);
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
 		margin-top: var(--space-md);
 	}
 
@@ -992,7 +992,7 @@
 		padding: var(--space-md) var(--space-lg);
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-md);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.switch-label {

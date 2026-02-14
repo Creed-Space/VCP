@@ -6,12 +6,13 @@
  *
  * Format:
  * VCP:<version>:<profile_id>
- * C:<constitution_id>@<version>
- * P:<persona>:<adherence>
- * G:<goal>:<experience>:<learning_style>
+ * C:<constitution_id>@<version>     (alias: RULE — constitutional rules and boundaries)
+ * P:<persona>:<adherence>           (alias: ROLE — persona and context role)
+ * G:<goal>:<experience>:<style>     (alias: GOAL — goal and learning context)
  * X:<constraint_flags>
  * F:<active_flags>
  * S:<private_markers>
+ * PS:<personal_state_dimensions>    (alias: STAT — live personal state)
  */
 
 import type { VCPContext, ConstraintFlags, PortablePreferences, ProsaicDimensions, PersonalState } from './types';

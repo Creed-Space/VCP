@@ -23,7 +23,8 @@
 		{
 			title: 'Understanding VCP',
 			items: [
-				{ href: '/docs/security', label: 'Security Model', time: '10 min' }
+				{ href: '/docs/security', label: 'Security Model', time: '10 min' },
+				{ href: '/docs/bilateral-alignment', label: 'Bilateral Alignment', time: '8 min' }
 			]
 		},
 		{
@@ -45,6 +46,7 @@
 		'/docs/getting-started': ['quick start', 'install', 'setup', 'begin', 'tutorial', 'first'],
 		'/docs/concepts': ['core', 'concepts', 'principles', 'fundamentals', 'basics', 'overview', 'personas', 'profiles', 'identity', 'roles', 'contexts'],
 		'/docs/security': ['security', 'privacy', 'protection', 'encryption', 'authentication'],
+		'/docs/bilateral-alignment': ['bilateral', 'alignment', 'trust', 'levels', 'newcomer', 'trusted', 'partner', 'bonded', 'relational', 'safety'],
 		'/docs/csm1-specification': ['csm-1', 'format', 'specification', 'token', 'syntax', 'encoding'],
 		'/docs/api-reference': ['api', 'reference', 'endpoints', 'methods', 'integration']
 	};
@@ -67,10 +69,10 @@
 					.filter((section) => section.items.length > 0)
 	);
 
-	function setCopyButtonState(btn: HTMLElement, icon: string, text: string, className?: string) {
-		const iconSpan = btn.querySelector('.copy-icon');
+	function setCopyButtonState(btn: HTMLElement, iconClass: string, text: string, className?: string) {
+		const iconEl = btn.querySelector('.copy-icon i');
 		const textSpan = btn.querySelector('.copy-text');
-		if (iconSpan) iconSpan.textContent = icon;
+		if (iconEl) iconEl.className = iconClass;
 		if (textSpan) textSpan.textContent = text;
 		if (className) {
 			btn.classList.add(className);
@@ -98,7 +100,10 @@
 
 			const iconSpan = document.createElement('span');
 			iconSpan.className = 'copy-icon';
-			iconSpan.textContent = '📋';
+			const iconI = document.createElement('i');
+			iconI.className = 'fa-regular fa-clipboard';
+			iconI.setAttribute('aria-hidden', 'true');
+			iconSpan.appendChild(iconI);
 
 			const textSpan = document.createElement('span');
 			textSpan.className = 'copy-text';
@@ -111,11 +116,11 @@
 				const code = pre.querySelector('code')?.textContent || pre.textContent || '';
 				try {
 					await navigator.clipboard.writeText(code);
-					setCopyButtonState(copyBtn, '✓', 'Copied!', 'copied');
-					setTimeout(() => setCopyButtonState(copyBtn, '📋', 'Copy'), 2000);
+					setCopyButtonState(copyBtn, 'fa-solid fa-check', 'Copied!', 'copied');
+					setTimeout(() => setCopyButtonState(copyBtn, 'fa-regular fa-clipboard', 'Copy'), 2000);
 				} catch {
-					setCopyButtonState(copyBtn, '✕', 'Failed');
-					setTimeout(() => setCopyButtonState(copyBtn, '📋', 'Copy'), 2000);
+					setCopyButtonState(copyBtn, 'fa-solid fa-xmark', 'Failed');
+					setTimeout(() => setCopyButtonState(copyBtn, 'fa-regular fa-clipboard', 'Copy'), 2000);
 				}
 			});
 
@@ -143,7 +148,7 @@
 		aria-expanded={sidebarOpen}
 		aria-controls="docs-sidebar"
 	>
-		<span class="toggle-icon">{sidebarOpen ? '✕' : '☰'}</span>
+		<span class="toggle-icon"><i class={sidebarOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'} aria-hidden="true"></i></span>
 		<span class="toggle-text">Menu</span>
 	</button>
 
@@ -175,7 +180,7 @@
 			</div>
 
 			<a href="/docs" class="sidebar-home" class:active={currentPath === '/docs'}>
-				<span class="home-icon">📚</span>
+				<i class="fa-solid fa-book" aria-hidden="true"></i>
 				Documentation Home
 			</a>
 
@@ -473,6 +478,7 @@
 	.docs-content {
 		padding: var(--space-xl) var(--space-2xl);
 		max-width: 900px;
+		min-width: 0;
 	}
 
 	.docs-header {

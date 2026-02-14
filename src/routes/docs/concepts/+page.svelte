@@ -99,7 +99,7 @@
 		<div class="three-layer-diagram">
 			<div class="layer layer-constitutional">
 				<div class="layer-header">
-					<span class="layer-icon">📜</span>
+					<span class="layer-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
 					<strong>Constitutional Rules</strong>
 				</div>
 				<p>What the AI should and shouldn't do</p>
@@ -114,7 +114,7 @@
 
 			<div class="layer layer-situational">
 				<div class="layer-header">
-					<span class="layer-icon">🌍</span>
+					<span class="layer-icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></span>
 					<strong>Situational Context</strong>
 				</div>
 				<p>Where, when, who, what occasion</p>
@@ -129,7 +129,7 @@
 
 			<div class="layer layer-personal">
 				<div class="layer-header">
-					<span class="layer-icon">💫</span>
+					<span class="layer-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></span>
 					<strong>Personal State</strong>
 				</div>
 				<p>How is the user right now</p>
@@ -444,32 +444,32 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>🎨 <strong>Muse</strong></td>
+					<td><i class="fa-solid fa-palette" aria-hidden="true"></i> <strong>Muse</strong></td>
 					<td>Creative, exploratory, encouraging</td>
 					<td>Creative work, learning, exploration</td>
 				</tr>
 				<tr>
-					<td>🛡️ <strong>Sentinel</strong></td>
+					<td><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <strong>Sentinel</strong></td>
 					<td>Cautious, protective, conservative</td>
 					<td>Security, safety-critical decisions</td>
 				</tr>
 				<tr>
-					<td>👪 <strong>Godparent</strong></td>
+					<td><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> <strong>Godparent</strong></td>
 					<td>Nurturing, supportive, patient</td>
 					<td>Education, skill building, recovery</td>
 				</tr>
 				<tr>
-					<td>🤝 <strong>Ambassador</strong></td>
+					<td><i class="fa-solid fa-handshake" aria-hidden="true"></i> <strong>Ambassador</strong></td>
 					<td>Professional, diplomatic, balanced</td>
 					<td>Business, negotiations, formal contexts</td>
 				</tr>
 				<tr>
-					<td>⚓ <strong>Anchor</strong></td>
+					<td><i class="fa-solid fa-anchor" aria-hidden="true"></i> <strong>Anchor</strong></td>
 					<td>Stable, grounding, realistic</td>
 					<td>Crisis support, reality checking</td>
 				</tr>
 				<tr>
-					<td>👶 <strong>Nanny</strong></td>
+					<td><i class="fa-solid fa-child" aria-hidden="true"></i> <strong>Nanny</strong></td>
 					<td>Structured, directive, safe</td>
 					<td>Children, vulnerable users, strict guidance</td>
 				</tr>

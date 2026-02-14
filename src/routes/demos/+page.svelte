@@ -42,6 +42,28 @@
 		}
 	];
 
+	const productionApps = [
+		{
+			href: 'https://creed.space',
+			logo: '/creedspace-logo.png',
+			logoAlt: 'Creed Space heart logo',
+			badge: 'Constitutional AI',
+			badgeClass: 'badge-purple',
+			title: 'Creed Space',
+			description: 'Governance platform where organisations define AI constitutions as VCP tokens. Policies travel with every interaction — the PDP enforces them at the protocol level, not as afterthoughts.',
+			features: ['Constitution portability', 'PDP enforcement', 'Bilateral alignment', 'Audit trail']
+		},
+		{
+			href: 'https://millos.ai',
+			emoji: '\u{1F3ED}',
+			badge: 'AI-Native Organizational OS',
+			badgeClass: 'badge-success',
+			title: 'MillOS',
+			description: 'AI-native organizational operating system where VCP provides the context layer for agent coordination. User preferences persist across applications and agents adapt in real time — no re-entry, no drift.',
+			features: ['Multi-agent coordination', 'Persistent context', 'Real-time adaptation', 'Cross-app portability']
+		}
+	];
+
 	const nicheDemos = [
 		{
 			href: '/demos/ren',
@@ -147,6 +169,47 @@
 					<p class="niche-desc">{demo.description}</p>
 					<span class="card-cta">
 						Explore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+					</span>
+				</a>
+			{/each}
+		</div>
+	</section>
+
+	<!-- In Production -->
+	<div class="tier-divider">
+		<span class="divider-line"></span>
+		<span class="divider-text">Powered by VCP</span>
+		<span class="divider-line"></span>
+	</div>
+
+	<section class="production-demos">
+		<div class="production-grid">
+			{#each productionApps as app}
+				<a href={app.href} class="production-card card card-hover" target="_blank" rel="noopener noreferrer">
+					<div class="production-header">
+						<div class="production-icon">
+							{#if app.logo}
+								<img src={app.logo} alt={app.logoAlt} class="production-logo" />
+							{:else if app.emoji}
+								<span class="production-emoji">{app.emoji}</span>
+							{/if}
+						</div>
+						<div>
+							<span class="badge {app.badgeClass}">{app.badge}</span>
+							<h3>{app.title}</h3>
+						</div>
+					</div>
+					<p class="production-desc">{app.description}</p>
+					<div class="card-features">
+						{#each app.features as feature}
+							<span class="feature-tag">
+								<i class="fa-solid fa-check" aria-hidden="true"></i>
+								{feature}
+							</span>
+						{/each}
+					</div>
+					<span class="card-cta">
+						Visit <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
 					</span>
 				</a>
 			{/each}
@@ -358,6 +421,68 @@
 		color: #3b82f6;
 	}
 
+	/* Production demos */
+	.production-demos {
+		margin-bottom: var(--space-2xl);
+	}
+
+	.production-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-lg);
+	}
+
+	.production-card {
+		display: flex;
+		flex-direction: column;
+		text-decoration: none;
+		color: var(--color-text);
+		padding: var(--space-xl);
+		border: 1px solid rgba(167, 139, 250, 0.2);
+		background: linear-gradient(135deg, rgba(167, 139, 250, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+	}
+
+	.production-card:hover {
+		text-decoration: none;
+		border-color: rgba(167, 139, 250, 0.4);
+	}
+
+	.production-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		margin-bottom: var(--space-md);
+	}
+
+	.production-icon {
+		font-size: 2rem;
+		flex-shrink: 0;
+	}
+
+	.production-logo {
+		width: 3rem;
+		height: 3rem;
+		object-fit: contain;
+	}
+
+	.production-emoji {
+		font-size: 2.5rem;
+		line-height: 1;
+	}
+
+	.production-header h3 {
+		font-size: var(--text-xl);
+		margin-top: var(--space-xs);
+	}
+
+	.production-desc {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		line-height: var(--leading-relaxed);
+		margin-bottom: var(--space-md);
+		flex: 1;
+	}
+
 	/* Build section */
 	.build-section {
 		margin-bottom: var(--space-2xl);
@@ -419,12 +544,30 @@
 
 	@media (max-width: 768px) {
 		.primary-grid,
-		.niche-grid {
+		.niche-grid,
+		.production-grid {
 			grid-template-columns: 1fr;
 		}
 
 		.tools-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.production-card {
+			padding: var(--space-lg);
+		}
+
+		.production-logo {
+			width: 2rem;
+			height: 2rem;
+		}
+
+		.production-emoji {
+			font-size: 2rem;
+		}
+
+		.production-header h3 {
+			font-size: var(--text-lg);
 		}
 
 		.primary-card,
@@ -514,6 +657,24 @@
 
 		.tool-card {
 			padding: var(--space-md);
+			gap: var(--space-md);
+		}
+
+		.production-card {
+			padding: var(--space-md);
+		}
+
+		.production-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.niche-header {
+			gap: var(--space-sm);
+		}
+
+		.section-title {
+			font-size: 1.5rem;
 		}
 	}
 </style>

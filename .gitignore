@@ -1,0 +1,29 @@
+# Environment
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# Build output
+build/
+.svelte-kit/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Session data
+memory/
+_contprompts/
+
+# Large files
+*.pdf

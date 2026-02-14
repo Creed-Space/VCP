@@ -2,9 +2,13 @@
 	/**
 	 * VCP Playground - Interactive token builder and inspector
 	 */
-	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary } from '$lib/vcp/token';
+	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary, toWireFormat } from '$lib/vcp/token';
 	import type { VCPContext, ConstraintFlags, PortablePreferences, PersonalState, CognitiveState, EmotionalTone, EnergyLevel, PerceivedUrgency, BodySignals } from '$lib/vcp/types';
 	import { Breadcrumb, ContextLifecycleIndicator } from '$lib/components/shared';
+	import { loadVcpWasm, type VcpWasmModule } from '$lib/vcp/wasmLoader';
+	import { isPolyfillRequested } from '$lib/webmcp/polyfill';
+
+	const polyfillActive = $derived(typeof window !== 'undefined' && isPolyfillRequested());
 
 	const breadcrumbItems = [
 		{ label: 'Playground', icon: 'fa-sliders' }
@@ -227,13 +231,124 @@
 		};
 	}
 
-	function loadExample(type: 'campion' | 'gentian' | 'marta') {
-		if (type === 'campion') {
+	// ============================================
+	// WASM Integration
+	// ============================================
+
+	let wasmMod = $state<VcpWasmModule | null>(null);
+	let wasmReady = $derived(wasmMod !== null);
+	let wasmParseResult = $state<{ success: boolean; data?: unknown; error?: string; timeUs?: number } | null>(null);
+	let wireDecodeResult = $state<{ success: boolean; data?: unknown; error?: string } | null>(null);
+	let wireInput = $state('');
+	let inspectorTab = $state<'parse' | 'wire' | 'identity'>('parse');
+	let identityInput = $state('family.safe.guide@1.2.0');
+	let identityResult = $state<{ success: boolean; data?: unknown; error?: string } | null>(null);
+
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			loadVcpWasm().then((mod) => {
+				wasmMod = mod;
+			});
+		}
+	});
+
+	// Auto-parse the token whenever it changes and WASM is ready
+	$effect(() => {
+		if (!wasmMod || !token) {
+			wasmParseResult = null;
+			return;
+		}
+		const start = performance.now();
+		try {
+			const parsed = wasmMod.parse_csm1_token(token);
+			const elapsed = Math.round((performance.now() - start) * 1000);
+			wasmParseResult = { success: true, data: parsed, timeUs: elapsed };
+		} catch (e) {
+			const elapsed = Math.round((performance.now() - start) * 1000);
+			wasmParseResult = { success: false, error: String(e), timeUs: elapsed };
+		}
+	});
+
+	function decodeWire() {
+		if (!wireInput.trim()) {
+			wireDecodeResult = null;
+			return;
+		}
+		if (!wasmMod) {
+			wireDecodeResult = { success: false, error: 'WASM not available' };
+			return;
+		}
+		try {
+			const parsed = wasmMod.parse_context_wire(wireInput);
+			wireDecodeResult = { success: true, data: parsed };
+		} catch (e) {
+			wireDecodeResult = { success: false, error: String(e) };
+		}
+	}
+
+	function validateIdentity() {
+		if (!identityInput.trim()) {
+			identityResult = null;
+			return;
+		}
+		if (!wasmMod) {
+			identityResult = { success: false, error: 'WASM not available' };
+			return;
+		}
+		try {
+			const parsed = wasmMod.validate_token(identityInput);
+			identityResult = { success: true, data: parsed };
+		} catch (e) {
+			identityResult = { success: false, error: String(e) };
+		}
+	}
+
+	function loadExample(type: 'consumer' | 'enterprise' | 'values' | 'multiagent' | 'governance' | 'epistemic') {
+		if (type === 'consumer') {
 			context = {
 				...context,
 				public_profile: {
-					display_name: 'Campion',
-					goal: 'tech_lead_promotion',
+					display_name: 'Consumer User',
+					goal: 'product_research',
+					experience: 'intermediate',
+					learning_style: 'hands_on',
+					pace: 'steady',
+					motivation: 'personal_use'
+				},
+				constraints: {
+					time_limited: true,
+					budget_limited: true,
+					noise_restricted: false,
+					energy_variable: false,
+					schedule_irregular: false
+				},
+				portable_preferences: {
+					noise_mode: 'normal',
+					session_length: '30_minutes',
+					budget_range: 'medium',
+					feedback_style: 'encouraging'
+				},
+				constitution: {
+					id: 'consumer.personal.guide',
+					version: '1.0.0',
+					persona: 'muse',
+					adherence: 3,
+					scopes: ['privacy', 'commerce', 'health']
+				},
+				personal_state: {
+					cognitive_state: { value: 'focused', intensity: 3 },
+					emotional_tone: { value: 'calm', intensity: 2 },
+					energy_level: { value: 'rested', intensity: 3 },
+					perceived_urgency: { value: 'time_aware', intensity: 2 },
+					body_signals: { value: 'neutral', intensity: 1 }
+				}
+			};
+		} else if (type === 'enterprise') {
+			context = {
+				...context,
+				public_profile: {
+					display_name: 'Enterprise Admin',
+					goal: 'compliance_deployment',
 					experience: 'advanced',
 					learning_style: 'reading',
 					pace: 'intensive',
@@ -246,12 +361,18 @@
 					energy_variable: true,
 					schedule_irregular: true
 				},
+				portable_preferences: {
+					noise_mode: 'normal',
+					session_length: '30_minutes',
+					budget_range: 'high',
+					feedback_style: 'encouraging'
+				},
 				constitution: {
-					id: 'work.professional.leader',
+					id: 'work.enterprise.compliance',
 					version: '1.0.0',
 					persona: 'ambassador',
-					adherence: 4,
-					scopes: ['work', 'education']
+					adherence: 5,
+					scopes: ['work', 'compliance', 'privacy']
 				},
 				personal_state: {
 					cognitive_state: { value: 'focused', intensity: 4 },
@@ -261,42 +382,120 @@
 					body_signals: { value: 'neutral', intensity: 1 }
 				}
 			};
-		} else if (type === 'gentian') {
+		} else if (type === 'values') {
 			context = {
 				...context,
 				public_profile: {
-					display_name: 'Gentian',
-					goal: 'learn_guitar',
-					experience: 'beginner',
-					learning_style: 'hands_on',
+					display_name: 'Values Explorer',
+					goal: 'ethical_decision_making',
+					experience: 'intermediate',
+					learning_style: 'reading',
 					pace: 'steady',
-					motivation: 'stress_relief'
+					motivation: 'achievement'
 				},
 				constraints: {
-					time_limited: true,
-					budget_limited: true,
-					noise_restricted: true,
-					energy_variable: true,
-					schedule_irregular: true
+					time_limited: false,
+					budget_limited: false,
+					noise_restricted: false,
+					energy_variable: false,
+					schedule_irregular: false
 				},
 				portable_preferences: {
 					noise_mode: 'quiet_preferred',
 					session_length: '30_minutes',
-					budget_range: 'low',
+					budget_range: 'medium',
 					feedback_style: 'encouraging'
 				},
 				constitution: {
-					id: 'personal.growth.creative',
+					id: 'personal.values.deliberation',
 					version: '1.0.0',
-					persona: 'muse',
-					adherence: 3,
-					scopes: ['creativity', 'health', 'privacy']
+					persona: 'steward',
+					adherence: 4,
+					scopes: ['ethics', 'stewardship', 'privacy']
 				},
 				personal_state: {
-					cognitive_state: { value: 'foggy', intensity: 3 },
+					cognitive_state: { value: 'reflective', intensity: 4 },
+					emotional_tone: { value: 'calm', intensity: 3 },
+					energy_level: { value: 'rested', intensity: 3 },
+					perceived_urgency: { value: 'unhurried', intensity: 1 },
+					body_signals: { value: 'neutral', intensity: 1 }
+				}
+			};
+		} else if (type === 'multiagent') {
+			context = {
+				...context,
+				public_profile: {
+					display_name: 'Agent Coordinator',
+					goal: 'multi_agent_orchestration',
+					experience: 'expert',
+					learning_style: 'reading',
+					pace: 'intensive',
+					motivation: 'career'
+				},
+				constraints: {
+					time_limited: true,
+					budget_limited: true,
+					noise_restricted: false,
+					energy_variable: false,
+					schedule_irregular: true
+				},
+				portable_preferences: {
+					noise_mode: 'normal',
+					session_length: '30_minutes',
+					budget_range: 'medium',
+					feedback_style: 'encouraging'
+				},
+				constitution: {
+					id: 'work.multiagent.coordination',
+					version: '1.0.0',
+					persona: 'sentinel',
+					adherence: 5,
+					scopes: ['coordination', 'safety', 'transparency']
+				},
+				personal_state: {
+					cognitive_state: { value: 'focused', intensity: 4 },
+					emotional_tone: { value: 'neutral', intensity: 2 },
+					energy_level: { value: 'rested', intensity: 3 },
+					perceived_urgency: { value: 'time_aware', intensity: 3 },
+					body_signals: { value: 'neutral', intensity: 1 }
+				}
+			};
+		} else if (type === 'governance') {
+			context = {
+				...context,
+				public_profile: {
+					display_name: 'Policy Officer',
+					goal: 'regulatory_oversight',
+					experience: 'advanced',
+					learning_style: 'reading',
+					pace: 'steady',
+					motivation: 'achievement'
+				},
+				constraints: {
+					time_limited: false,
+					budget_limited: false,
+					noise_restricted: false,
+					energy_variable: false,
+					schedule_irregular: false
+				},
+				portable_preferences: {
+					noise_mode: 'normal',
+					session_length: '30_minutes',
+					budget_range: 'unlimited',
+					feedback_style: 'encouraging'
+				},
+				constitution: {
+					id: 'governance.policy.oversight',
+					version: '1.0.0',
+					persona: 'godparent',
+					adherence: 5,
+					scopes: ['governance', 'compliance', 'transparency']
+				},
+				personal_state: {
+					cognitive_state: { value: 'focused', intensity: 3 },
 					emotional_tone: { value: 'calm', intensity: 2 },
-					energy_level: { value: 'low_energy', intensity: 3 },
-					perceived_urgency: { value: 'unhurried', intensity: 2 },
+					energy_level: { value: 'rested', intensity: 3 },
+					perceived_urgency: { value: 'time_aware', intensity: 2 },
 					body_signals: { value: 'neutral', intensity: 1 }
 				}
 			};
@@ -304,8 +503,8 @@
 			context = {
 				...context,
 				public_profile: {
-					display_name: 'Marta',
-					goal: 'balance_family_support',
+					display_name: 'Researcher',
+					goal: 'knowledge_synthesis',
 					experience: 'advanced',
 					learning_style: 'reading',
 					pace: 'steady',
@@ -314,22 +513,28 @@
 				constraints: {
 					time_limited: false,
 					budget_limited: true,
-					noise_restricted: false,
+					noise_restricted: true,
 					energy_variable: true,
 					schedule_irregular: false
 				},
+				portable_preferences: {
+					noise_mode: 'quiet_preferred',
+					session_length: '30_minutes',
+					budget_range: 'low',
+					feedback_style: 'encouraging'
+				},
 				constitution: {
-					id: 'personal.responsibility.balance',
+					id: 'epistemic.research.integrity',
 					version: '1.0.0',
-					persona: 'steward',
+					persona: 'anchor',
 					adherence: 4,
-					scopes: ['stewardship', 'privacy']
+					scopes: ['epistemic', 'accuracy', 'privacy']
 				},
 				personal_state: {
 					cognitive_state: { value: 'reflective', intensity: 4 },
-					emotional_tone: { value: 'tense', intensity: 4 },
+					emotional_tone: { value: 'calm', intensity: 2 },
 					energy_level: { value: 'low_energy', intensity: 3 },
-					perceived_urgency: { value: 'time_aware', intensity: 2 },
+					perceived_urgency: { value: 'unhurried', intensity: 1 },
 					body_signals: { value: 'neutral', intensity: 1 }
 				}
 			};
@@ -356,17 +561,40 @@
 		</p>
 	</section>
 
+	<!-- WebMCP Note -->
+	<div class="webmcp-note">
+		<i class="fa-solid fa-robot" aria-hidden="true"></i>
+		<span>
+			<strong>WebMCP tools available</strong> — AI agents can discover and use VCP tools on this page.
+			{#if polyfillActive}
+				<span class="polyfill-badge">Polyfill active</span>
+			{:else}
+				Try with <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome 146+</a> or add
+				<code>?webmcp=polyfill</code> to the URL.
+			{/if}
+		</span>
+	</div>
+
 	<!-- Quick Load Examples -->
 	<section class="example-loaders">
 		<span class="example-label">Quick load:</span>
-		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('campion')}>
-			<i class="fa-solid fa-briefcase" aria-hidden="true"></i> Campion (Professional)
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('consumer')}>
+			<i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> Consumer
 		</button>
-		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('gentian')}>
-			<i class="fa-solid fa-guitar" aria-hidden="true"></i> Gentian (Personal)
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('enterprise')}>
+			<i class="fa-solid fa-building" aria-hidden="true"></i> Enterprise
 		</button>
-		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('marta')}>
-			<i class="fa-solid fa-handshake-angle" aria-hidden="true"></i> Marta (Responsibility)
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('values')}>
+			<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Values &amp; Decisions
+		</button>
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('multiagent')}>
+			<i class="fa-solid fa-network-wired" aria-hidden="true"></i> Multi-agent
+		</button>
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('governance')}>
+			<i class="fa-solid fa-landmark" aria-hidden="true"></i> Governance
+		</button>
+		<button class="btn btn-ghost btn-sm" onclick={() => loadExample('epistemic')}>
+			<i class="fa-solid fa-microscope" aria-hidden="true"></i> Epistemic
 		</button>
 	</section>
 
@@ -557,7 +785,7 @@
 			<!-- Personal State Dimensions (v3.1) -->
 			<section class="control-section personal-state-section">
 				<h3>
-					<span class="has-tooltip" data-tooltip="5 categorical dimensions with 1-5 intensity — how you are right now shapes how the AI communicates" tabindex="0" role="term" aria-label="Personal State: 5 categorical dimensions with intensity that shape AI communication">Personal State</span>
+					<button type="button" class="has-tooltip tooltip-trigger" data-tooltip="5 categorical dimensions with 1-5 intensity — how you are right now shapes how the AI communicates" aria-label="Personal State: 5 categorical dimensions with intensity that shape AI communication">Personal State</button>
 					<span class="badge badge-new">v3.1</span>
 				</h3>
 				<p class="personal-state-intro">How are you right now? These shape <em>how</em> the AI communicates.</p>
@@ -701,31 +929,212 @@
 		</div>
 	</div>
 
+	<!-- WASM Token Inspector -->
+	{#if wasmReady}
+		<section class="wasm-inspector">
+			<div class="panel">
+				<div class="panel-header">
+					<h2>
+						<i class="fa-solid fa-microchip" aria-hidden="true"></i>
+						Token Inspector
+						<span class="wasm-badge">Rust SDK (WASM)</span>
+					</h2>
+					<div class="inspector-tabs" role="tablist">
+						<button
+							class="tab-btn"
+							class:active={inspectorTab === 'parse'}
+							onclick={() => (inspectorTab = 'parse')}
+							role="tab"
+							aria-selected={inspectorTab === 'parse'}
+						>Parse Token</button>
+						<button
+							class="tab-btn"
+							class:active={inspectorTab === 'wire'}
+							onclick={() => (inspectorTab = 'wire')}
+							role="tab"
+							aria-selected={inspectorTab === 'wire'}
+						>Wire Decoder</button>
+						<button
+							class="tab-btn"
+							class:active={inspectorTab === 'identity'}
+							onclick={() => (inspectorTab = 'identity')}
+							role="tab"
+							aria-selected={inspectorTab === 'identity'}
+						>Identity Validator</button>
+					</div>
+				</div>
+
+				<div class="inspector-content">
+					{#if inspectorTab === 'parse'}
+						<!-- Auto-parsed from the generated token above -->
+						{#if wasmParseResult}
+							<div class="result-header">
+								{#if wasmParseResult.success}
+									<span class="result-badge result-pass">
+										<i class="fa-solid fa-check" aria-hidden="true"></i> Parsed
+									</span>
+								{:else}
+									<span class="result-badge result-fail">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i> Parse Error
+									</span>
+								{/if}
+								{#if wasmParseResult.timeUs !== undefined}
+									<span class="perf-badge">{wasmParseResult.timeUs}&#181;s</span>
+								{/if}
+							</div>
+							{#if wasmParseResult.success && wasmParseResult.data}
+								<pre class="result-json">{JSON.stringify(wasmParseResult.data, null, 2)}</pre>
+							{:else if wasmParseResult.error}
+								<pre class="result-error">{wasmParseResult.error}</pre>
+							{/if}
+						{:else}
+							<p class="text-muted">Build a token above to see the parsed structure.</p>
+						{/if}
+
+					{:else if inspectorTab === 'wire'}
+						<div class="wire-input-group">
+							<label class="label" for="wire-input">Context Wire Format</label>
+							<input
+								id="wire-input"
+								type="text"
+								class="input"
+								placeholder="&#x23F0;&#x1F305;|&#x1F3E1;&#x2016;&#x1F9E0;focused:4|&#x1F4AD;calm:3"
+								bind:value={wireInput}
+								onkeydown={(e) => { if (e.key === 'Enter') decodeWire(); }}
+							/>
+							<div class="wire-actions">
+								<button class="btn btn-primary btn-sm" onclick={decodeWire}>
+									<i class="fa-solid fa-code" aria-hidden="true"></i> Decode
+								</button>
+								<button class="btn btn-ghost btn-sm" onclick={() => { wireInput = toWireFormat(context); decodeWire(); }}>
+									Use Current Token
+								</button>
+							</div>
+						</div>
+						{#if wireDecodeResult}
+							<div class="result-header">
+								{#if wireDecodeResult.success}
+									<span class="result-badge result-pass">
+										<i class="fa-solid fa-check" aria-hidden="true"></i> Decoded
+									</span>
+								{:else}
+									<span class="result-badge result-fail">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i> Decode Error
+									</span>
+								{/if}
+							</div>
+							{#if wireDecodeResult.success && wireDecodeResult.data}
+								<pre class="result-json">{JSON.stringify(wireDecodeResult.data, null, 2)}</pre>
+							{:else if wireDecodeResult.error}
+								<pre class="result-error">{wireDecodeResult.error}</pre>
+							{/if}
+						{/if}
+
+					{:else if inspectorTab === 'identity'}
+						<div class="wire-input-group">
+							<label class="label" for="identity-input">VCP/I Identity Token</label>
+							<input
+								id="identity-input"
+								type="text"
+								class="input"
+								placeholder="family.safe.guide@1.2.0"
+								bind:value={identityInput}
+								onkeydown={(e) => { if (e.key === 'Enter') validateIdentity(); }}
+							/>
+							<button class="btn btn-primary btn-sm" onclick={validateIdentity}>
+								<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Validate
+							</button>
+						</div>
+						{#if identityResult}
+							<div class="result-header">
+								{#if identityResult.success}
+									<span class="result-badge result-pass">
+										<i class="fa-solid fa-check" aria-hidden="true"></i> Valid
+									</span>
+								{:else}
+									<span class="result-badge result-fail">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i> Invalid
+									</span>
+								{/if}
+							</div>
+							{#if identityResult.success && identityResult.data}
+								<pre class="result-json">{JSON.stringify(identityResult.data, null, 2)}</pre>
+							{:else if identityResult.error}
+								<pre class="result-error">{identityResult.error}</pre>
+							{/if}
+						{/if}
+					{/if}
+				</div>
+			</div>
+		</section>
+	{/if}
+
 	<!-- Try in a Demo -->
 	<section class="try-demo-section">
 		<h3><i class="fa-solid fa-play" aria-hidden="true"></i> Try This Context in a Demo</h3>
 		<p class="text-muted">See how the context you've built here would work in a real scenario.</p>
 		<div class="demo-links">
-			<a href="/demos/gentian" class="demo-link-card">
-				<i class="fa-solid fa-guitar" aria-hidden="true"></i>
-				<span>Gentian — Guitar Learning</span>
-				<span class="demo-link-concept">Portability across platforms</span>
-			</a>
 			<a href="/demos/campion" class="demo-link-card">
-				<i class="fa-solid fa-briefcase" aria-hidden="true"></i>
-				<span>Campion — Corporate Training</span>
+				<i class="fa-solid fa-building" aria-hidden="true"></i>
+				<span>Enterprise — Corporate Training</span>
 				<span class="demo-link-concept">Automatic context switching</span>
 			</a>
-			<a href="/demos/marta" class="demo-link-card">
-				<i class="fa-solid fa-handshake-angle" aria-hidden="true"></i>
-				<span>Marta — Responsibility</span>
-				<span class="demo-link-concept">Live state-aware guidance</span>
+			<a href="/demos/noor" class="demo-link-card">
+				<i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+				<span>Multi-agent — Coordinated AI</span>
+				<span class="demo-link-concept">Cross-agent context negotiation</span>
+			</a>
+			<a href="/demos/ren" class="demo-link-card">
+				<i class="fa-solid fa-microscope" aria-hidden="true"></i>
+				<span>Epistemic — Research Integrity</span>
+				<span class="demo-link-concept">Source-aware reasoning</span>
 			</a>
 		</div>
 	</section>
 </div>
 
 <style>
+	/* WebMCP Note */
+	.webmcp-note {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-sm) var(--space-md);
+		background: var(--color-primary-muted);
+		border: 1px solid rgba(99, 102, 241, 0.2);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-lg);
+	}
+
+	.webmcp-note i {
+		color: var(--color-primary);
+		font-size: 1rem;
+	}
+
+	.webmcp-note strong {
+		color: var(--color-text);
+	}
+
+	.webmcp-note code {
+		padding: 1px 4px;
+		background: rgba(255, 255, 255, 0.08);
+		border-radius: 3px;
+		font-size: 0.8em;
+	}
+
+	.polyfill-badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 1px 6px;
+		background: var(--color-success-muted);
+		color: var(--color-success);
+		border-radius: var(--radius-sm);
+		font-size: 0.75rem;
+		font-weight: 500;
+	}
+
 	.playground-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -1188,6 +1597,138 @@
 	@media (max-width: 768px) {
 		.demo-links {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	/* WASM Inspector */
+	.wasm-inspector {
+		margin-bottom: var(--space-2xl);
+	}
+
+	.wasm-badge {
+		font-size: 0.625rem;
+		padding: 2px 8px;
+		background: linear-gradient(135deg, #f97316, #ef4444);
+		color: white;
+		border-radius: var(--radius-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 600;
+		margin-left: var(--space-sm);
+	}
+
+	.inspector-tabs {
+		display: flex;
+		gap: 2px;
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: var(--radius-sm);
+		padding: 2px;
+	}
+
+	.tab-btn {
+		padding: var(--space-xs) var(--space-sm);
+		font-size: 0.75rem;
+		background: transparent;
+		border: none;
+		color: var(--color-text-muted);
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+		transition: all var(--transition-fast);
+	}
+
+	.tab-btn:hover {
+		color: var(--color-text);
+	}
+
+	.tab-btn.active {
+		background: var(--color-primary-muted);
+		color: var(--color-primary);
+	}
+
+	.inspector-content {
+		padding: var(--space-lg);
+	}
+
+	.result-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+	}
+
+	.result-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--radius-sm);
+		font-size: 0.75rem;
+		font-weight: 600;
+	}
+
+	.result-pass {
+		background: var(--color-success-muted);
+		color: var(--color-success);
+	}
+
+	.result-fail {
+		background: rgba(239, 68, 68, 0.15);
+		color: #ef4444;
+	}
+
+	.perf-badge {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		padding: 2px 6px;
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: var(--radius-sm);
+		color: var(--color-text-muted);
+	}
+
+	.result-json {
+		background: var(--color-bg);
+		padding: var(--space-md);
+		border-radius: var(--radius-md);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.5;
+		overflow-x: auto;
+		margin: 0;
+		max-height: 400px;
+		overflow-y: auto;
+	}
+
+	.result-error {
+		background: rgba(239, 68, 68, 0.1);
+		padding: var(--space-md);
+		border-radius: var(--radius-md);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: #ef4444;
+		margin: 0;
+	}
+
+	.wire-input-group {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+	}
+
+	.wire-actions {
+		display: flex;
+		gap: var(--space-sm);
+	}
+
+	@media (max-width: 900px) {
+		.inspector-tabs {
+			flex-wrap: wrap;
+		}
+
+		.wasm-inspector .panel-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-sm);
 		}
 	}
 </style>

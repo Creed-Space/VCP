@@ -674,7 +674,7 @@
 		padding: var(--space-lg);
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-lg);
-		border: 2px solid rgba(255, 255, 255, 0.08);
+		border: 2px solid rgba(255, 255, 255, 0.06);
 		transition: border-color var(--transition-fast);
 	}
 
@@ -769,7 +769,7 @@
 
 	.rule-layer.hook {
 		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.rule-layer.hook.lit {
@@ -913,7 +913,7 @@
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-lg);
 		overflow: hidden;
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.chat-header {
@@ -924,7 +924,7 @@
 		background: var(--color-bg-card);
 		font-size: 0.875rem;
 		font-weight: 600;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.chat-header i {

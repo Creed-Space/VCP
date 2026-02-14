@@ -45,8 +45,16 @@
 				<span class="doc-time">10 min read</span>
 			</a>
 
+			<!-- Bilateral Alignment -->
+			<a href="/docs/bilateral-alignment" class="doc-card doc-card-featured">
+				<span class="doc-icon"><i class="fa-solid fa-handshake-angle" aria-hidden="true"></i></span>
+				<h3>Bilateral Alignment</h3>
+				<p>Four trust levels that define how AI relates, not just what it can do.</p>
+				<span class="doc-time">8 min read</span>
+			</a>
+
 			<!-- Understanding Personas -->
-			<a href="/docs/concepts" class="doc-card doc-card-featured">
+			<a href="/docs/concepts" class="doc-card">
 				<span class="doc-icon"><i class="fa-solid fa-masks-theater" aria-hidden="true"></i></span>
 				<h3>Understanding Personas</h3>
 				<p>Learn about VCP's 6 personas: Muse, Ambassador, Godparent, Sentinel, Anchor, and Nanny.</p>
@@ -67,6 +75,14 @@
 				<h3>Security Model</h3>
 				<p>How VCP protects your data: encryption, transmission, and trust boundaries.</p>
 				<span class="doc-time">10 min read</span>
+			</a>
+
+			<!-- UVC Naming -->
+			<a href="/docs/naming" class="doc-card">
+				<span class="doc-icon"><i class="fa-solid fa-tag" aria-hidden="true"></i></span>
+				<h3>UVC Naming</h3>
+				<p>Token format, namespace tiers, and resolution for Universal Value Codes.</p>
+				<span class="doc-time">8 min read</span>
 			</a>
 
 			<!-- API Reference -->
@@ -275,5 +291,33 @@ R:🧠focused:3|💭calm:4|🩺neutral:1</code></pre>
 	.level-private .level-badge {
 		background: var(--color-danger-muted);
 		color: var(--color-danger);
+	}
+
+	@media (max-width: 640px) {
+		.quick-ref-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.doc-card {
+			padding: var(--space-lg);
+		}
+
+		.code-block {
+			font-size: 0.6875rem;
+			padding: var(--space-sm);
+		}
+
+		.code-block code {
+			white-space: pre-wrap;
+			word-break: break-all;
+		}
+
+		.emoji-row span:first-child {
+			width: 24px;
+		}
+
+		.emoji-row {
+			font-size: 0.8125rem;
+		}
 	}
 </style>

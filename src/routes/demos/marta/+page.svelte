@@ -707,7 +707,7 @@
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-lg);
 		padding: var(--space-lg);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.dimension-header {
@@ -716,7 +716,7 @@
 		gap: var(--space-sm);
 		margin-bottom: var(--space-md);
 		padding-bottom: var(--space-sm);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.dimension-header i {
@@ -1034,7 +1034,7 @@
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-md);
 		margin-bottom: var(--space-lg);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.style-indicator i {

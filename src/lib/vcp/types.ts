@@ -20,7 +20,15 @@ export type ScopeType =
 	| 'social'
 	| 'legal'
 	| 'safety'
-	| 'stewardship';
+	| 'stewardship'
+	| 'commerce'
+	| 'compliance'
+	| 'ethics'
+	| 'coordination'
+	| 'transparency'
+	| 'governance'
+	| 'epistemic'
+	| 'accuracy';
 
 export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
@@ -28,7 +36,7 @@ export type LearningStyle = 'visual' | 'auditory' | 'hands_on' | 'reading' | 'mi
 
 export type Pace = 'intensive' | 'steady' | 'relaxed';
 
-export type Motivation = 'career' | 'stress_relief' | 'social' | 'achievement' | 'curiosity';
+export type Motivation = 'career' | 'stress_relief' | 'social' | 'achievement' | 'curiosity' | 'personal_use';
 
 export type NoiseMode = 'normal' | 'quiet_preferred' | 'silent_required';
 

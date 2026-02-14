@@ -33,6 +33,7 @@
 	let messages: ChatMessage[] = $state([]);
 	let isStreaming = $state(false);
 	let useFallback = $state(false);
+	// svelte-ignore state_referenced_locally — intentional init-once from prop
 	let inputText = $state(initialMessage);
 	let messagesEnd: HTMLDivElement | null = $state(null);
 	let textareaEl: HTMLTextAreaElement | null = $state(null);

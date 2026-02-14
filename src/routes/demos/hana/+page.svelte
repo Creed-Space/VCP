@@ -707,7 +707,7 @@
 
 	.claim-wrapper {
 		background: var(--color-bg-elevated);
-		border: 2px solid rgba(255, 255, 255, 0.08);
+		border: 2px solid rgba(255, 255, 255, 0.06);
 		border-radius: var(--radius-lg);
 		transition: border-color var(--transition-fast);
 		overflow: hidden;
@@ -800,7 +800,7 @@
 	/* Claim Details (expanded) */
 	.claim-details {
 		padding: 0 var(--space-lg) var(--space-lg);
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
@@ -1055,7 +1055,7 @@
 		padding: var(--space-lg);
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 		transition: all var(--transition-fast);
 	}
 

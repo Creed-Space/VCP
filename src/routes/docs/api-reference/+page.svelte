@@ -13,7 +13,19 @@
 >
 	{#snippet children()}
 		<h2>Installation</h2>
-		<pre><code>npm install @creed-space/vcp</code></pre>
+		<p>VCP is available in multiple languages:</p>
+		<pre><code>{`# JavaScript/TypeScript (browser or Node)
+npm install @creed-space/vcp
+
+# Python
+pip install vcp-python-sdk
+
+# Rust
+cargo add vcp-core`}</code></pre>
+		<p>
+			The TypeScript types below serve as the canonical API reference. Python and Rust SDKs
+			implement equivalent types in their respective idioms.
+		</p>
 
 		<h2>Core Types</h2>
 
@@ -90,14 +102,6 @@
 }`}</code></pre>
 
 		<h3>ProsaicDimensions (Legacy)</h3>
-		<div style="border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.1); padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem;">
-			<div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-				<i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;" aria-hidden="true"></i>
-				<strong style="color: #ef4444;">DEPRECATED</strong>
-			</div>
-			<p style="margin: 0;">Legacy immediate user state dimensions (Extended Enneagram Protocol). All values 0.0-1.0. <strong>Deprecated in v3.1 — use PersonalState instead.</strong></p>
-			<p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">Migration: Convert float values (0.0-1.0) to categorical values with intensity (1-5). See PersonalState below.</p>
-		</div>
 		<pre><code>{`interface ProsaicDimensions {
   urgency?: number;     // ⚡ Time pressure, brevity preference
   health?: number;      // 💊 Physical wellness, fatigue, pain
@@ -109,17 +113,24 @@
 		<h3>PersonalState (v3.1)</h3>
 		<p>Categorical personal state dimensions with intensity 1-5. Replaces float-based prosaic dimensions.</p>
 		<pre><code>{`interface PersonalState {
-  cognitive_state?: PersonalDimension<CognitiveState>;   // 🧠 focused | distracted | overloaded | foggy | reflective
-  emotional_tone?: PersonalDimension<EmotionalTone>;     // 💭 calm | tense | frustrated | neutral | uplifted
-  energy_level?: PersonalDimension<EnergyLevel>;         // 🔋 rested | low_energy | fatigued | wired | depleted
-  perceived_urgency?: PersonalDimension<PerceivedUrgency>; // ⚡ unhurried | time_aware | pressured | critical
-  body_signals?: PersonalDimension<BodySignals>;         // 🩺 neutral | discomfort | pain | unwell | recovering
+  cognitive_state?: PersonalDimension<CognitiveState>;
+  emotional_tone?: PersonalDimension<EmotionalTone>;
+  energy_level?: PersonalDimension<EnergyLevel>;
+  perceived_urgency?: PersonalDimension<PerceivedUrgency>;
+  body_signals?: PersonalDimension<BodySignals>;
 }
 
 interface PersonalDimension<T> {
   value: T;
   intensity?: number; // 1-5, defaults to 3
 }`}</code></pre>
+		<ul>
+			<li>🧠 <code>cognitive_state</code> — focused, distracted, overloaded, foggy, reflective</li>
+			<li>💭 <code>emotional_tone</code> — calm, tense, frustrated, neutral, uplifted</li>
+			<li>🔋 <code>energy_level</code> — rested, low_energy, fatigued, wired, depleted</li>
+			<li>⚡ <code>perceived_urgency</code> — unhurried, time_aware, pressured, critical</li>
+			<li>🩺 <code>body_signals</code> — neutral, discomfort, pain, unwell, recovering</li>
+		</ul>
 
 		<h3>ProsaicSubSignals</h3>
 		<p>Optional sub-signals for greater specificity.</p>

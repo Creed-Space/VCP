@@ -174,6 +174,53 @@ const token = encodeContextToCSM1(context);
 			<li><a href="/demos/marta">Marta</a> — <strong>Liveness</strong>: Adjust personal state sliders and watch AI guidance respond in real time</li>
 		</ul>
 
+		<h2>SDK Languages</h2>
+		<p>VCP has official SDK implementations in two languages:</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Language</th>
+					<th>Status</th>
+					<th>Best For</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>Python</strong></td>
+					<td>Complete</td>
+					<td>Reference implementation, LLM integration, persona logic, API servers</td>
+				</tr>
+				<tr>
+					<td><strong>Rust</strong></td>
+					<td>In Progress</td>
+					<td>High-performance parsing, WASM/browser, embedded systems, CLI tooling</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h3>Python</h3>
+		<pre><code>{`pip install vcp-python-sdk
+from vcp.semantics import encode_csm1, parse_csm1
+
+token = encode_csm1(context)
+parsed = parse_csm1(token_string)`}</code></pre>
+
+		<h3>Rust</h3>
+		<pre><code>{`// Cargo.toml
+[dependencies]
+vcp-core = "0.1"
+
+// Usage
+use vcp_core::csm1::Csm1Token;
+let token = Csm1Token::parse(token_str)?;
+let encoded = token.to_string();`}</code></pre>
+
+		<p>
+			The Rust crate also compiles to <strong>WebAssembly</strong>, enabling client-side VCP
+			token validation directly in the browser via <code>vcp-wasm</code>.
+		</p>
+
 		<h2>Next Steps</h2>
 		<ul>
 			<li><a href="/docs/concepts">Core Concepts</a> — Deep dive into VCP architecture</li>

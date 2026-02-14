@@ -3,7 +3,7 @@
 	 * About VCP - Overview page explaining the protocol
 	 * Leads with the portability/adaptation/liveness triangle
 	 */
-	import { Breadcrumb, NextSteps } from '$lib/components/shared';
+	import { Breadcrumb, NextSteps, MorphBlob, ScrollReveal } from '$lib/components/shared';
 
 	const breadcrumbItems = [
 		{ label: 'About VCP', icon: 'fa-circle-info' }
@@ -32,15 +32,15 @@
 
 	const layers = [
 		{
-			icon: 'fa-scroll',
+			icon: 'fa-shield-halved',
 			title: 'Constitutional Rules',
 			subtitle: 'What the AI should and should not do.',
-			examples: 'Personas, safety boundaries, adherence levels',
+			examples: 'Personas, safety boundaries, rulesets, adherence levels',
 			timescale: 'Changes rarely',
 			colorClass: 'layer-constitutional'
 		},
 		{
-			icon: 'fa-location-dot',
+			icon: 'fa-compass',
 			title: 'Situational Context',
 			subtitle: 'Where, when, who, what occasion.',
 			examples: 'Morning vs. evening, alone vs. with children, home vs. work',
@@ -48,7 +48,7 @@
 			colorClass: 'layer-situational'
 		},
 		{
-			icon: 'fa-heart-pulse',
+			icon: 'fa-fingerprint',
 			title: 'Personal State',
 			subtitle: 'How you are right now.',
 			examples: 'Cognitive load, emotional tone, energy, urgency, body state',
@@ -134,7 +134,14 @@
 	<Breadcrumb items={breadcrumbItems} />
 
 	<!-- Hero -->
-	<section class="page-hero">
+	<section class="page-hero about-hero">
+		<MorphBlob
+			size={500}
+			colors={['rgba(99, 102, 241, 0.15)', 'rgba(139, 92, 246, 0.08)']}
+			duration={15}
+			opacity={0.7}
+			blur={50}
+		/>
 		<h1>What is VCP?</h1>
 		<p class="page-hero-subtitle">
 			A protocol for portable, adaptive, live context across AI and services.
@@ -155,14 +162,16 @@
 		</p>
 
 		<div class="pillar-grid">
-			{#each pillars as pillar}
-				<div class="pillar-card">
-					<span class="pillar-icon" style="color: {pillar.color}">
-						<i class="fa-solid {pillar.icon}" aria-hidden="true"></i>
-					</span>
-					<h3>{pillar.title}</h3>
-					<p>{pillar.description}</p>
-				</div>
+			{#each pillars as pillar, i}
+				<ScrollReveal direction="up" delay={i * 120}>
+					<div class="pillar-card">
+						<span class="pillar-icon" style="color: {pillar.color}">
+							<i class="fa-solid {pillar.icon}" aria-hidden="true"></i>
+						</span>
+						<h3>{pillar.title}</h3>
+						<p>{pillar.description}</p>
+					</div>
+				</ScrollReveal>
 			{/each}
 		</div>
 	</section>
@@ -279,7 +288,7 @@
 	<section class="content-section">
 		<h2>Not a Magic Mirror</h2>
 		<p class="section-intro">
-			VCP does not try to infer who you are. You declare your context.
+			You declare your context.
 			The AI adapts to what you share, not to what it guesses.
 		</p>
 
@@ -304,6 +313,38 @@
 				<div class="contrast-cell">Platform decides what to share</div>
 				<div class="contrast-cell">You <strong>control</strong> what is shared</div>
 			</div>
+		</div>
+	</section>
+
+	<!-- MCP Integration -->
+	<section class="content-section">
+		<h2>Works With MCP</h2>
+		<p class="section-intro">
+			VCP integrates natively with the <strong>Model Context Protocol (MCP)</strong>.
+			MCP is the delivery channel. VCP is the structured content it carries.
+		</p>
+
+		<div class="mcp-explainer">
+			<div class="mcp-row">
+				<div class="mcp-card">
+					<span class="mcp-label">MCP</span>
+					<h3>Transport</h3>
+					<p>Connects AI agents to tools and data sources. The plumbing.</p>
+				</div>
+				<div class="mcp-plus">
+					<i class="fa-solid fa-plus" aria-hidden="true"></i>
+				</div>
+				<div class="mcp-card">
+					<span class="mcp-label mcp-label-vcp">VCP</span>
+					<h3>Policy</h3>
+					<p>Encodes values, context, and constitutional rules. The meaning.</p>
+				</div>
+			</div>
+			<p class="mcp-result">
+				Any MCP-compatible agent can call VCP tools to discover what constitutional rules apply,
+				encode the current context, and adapt behaviour accordingly.
+				VCP also integrates via REST API, export artifacts, and GPT Actions.
+			</p>
 		</div>
 	</section>
 
@@ -336,6 +377,11 @@
 </div>
 
 <style>
+	.about-hero {
+		position: relative;
+		overflow: visible;
+	}
+
 	.content-section {
 		margin-bottom: var(--space-2xl);
 	}
@@ -541,6 +587,75 @@
 		border-bottom: none;
 	}
 
+	/* MCP Integration */
+	.mcp-explainer {
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.mcp-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-md);
+		margin-bottom: var(--space-lg);
+	}
+
+	.mcp-card {
+		flex: 1;
+		max-width: 240px;
+		background: var(--color-bg-card);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+		text-align: center;
+	}
+
+	.mcp-card h3 {
+		font-size: 1rem;
+		margin-bottom: var(--space-xs);
+	}
+
+	.mcp-card p {
+		font-size: 0.8125rem;
+		color: var(--color-text-muted);
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	.mcp-label {
+		display: inline-block;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		padding: 2px 10px;
+		border-radius: var(--radius-sm);
+		background: rgba(59, 130, 246, 0.15);
+		color: #60a5fa;
+		margin-bottom: var(--space-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.mcp-label-vcp {
+		background: rgba(139, 92, 246, 0.15);
+		color: #a78bfa;
+	}
+
+	.mcp-plus {
+		color: var(--color-text-muted);
+		font-size: 1.25rem;
+		flex-shrink: 0;
+	}
+
+	.mcp-result {
+		text-align: center;
+		color: var(--color-text-muted);
+		font-size: 0.875rem;
+		line-height: 1.6;
+		max-width: 520px;
+		margin: 0 auto;
+	}
+
 	/* Demo links */
 	.demo-link-grid {
 		display: grid;
@@ -620,6 +735,19 @@
 			text-align: center;
 		}
 
+		.mcp-row {
+			flex-direction: column;
+		}
+
+		.mcp-plus {
+			transform: rotate(90deg);
+		}
+
+		.mcp-card {
+			max-width: 100%;
+			width: 100%;
+		}
+
 		.demo-link-grid {
 			grid-template-columns: 1fr;
 		}
@@ -631,6 +759,34 @@
 
 		.demo-link-pillar {
 			align-self: flex-start;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.contrast-row {
+			grid-template-columns: 1fr;
+		}
+
+		.contrast-cell:first-child {
+			border-right: none;
+		}
+
+		.step-arrow {
+			display: flex;
+			justify-content: center;
+			width: 100%;
+		}
+
+		.mcp-card {
+			overflow: hidden;
+		}
+
+		.demo-link-left {
+			gap: var(--space-sm);
+		}
+
+		.section-title {
+			font-size: 1.5rem;
 		}
 	}
 </style>

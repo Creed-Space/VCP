@@ -2,6 +2,11 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	import ErrorBoundary from '$lib/components/ErrorBoundary.svelte';
+	import { registerVCPTools } from '$lib/vcp-webmcp-sdk';
+	import { encodeContextToCSM1, getTransmissionSummary, parseCSM1Token } from '$lib/vcp/token';
+	import { getWasmModule, loadVcpWasm } from '$lib/vcp/wasmLoader';
+	import { loadPolyfillIfRequested, isPolyfillRequested } from '$lib/webmcp/polyfill';
+	import type { VCPContext } from '$lib/vcp/types';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -11,6 +16,8 @@
 	let mobileMenuOpen = $state(false);
 	let showBackToTop = $state(false);
 	let mobileNavElement: HTMLElement | null = $state(null);
+	let agentActive = $state(false);
+	let agentTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	// Derive current path for nav active states
 	const currentPath = $derived($page.url.pathname);
@@ -79,6 +86,51 @@
 		};
 	});
 
+	// WebMCP: register VCP tools via SDK (Chrome 145+, progressive enhancement)
+	// If ?webmcp=polyfill is present, load MCP-B polyfill first.
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+
+		// Pre-load WASM for token parsing
+		loadVcpWasm().catch(() => {});
+
+		let cleanup: (() => void) | undefined;
+
+		async function init() {
+			// Load MCP-B polyfill if requested (populates navigator.modelContext)
+			await loadPolyfillIfRequested();
+
+			const result = await registerVCPTools({
+				chatEndpoint: '/api/chat',
+				tokenEncoder: (ctx) => encodeContextToCSM1(ctx as unknown as VCPContext),
+				tokenParser: (token) => parseCSM1Token(token),
+				wasmParser: getWasmModule()?.parse_csm1_token,
+				transmissionSummary: (ctx) => getTransmissionSummary(ctx as unknown as VCPContext)
+			});
+			cleanup = result.cleanup;
+		}
+
+		init();
+		return () => cleanup?.();
+	});
+
+	// Agent activity indicator: listen for tool calls from WebMCP
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+
+		function onToolCall() {
+			agentActive = true;
+			clearTimeout(agentTimeout);
+			agentTimeout = setTimeout(() => { agentActive = false; }, 3000);
+		}
+
+		window.addEventListener('webmcp:tool-call', onToolCall);
+		return () => {
+			window.removeEventListener('webmcp:tool-call', onToolCall);
+			clearTimeout(agentTimeout);
+		};
+	});
+
 	function scrollToTop() {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
@@ -90,10 +142,9 @@
 
 	<header class="app-header">
 		<div class="container flex items-center justify-between">
-			<a href="/" class="logo" aria-label="VCP Demo Home">
-				<span class="logo-icon" aria-hidden="true"><img src="/vcp-logo-clean.svg" alt="" width="40" height="40" /></span>
-				<span class="logo-text">VCP</span>
-				<span class="logo-badge">Demo</span>
+			<a href="/" class="logo" aria-label="Value Context Protocol Home">
+				<span class="logo-icon" aria-hidden="true"><img src="/vcp-logo-nobg.svg" alt="" width="40" height="40" /></span>
+				<span class="logo-text">Value <span class="logo-highlight">Context</span> Protocol</span>
 			</a>
 
 			<!-- Desktop Nav - ACCESSIBILITY FIX 2026-02-02: Moved nav inside, removed outer nav wrapper -->
@@ -102,6 +153,12 @@
 				<a href="/demos" class="nav-link" class:active={isActive('/demos')}>Demos</a>
 				<a href="/docs" class="nav-link" class:active={isActive('/docs')}>Docs</a>
 				<a href="/playground" class="nav-link" class:active={isActive('/playground')}>Playground</a>
+				{#if agentActive}
+					<span class="webmcp-indicator" aria-live="polite">
+						<i class="fa-solid fa-robot" aria-hidden="true"></i>
+						Agent Active
+					</span>
+				{/if}
 				<span class="nav-divider" aria-hidden="true"></span>
 				<a
 					href="https://creed.space"
@@ -110,7 +167,7 @@
 					class="nav-link nav-link-brand"
 					aria-label="Learn more about Creed Space (opens in new tab)"
 				>
-					<span class="brand-icon" aria-hidden="true">◈</span>
+					<img src="/creedspace-logo.png" alt="" class="brand-logo" aria-hidden="true" />
 					Creed Space
 				</a>
 			</nav>
@@ -160,7 +217,7 @@
 					class="mobile-nav-link mobile-nav-brand"
 					onclick={() => (mobileMenuOpen = false)}
 				>
-					<span class="brand-icon" aria-hidden="true">◈</span>
+					<img src="/creedspace-logo.png" alt="" class="brand-logo" aria-hidden="true" />
 					Creed Space
 				</a>
 			</nav>
@@ -189,7 +246,7 @@
 		<div class="container">
 			<div class="footer-content">
 				<div class="footer-brand">
-					<span class="footer-logo" aria-hidden="true"><img src="/vcp-logo-clean.svg" alt="" width="44" height="44" /></span>
+					<span class="footer-logo" aria-hidden="true"><img src="/vcp-logo-nobg.svg" alt="" width="44" height="44" /></span>
 					<div>
 						<p class="footer-title">Value Context Protocol</p>
 						<p class="footer-tagline">Context that travels with you, wherever you need it.</p>
@@ -218,7 +275,10 @@
 						<a href="https://creed.space" target="_blank" rel="noopener noreferrer" aria-label="Creed Space (opens in new tab)">
 							Creed Space <span class="external-link-icon" aria-hidden="true">↗</span>
 						</a>
-						<a href="https://github.com/Creed-Space/VCP-Python-SDK" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in new tab)">
+						<a href="https://millos.ai" target="_blank" rel="noopener noreferrer" aria-label="MillOS (opens in new tab)">
+							MillOS <span class="external-link-icon" aria-hidden="true">↗</span>
+						</a>
+						<a href="https://github.com/Creed-Space/VCP-SDK" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in new tab)">
 							GitHub <span class="external-link-icon" aria-hidden="true">↗</span>
 						</a>
 					</div>
@@ -249,7 +309,7 @@
 	.app-header {
 		background: rgba(10, 10, 18, 0.75);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-		padding: var(--space-md) 0;
+		padding: var(--space-sm) 0;
 		position: sticky;
 		top: 0;
 		z-index: 100;
@@ -275,29 +335,35 @@
 	}
 
 	.logo-icon img {
-		width: 110px;
-		height: 110px;
+		width: 72px;
+		height: 72px;
+		margin: -14px 0;
 	}
 
 	.logo-text {
+		font-weight: 400;
+		font-size: 1.2rem;
+		color: rgba(255, 255, 255, 0.7);
+		letter-spacing: 0.03em;
+	}
+
+	.logo-highlight {
 		font-weight: 700;
-		font-size: 1.75rem;
-		background: linear-gradient(135deg, var(--color-primary), #a78bfa);
+		color: white;
+		background: linear-gradient(135deg, #c4b5fd, #a78bfa);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
-		letter-spacing: 0.02em;
 	}
 
-	.logo-badge {
-		font-size: 0.625rem;
-		padding: 2px 6px;
-		background: var(--color-primary-muted);
-		color: var(--color-primary);
-		border-radius: var(--radius-sm);
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
+	.logo:hover .logo-text {
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.logo:hover .logo-highlight {
+		background: linear-gradient(135deg, #ddd6fe, #a78bfa);
+		-webkit-background-clip: text;
+		background-clip: text;
 	}
 
 	/* Desktop Nav */
@@ -328,6 +394,30 @@
 		outline-offset: 2px;
 	}
 
+	/* Agent Activity Indicator */
+	.webmcp-indicator {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 2px 8px;
+		font-size: 0.6875rem;
+		font-weight: 500;
+		color: var(--color-primary);
+		background: var(--color-primary-muted);
+		border-radius: var(--radius-sm);
+		animation: fadeInIndicator 0.3s ease;
+		white-space: nowrap;
+	}
+
+	.webmcp-indicator i {
+		font-size: 0.625rem;
+	}
+
+	@keyframes fadeInIndicator {
+		from { opacity: 0; transform: scale(0.9); }
+		to { opacity: 1; transform: scale(1); }
+	}
+
 	.nav-divider {
 		width: 1px;
 		height: 16px;
@@ -341,8 +431,10 @@
 		color: var(--color-primary);
 	}
 
-	.brand-icon {
-		font-size: 0.75rem;
+	.brand-logo {
+		width: 20px;
+		height: 20px;
+		object-fit: contain;
 	}
 
 	/* Mobile Menu Button */
@@ -641,6 +733,7 @@
 
 		.mobile-menu-btn {
 			display: block;
+			padding: var(--space-md);
 		}
 
 		.mobile-nav {
@@ -671,6 +764,26 @@
 		}
 	}
 
+	@media (max-width: 640px) {
+		.logo-icon img {
+			width: 48px;
+			height: 48px;
+			margin: -8px 0;
+		}
+
+		.logo-text {
+			font-size: 1rem;
+		}
+
+		.footer-links {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.app-footer {
+			padding: var(--space-lg) 0 var(--space-md);
+		}
+	}
+
 	@media (max-width: 480px) {
 		.footer-links {
 			grid-template-columns: 1fr;
@@ -679,6 +792,14 @@
 
 		.footer-section a {
 			display: inline-block;
+		}
+
+		.logo-text {
+			font-size: 0.9rem;
+			max-width: 160px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 	}
 </style>

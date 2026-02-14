@@ -730,7 +730,7 @@
 		padding: var(--space-lg);
 		background: var(--color-bg-elevated);
 		border-radius: var(--radius-lg);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
 	.round-card.hook-round {

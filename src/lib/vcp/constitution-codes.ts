@@ -29,7 +29,15 @@ const SCOPE_INITIALS: Record<ScopeType, string> = {
 	social: 'So',
 	legal: 'L',
 	safety: 'Sa',
-	stewardship: 'Sw'
+	stewardship: 'Sw',
+	commerce: 'Co',
+	compliance: 'Cm',
+	ethics: 'Et',
+	coordination: 'Cd',
+	transparency: 'Tr',
+	governance: 'Go',
+	epistemic: 'Ep',
+	accuracy: 'Ac'
 };
 
 /**
