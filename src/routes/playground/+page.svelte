@@ -1594,10 +1594,10 @@
 	}
 
 	.playground-chat-container {
-		min-height: 450px;
-		max-height: 600px;
+		height: 500px;
 		display: flex;
 		flex-direction: column;
+		overflow: hidden;
 	}
 
 	.chat-context-hint {
