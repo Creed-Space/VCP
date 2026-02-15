@@ -27,6 +27,3 @@ export { default as SpotlightCard } from './SpotlightCard.svelte';
 export { default as ParticleField } from './ParticleField.svelte';
 export { default as MorphBlob } from './MorphBlob.svelte';
 
-// METTLE components
-export { default as MettleHeader } from './MettleHeader.svelte';
-export { default as MettleFooter } from './MettleFooter.svelte';
