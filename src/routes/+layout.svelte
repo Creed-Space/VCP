@@ -153,8 +153,7 @@
 				<a href="/demos" class="nav-link" class:active={isActive('/demos')}>Demos</a>
 				<a href="/docs" class="nav-link" class:active={isActive('/docs')}>Docs</a>
 				<a href="/playground" class="nav-link" class:active={isActive('/playground')}>Playground</a>
-				<a href="/mettle" class="nav-link" class:active={isActive('/mettle')}>Mettle</a>
-				{#if agentActive}
+		{#if agentActive}
 					<span class="webmcp-indicator" aria-live="polite">
 						<i class="fa-solid fa-robot" aria-hidden="true"></i>
 						Agent Active
@@ -209,10 +208,7 @@
 				<a href="/playground" class="mobile-nav-link" class:active={isActive('/playground')} onclick={() => (mobileMenuOpen = false)}>
 					Playground
 				</a>
-				<a href="/mettle" class="mobile-nav-link" class:active={isActive('/mettle')} onclick={() => (mobileMenuOpen = false)}>
-					Mettle
-				</a>
-				<hr class="mobile-nav-divider" />
+					<hr class="mobile-nav-divider" />
 				<!-- UX FIX 2026-01-31: Add onclick to close menu on external link click -->
 				<a
 					href="https://creed.space"
