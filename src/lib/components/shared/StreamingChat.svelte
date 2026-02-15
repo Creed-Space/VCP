@@ -43,10 +43,13 @@
 		fetch(endpoint, { method: 'GET' }).catch(() => {});
 	});
 
-	// Auto-scroll to bottom when messages change
+	// Auto-scroll to bottom when messages change (within chat container only)
 	$effect(() => {
 		if (messages.length > 0 && messagesEnd) {
-			messagesEnd.scrollIntoView({ behavior: 'smooth' });
+			const container = messagesEnd.parentElement;
+			if (container) {
+				container.scrollTop = container.scrollHeight;
+			}
 		}
 	});
 
