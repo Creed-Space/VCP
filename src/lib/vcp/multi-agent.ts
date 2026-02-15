@@ -39,50 +39,6 @@ export interface SharedContextSpace {
 }
 
 // ============================================
-// Negotiation
-// ============================================
-
-export interface NegotiationState {
-	negotiation_id: string;
-	topic: string;
-	round: number;
-	max_rounds: number;
-	proposals: Proposal[];
-	current_speaker: string | null;
-	consensus_reached: boolean;
-	blocking_issues: string[];
-	history: NegotiationTurn[];
-}
-
-export interface Proposal {
-	id: string;
-	proposer: string;
-	content: string;
-	timestamp: string;
-	support: string[];
-	oppose: string[];
-	abstain: string[];
-	vcp_context_used: string[];
-	rationale: string;
-	amendments?: Amendment[];
-}
-
-export interface Amendment {
-	proposer: string;
-	change: string;
-	accepted: boolean;
-}
-
-export interface NegotiationTurn {
-	turn_number: number;
-	speaker: string;
-	action: 'propose' | 'support' | 'oppose' | 'amend' | 'withdraw' | 'call_vote';
-	content: string;
-	vcp_context_visible: string[];
-	vcp_context_hidden: string[];
-}
-
-// ============================================
 // Auction
 // ============================================
 
@@ -181,26 +137,20 @@ export interface PolicyOutcome {
 }
 
 // ============================================
-// Simulation Helpers
+// Inter-Agent Context Messaging (VCP v3.1 §6.1)
 // ============================================
 
-export interface SimulationStep {
-	step_number: number;
+export type VCPMessagePayloadType = 'request' | 'response' | 'update' | 'alert' | 'handoff' | 'query';
+
+export interface VCPContextMessage {
+	version: string;
+	message_id: string;
 	timestamp: string;
-	actor: string;
-	action: string;
-	state_before: unknown;
-	state_after: unknown;
-	vcp_context_revealed: string[];
-	explanation: string;
+	sender: string;
+	recipient: string | null; // null = broadcast
+	context: string; // wire format (CSM-1 or compact ‖-separated)
+	constitution_ref: string;
+	payload_type: VCPMessagePayloadType;
+	payload: Record<string, unknown>;
 }
 
-export interface SimulationScenario {
-	id: string;
-	name: string;
-	description: string;
-	type: 'auction' | 'negotiation' | 'policy';
-	initial_state: AuctionContext | NegotiationState | PolicyDesignContext;
-	steps: SimulationStep[];
-	learning_points: string[];
-}

@@ -113,9 +113,9 @@ describe('loadConstitution', () => {
 		expect(loadConstitution('techcorp.career.advisor')!.persona).toBe('ambassador');
 	});
 
-	it('personal.responsibility.balance has persona steward with adherence 4', () => {
+	it('personal.responsibility.balance has persona mediator with adherence 4', () => {
 		const c = loadConstitution('personal.responsibility.balance')!;
-		expect(c.persona).toBe('steward');
+		expect(c.persona).toBe('mediator');
 		expect(c.adherence).toBe(4);
 	});
 });
@@ -145,9 +145,8 @@ describe('getAllConstitutions', () => {
 			'ambassador',
 			'godparent',
 			'sentinel',
-			'anchor',
 			'nanny',
-			'steward'
+			'mediator'
 		];
 		for (const c of getAllConstitutions()) {
 			expect(validPersonas).toContain(c.persona);
@@ -352,9 +351,8 @@ describe('getPersonaTone', () => {
 		'ambassador',
 		'godparent',
 		'sentinel',
-		'anchor',
 		'nanny',
-		'steward'
+		'mediator'
 	];
 
 	it('returns valid tone guidance for every persona type', () => {
@@ -386,8 +384,8 @@ describe('getPersonaTone', () => {
 		expect(tone.formality).toBe('balanced');
 	});
 
-	it('steward has balanced formality and medium directness', () => {
-		const tone = getPersonaTone('steward');
+	it('mediator has balanced formality and medium directness', () => {
+		const tone = getPersonaTone('mediator');
 		expect(tone.formality).toBe('balanced');
 		expect(tone.directness).toBe('medium');
 	});
@@ -451,9 +449,8 @@ describe('getActivePersona', () => {
 			'ambassador',
 			'godparent',
 			'sentinel',
-			'anchor',
 			'nanny',
-			'steward'
+			'mediator'
 		];
 		for (const persona of personas) {
 			const ctx = makeContext({
@@ -550,20 +547,20 @@ describe('getConstitutionsForScope', () => {
 // ============================================
 
 describe('suggestPersonaFromPersonalState', () => {
-	it('returns anchor when pressured:5+ and overloaded:4+', () => {
+	it('returns mediator when pressured:5+ and overloaded:4+', () => {
 		const state = makePersonalState({
 			perceived_urgency: { value: 'pressured', intensity: 5 },
 			cognitive_state: { value: 'overloaded', intensity: 4 }
 		});
-		expect(suggestPersonaFromPersonalState(state)).toBe('anchor');
+		expect(suggestPersonaFromPersonalState(state)).toBe('mediator');
 	});
 
-	it('returns anchor when pressured:5 and overloaded:5', () => {
+	it('returns mediator when pressured:5 and overloaded:5', () => {
 		const state = makePersonalState({
 			perceived_urgency: { value: 'pressured', intensity: 5 },
 			cognitive_state: { value: 'overloaded', intensity: 5 }
 		});
-		expect(suggestPersonaFromPersonalState(state)).toBe('anchor');
+		expect(suggestPersonaFromPersonalState(state)).toBe('mediator');
 	});
 
 	it('returns godparent when unwell:3+ and tense:3+', () => {
@@ -662,14 +659,14 @@ describe('suggestPersonaFromPersonalState', () => {
 		expect(suggestPersonaFromPersonalState(state)).toBeNull();
 	});
 
-	it('anchor takes priority over nanny when both conditions met', () => {
-		// pressured:5 + overloaded:5 qualifies for both anchor and nanny
+	it('mediator takes priority over nanny when both conditions met', () => {
+		// pressured:5 + overloaded:5 qualifies for both mediator and nanny
 		const state = makePersonalState({
 			perceived_urgency: { value: 'pressured', intensity: 5 },
 			cognitive_state: { value: 'overloaded', intensity: 5 }
 		});
-		// anchor check comes first in the code
-		expect(suggestPersonaFromPersonalState(state)).toBe('anchor');
+		// mediator check comes first in the code
+		expect(suggestPersonaFromPersonalState(state)).toBe('mediator');
 	});
 
 	it('godparent (unwell+tense) takes priority over nanny when both qualify', () => {

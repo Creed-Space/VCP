@@ -20,7 +20,8 @@
 	<section class="page-hero">
 		<h1>Documentation</h1>
 		<p class="page-hero-subtitle">
-			Technical guides, API reference, and specifications for implementing VCP.
+			Technical guides, API reference, and specifications for implementing VCP --
+			built on three pillars: portability, adaptation, and liveness.
 		</p>
 	</section>
 
@@ -40,12 +41,20 @@
 			<a href="/docs/concepts" class="doc-card">
 				<span class="doc-icon"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></span>
 				<h3>Core Concepts</h3>
-				<p>Understand the fundamental concepts: context, values profiles, privacy filtering.</p>
+				<p>Understand the three pillars (portability, adaptation, liveness), privacy filtering, and the three-layer context model.</p>
 				<span class="doc-time">10 min read</span>
 			</a>
 
+			<!-- Bilateral Alignment -->
+			<a href="/docs/bilateral-alignment" class="doc-card doc-card-featured">
+				<span class="doc-icon"><i class="fa-solid fa-handshake-angle" aria-hidden="true"></i></span>
+				<h3>Bilateral Alignment</h3>
+				<p>Four trust levels that define how AI relates, not just what it can do.</p>
+				<span class="doc-time">8 min read</span>
+			</a>
+
 			<!-- Understanding Personas -->
-			<a href="/docs/personas" class="doc-card doc-card-featured">
+			<a href="/docs/concepts" class="doc-card">
 				<span class="doc-icon"><i class="fa-solid fa-masks-theater" aria-hidden="true"></i></span>
 				<h3>Understanding Personas</h3>
 				<p>Learn about VCP's 6 personas: Muse, Ambassador, Godparent, Sentinel, Nanny, and Mediator.</p>
@@ -66,6 +75,14 @@
 				<h3>Security Model</h3>
 				<p>How VCP protects your data: encryption, transmission, and trust boundaries.</p>
 				<span class="doc-time">10 min read</span>
+			</a>
+
+			<!-- UVC Naming -->
+			<a href="/docs/naming" class="doc-card">
+				<span class="doc-icon"><i class="fa-solid fa-tag" aria-hidden="true"></i></span>
+				<h3>UVC Naming</h3>
+				<p>Token format, namespace tiers, and resolution for Universal Value Codes.</p>
+				<span class="doc-time">8 min read</span>
 			</a>
 
 			<!-- API Reference -->
@@ -90,7 +107,8 @@ P:persona:adherence
 G:goal:experience:style
 X:🔇:💰low:⚡var
 F:time_limited|noise_restricted
-S:🔒work|🔒housing</code></pre>
+S:🔒work|🔒housing
+R:🧠focused:3|💭calm:4|🩺neutral:1</code></pre>
 			</div>
 
 			<div class="quick-ref-card">
@@ -120,30 +138,6 @@ S:🔒work|🔒housing</code></pre>
 						<span>Never transmitted</span>
 					</div>
 				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Roadmap -->
-	<section class="roadmap-section">
-		<h2>Coming Soon</h2>
-		<p class="roadmap-description">These guides are in development and will be available soon.</p>
-		<div class="roadmap-grid">
-			<div class="roadmap-item">
-				<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
-				<span>Constitutional AI</span>
-			</div>
-			<div class="roadmap-item">
-				<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-				<span>Privacy Architecture</span>
-			</div>
-			<div class="roadmap-item">
-				<i class="fa-solid fa-brain" aria-hidden="true"></i>
-				<span>Interiora Specification</span>
-			</div>
-			<div class="roadmap-item">
-				<i class="fa-solid fa-robot" aria-hidden="true"></i>
-				<span>Multi-Agent Patterns</span>
 			</div>
 		</div>
 	</section>
@@ -299,45 +293,31 @@ S:🔒work|🔒housing</code></pre>
 		color: var(--color-danger);
 	}
 
-	/* Roadmap Section */
-	.roadmap-section {
-		margin-bottom: var(--space-2xl);
-	}
+	@media (max-width: 640px) {
+		.quick-ref-grid {
+			grid-template-columns: 1fr;
+		}
 
-	.roadmap-section h2 {
-		margin-bottom: var(--space-sm);
-	}
+		.doc-card {
+			padding: var(--space-lg);
+		}
 
-	.roadmap-description {
-		color: var(--color-text-muted);
-		font-size: 0.875rem;
-		margin-bottom: var(--space-lg);
-	}
+		.code-block {
+			font-size: 0.6875rem;
+			padding: var(--space-sm);
+		}
 
-	.roadmap-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-md);
-	}
+		.code-block code {
+			white-space: pre-wrap;
+			word-break: break-all;
+		}
 
-	.roadmap-item {
-		display: flex;
-		align-items: center;
-		gap: var(--space-sm);
-		padding: var(--space-sm) var(--space-md);
-		background: var(--color-bg-elevated);
-		border-radius: var(--radius-md);
-		font-size: 0.875rem;
-		color: var(--color-text-muted);
-	}
+		.emoji-row span:first-child {
+			width: 24px;
+		}
 
-	.roadmap-item i {
-		color: var(--color-text-subtle);
-	}
-
-	@media (max-width: 768px) {
-		.roadmap-grid {
-			flex-direction: column;
+		.emoji-row {
+			font-size: 0.8125rem;
 		}
 	}
 </style>

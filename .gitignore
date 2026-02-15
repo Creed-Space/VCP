@@ -1,29 +1,10 @@
-# Environment
-.env
-.env.*
-
-# Dependencies
 node_modules/
-
-# Build output
 build/
 .svelte-kit/
-
-# OS
+.env
+.env.*
 .DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
+coverage/
 logs/
-*.log
-
-# Session data
-memory/
-_contprompts/
-
-# Large files
-*.pdf
+*.pyc
+__pycache__/

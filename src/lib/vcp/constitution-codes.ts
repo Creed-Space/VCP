@@ -4,6 +4,20 @@
  * Generates compact constitution codes like A3+W+E from
  * ConstitutionReference objects. Used in UI badges and
  * the comparison table.
+ *
+ * These are multi-char DISPLAY codes for UI readability.
+ * The single-char WIRE codes (CSM1) are defined in:
+ *   services/vcp/semantics/csm1.py — NZGAMDC
+ *   data/schemas/vcp-semantics-csm1.schema.json
+ *
+ * Persona wire codes: N=Nanny, Z=Sentinel, G=Godparent,
+ *   A=Ambassador, M=Muse, D=Mediator, C=Custom
+ *
+ * VCP token section codes (4-letter aliases, see token.ts):
+ *   RULE = C-line (constitution/rules)
+ *   ROLE = P-line (persona/adherence)
+ *   GOAL = G-line (goal/experience/style)
+ *   STAT = PS-line (personal state)
  */
 
 import type { ConstitutionReference, PersonaType, ScopeType } from './types';

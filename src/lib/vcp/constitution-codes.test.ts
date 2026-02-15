@@ -24,7 +24,7 @@ describe('PERSONA_INITIALS', () => {
 
 	it('has initials for all PersonaType values', () => {
 		const allPersonas: PersonaType[] = [
-			'ambassador', 'godparent', 'muse', 'sentinel', 'anchor', 'nanny', 'steward'
+			'ambassador', 'godparent', 'muse', 'sentinel', 'nanny', 'mediator'
 		];
 		for (const persona of allPersonas) {
 			expect(PERSONA_INITIALS[persona]).toBeDefined();
@@ -49,20 +49,16 @@ describe('PERSONA_INITIALS', () => {
 		expect(PERSONA_INITIALS.sentinel).toBe('Se');
 	});
 
-	it('maps anchor to An', () => {
-		expect(PERSONA_INITIALS.anchor).toBe('An');
-	});
-
 	it('maps nanny to N', () => {
 		expect(PERSONA_INITIALS.nanny).toBe('N');
 	});
 
-	it('maps steward to St', () => {
-		expect(PERSONA_INITIALS.steward).toBe('St');
+	it('maps mediator to Me', () => {
+		expect(PERSONA_INITIALS.mediator).toBe('Me');
 	});
 
-	it('has exactly 7 persona types', () => {
-		expect(Object.keys(PERSONA_INITIALS).length).toBe(7);
+	it('has exactly 6 persona types', () => {
+		expect(Object.keys(PERSONA_INITIALS).length).toBe(6);
 	});
 });
 
@@ -145,9 +141,9 @@ describe('generateConstitutionCode', () => {
 			expect(generateConstitutionCode(ref)).toBe('A3+W+E');
 		});
 
-		it('generates St4+Sw+P for steward adherence 4 with stewardship and privacy', () => {
-			const ref = makeRef({ persona: 'steward', adherence: 4, scopes: ['stewardship', 'privacy'] });
-			expect(generateConstitutionCode(ref)).toBe('St4+Sw+P');
+		it('generates Me4+Sw+P for mediator adherence 4 with stewardship and privacy', () => {
+			const ref = makeRef({ persona: 'mediator', adherence: 4, scopes: ['stewardship', 'privacy'] });
+			expect(generateConstitutionCode(ref)).toBe('Me4+Sw+P');
 		});
 
 		it('generates M3+C+H+P for muse adherence 3 with creativity, health, privacy', () => {
@@ -163,11 +159,6 @@ describe('generateConstitutionCode', () => {
 		it('generates Se1+Sa for sentinel adherence 1 with safety', () => {
 			const ref = makeRef({ persona: 'sentinel', adherence: 1, scopes: ['safety'] });
 			expect(generateConstitutionCode(ref)).toBe('Se1+Sa');
-		});
-
-		it('generates An2+L for anchor adherence 2 with legal', () => {
-			const ref = makeRef({ persona: 'anchor', adherence: 2, scopes: ['legal'] });
-			expect(generateConstitutionCode(ref)).toBe('An2+L');
 		});
 
 		it('generates N4+H+F for nanny adherence 4 with health and family', () => {
@@ -195,7 +186,7 @@ describe('generateConstitutionCode', () => {
 
 	describe('all persona types produce valid codes', () => {
 		const allPersonas: PersonaType[] = [
-			'ambassador', 'godparent', 'muse', 'sentinel', 'anchor', 'nanny', 'steward'
+			'ambassador', 'godparent', 'muse', 'sentinel', 'nanny', 'mediator'
 		];
 
 		for (const persona of allPersonas) {

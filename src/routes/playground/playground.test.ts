@@ -89,34 +89,25 @@ describe('Playground page', () => {
 	});
 
 	// ------------------------------------------------------------------
-	// 2. StreamingChat renders on page
+	// 2. Try Demo section present
 	// ------------------------------------------------------------------
-	it('renders the StreamingChat component', () => {
-		const { container } = renderPage();
-		const chatEl = container.querySelector('.streaming-chat');
-		expect(chatEl).toBeTruthy();
-	});
-
-	// ------------------------------------------------------------------
-	// 3. Demo links section present
-	// ------------------------------------------------------------------
-	it('renders the "Or Explore a Guided Demo" section', () => {
+	it('renders the "Try This Context in a Demo" section', () => {
 		renderPage();
-		const heading = screen.getByText(/Or Explore a Guided Demo/i);
+		const heading = screen.getByText(/Try This Context in a Demo/i);
 		expect(heading).toBeTruthy();
 	});
 
 	// ------------------------------------------------------------------
-	// 4. Demo links point to correct routes
+	// 3. Demo links point to correct routes
 	// ------------------------------------------------------------------
-	it('has demo links to /demos/ren, /demos/noor, /demos/hana', () => {
+	it('has demo links to /demos/campion, /demos/noor, /demos/ren', () => {
 		const { container } = renderPage();
 		const demoLinks = container.querySelectorAll('.demo-link-card');
 		const hrefs = Array.from(demoLinks).map((a) => a.getAttribute('href'));
 
-		expect(hrefs).toContain('/demos/ren');
+		expect(hrefs).toContain('/demos/campion');
 		expect(hrefs).toContain('/demos/noor');
-		expect(hrefs).toContain('/demos/hana');
+		expect(hrefs).toContain('/demos/ren');
 	});
 
 	// ------------------------------------------------------------------
@@ -150,9 +141,9 @@ describe('Playground page', () => {
 	// ------------------------------------------------------------------
 	// 7. Persona buttons render
 	// ------------------------------------------------------------------
-	it('renders all 7 persona buttons', () => {
+	it('renders all 6 persona buttons', () => {
 		renderPage();
-		const personaNames = ['Muse', 'Ambassador', 'Godparent', 'Sentinel', 'Anchor', 'Nanny', 'Steward'];
+		const personaNames = ['Muse', 'Ambassador', 'Godparent', 'Sentinel', 'Nanny', 'Mediator'];
 		for (const name of personaNames) {
 			const btn = screen.getByRole('radio', { name: new RegExp(name, 'i') });
 			expect(btn).toBeTruthy();
@@ -160,17 +151,13 @@ describe('Playground page', () => {
 	});
 
 	// ------------------------------------------------------------------
-	// 8. Chat container has correct height style
+	// 8. Playground grid layout element exists
 	// ------------------------------------------------------------------
-	it('has a playground-chat-container element', () => {
+	it('has a playground-grid element', () => {
 		const { container } = renderPage();
-		const chatContainer = container.querySelector('.playground-chat-container');
-		expect(chatContainer).toBeTruthy();
-		// The 450px height is defined in the component's scoped CSS.
-		// In jsdom, computed styles are not applied, so we verify the element
-		// exists with the correct class. The CSS rule is:
-		//   .playground-chat-container { height: 450px; }
-		expect(chatContainer?.classList.contains('playground-chat-container')).toBe(true);
+		const grid = container.querySelector('.playground-grid');
+		expect(grid).toBeTruthy();
+		expect(grid?.classList.contains('playground-grid')).toBe(true);
 	});
 
 	// ------------------------------------------------------------------

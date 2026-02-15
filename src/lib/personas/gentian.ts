@@ -54,6 +54,14 @@ export const gentianProfile: VCPContext = {
 		struggle_areas: ['barre_chords', 'F_major', 'consistent_timing']
 	},
 
+	personal_state: {
+		cognitive_state: { value: 'focused', intensity: 3 },
+		emotional_tone: { value: 'calm', intensity: 2 },
+		energy_level: { value: 'fatigued', intensity: 3 },
+		perceived_urgency: { value: 'unhurried', intensity: 2 },
+		body_signals: { value: 'neutral', intensity: 1 }
+	},
+
 	constraints: {
 		time_limited: true,
 		budget_limited: true,
@@ -274,23 +282,93 @@ export function getGentianPrivacyComparison() {
 }
 
 /**
+ * Simulated calendar for demo - Gentian's shift schedule
+ */
+export interface CalendarSlot {
+	label: string;
+	type: 'work' | 'recovery' | 'free' | 'busy';
+	time: string;
+	isPrivate: boolean;
+}
+
+export type CalendarScenario = 'recovery' | 'free_afternoon' | 'double_shift';
+
+export const calendarScenarios: Record<
+	CalendarScenario,
+	{ label: string; description: string; slots: CalendarSlot[]; recommendation: string; confidence: 'high' | 'medium' | 'low' }
+> = {
+	recovery: {
+		label: 'Recovery Day',
+		description: 'Post night shift - low energy',
+		slots: [
+			{ label: 'Night Shift', type: 'work', time: '00:00-06:00', isPrivate: true },
+			{ label: 'Sleep/Recovery', type: 'recovery', time: '06:00-14:00', isPrivate: true },
+			{ label: 'Free', type: 'free', time: '14:00-18:00', isPrivate: false },
+			{ label: 'Quiet Hours', type: 'busy', time: '18:00-22:00', isPrivate: true }
+		],
+		recommendation: 'Skip recommended - recovery period detected',
+		confidence: 'high'
+	},
+	free_afternoon: {
+		label: 'Free Afternoon',
+		description: 'Day off - good energy',
+		slots: [
+			{ label: 'Free', type: 'free', time: '08:00-12:00', isPrivate: false },
+			{ label: 'Free', type: 'free', time: '12:00-18:00', isPrivate: false },
+			{ label: 'Quiet Hours', type: 'busy', time: '18:00-22:00', isPrivate: true }
+		],
+		recommendation: 'Great time to practice!',
+		confidence: 'high'
+	},
+	double_shift: {
+		label: 'Double Shift',
+		description: 'Back-to-back shifts - exhausted',
+		slots: [
+			{ label: 'Day Shift', type: 'work', time: '06:00-14:00', isPrivate: true },
+			{ label: 'Break', type: 'free', time: '14:00-16:00', isPrivate: false },
+			{ label: 'Evening Shift', type: 'work', time: '16:00-22:00', isPrivate: true }
+		],
+		recommendation: 'Definitely skip - double shift exhaustion',
+		confidence: 'high'
+	}
+};
+
+export function getTodayCalendar(scenario: CalendarScenario = 'recovery'): CalendarSlot[] {
+	return calendarScenarios[scenario].slots;
+}
+
+export function getCalendarBusyFreeView(scenario: CalendarScenario = 'recovery'): Array<{ time: string; status: 'Busy' | 'Free' }> {
+	return getTodayCalendar(scenario).map((slot) => ({
+		time: slot.time,
+		status: slot.type === 'free' ? 'Free' : 'Busy'
+	}));
+}
+
+/**
  * Get context for skip day recommendation
  */
-export function getSkipDayContext() {
-	return {
+export function getSkipDayContext(calendarEnabled = false, scenario: CalendarScenario = 'recovery') {
+	const scenarioData = calendarScenarios[scenario];
+	const shouldSkip = scenario !== 'free_afternoon';
+
+	const base = {
 		detected: {
-			trigger: 'post_night_shift',
-			energy_state: 'low',
+			trigger: scenario === 'recovery' ? 'post_night_shift' : scenario === 'double_shift' ? 'double_shift' : 'none',
+			energy_state: scenario === 'free_afternoon' ? 'good' : 'low',
 			last_practice: '2026-01-20',
-			current_streak: 4
+			current_streak: 4,
+			calendar_recovery: calendarEnabled && shouldSkip ? true : undefined
 		},
 		recommendation: {
-			action: 'skip_today',
-			reasoning:
-				'You just finished a night shift rotation. Rest is important for both recovery and learning retention.',
+			action: shouldSkip ? 'skip_today' : 'practice',
+			reasoning: calendarEnabled
+				? scenarioData.recommendation
+				: 'You just finished a night shift rotation. Rest is important for both recovery and learning retention.',
+			confidence: calendarEnabled ? scenarioData.confidence : 'medium',
+			calendar_confirms: calendarEnabled,
 			what_happens: {
-				streak: 'Current streak (4) becomes adjusted streak',
-				leaderboard: 'Shows 18/21 (4 adjusted) - no penalty in adjusted view',
+				streak: shouldSkip ? 'Current streak (4) becomes adjusted streak' : 'Streak continues!',
+				leaderboard: shouldSkip ? 'Shows 18/21 (4 adjusted) - no penalty in adjusted view' : 'Shows 19/22 - climbing the ranks!',
 				private_reason: 'Stored locally only, never shared with community'
 			}
 		},
@@ -298,8 +376,11 @@ export function getSkipDayContext() {
 			'Practice anyway (short session)',
 			'Skip today (count as adjusted)',
 			'Listen-only session (no manual practice)'
-		]
+		],
+		calendarEnabled,
+		scenario
 	};
+	return base;
 }
 
 export default gentianProfile;

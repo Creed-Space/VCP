@@ -1,34 +1,24 @@
 <script lang="ts">
 	/**
-	 * HowItWorks Component
-	 * Visual explanation of VCP data flow for landing page
+	 * HowItWorks Component — Portability-focused
+	 * 3-step visual flow: You Define → It Travels → Services Adapt
 	 */
 
-	// Example token for display - more readable format
-	const exampleToken = `VCP:1.0:gentian
-C:personal.growth@1.0
-P:muse:3
-G:guitar:beginner
-X:🔇quiet:💰low
-F:time|noise
-S:🔒work|🔒housing`;
-
-	// Animate steps on scroll
 	let visible = $state(false);
+	let flowDiagramRef = $state<HTMLElement | null>(null);
 
 	function handleIntersect(entries: IntersectionObserverEntry[]) {
-		if (entries[0].isIntersecting) {
+		if (entries[0]?.isIntersecting) {
 			visible = true;
 		}
 	}
 
 	$effect(() => {
-		if (typeof IntersectionObserver !== 'undefined') {
+		if (typeof IntersectionObserver !== 'undefined' && flowDiagramRef) {
 			const observer = new IntersectionObserver(handleIntersect, {
 				threshold: 0.2
 			});
-			const el = document.querySelector('.flow-diagram');
-			if (el) observer.observe(el);
+			observer.observe(flowDiagramRef);
 			return () => observer.disconnect();
 		}
 	});
@@ -37,29 +27,36 @@ S:🔒work|🔒housing`;
 <section class="how-it-works">
 	<h2 class="section-title">How It Works</h2>
 	<p class="section-description">
-		Your private details become simple flags. Platforms adapt without knowing your story.
+		Define your context once. A compact token carries it everywhere. Every service adapts.
 	</p>
 
-	<div class="flow-diagram" class:visible>
-		<!-- Step 1: Your Context -->
+	<div class="flow-diagram" class:visible bind:this={flowDiagramRef}>
+		<!-- Step 1: You Define -->
 		<div class="flow-step">
 			<div class="step-header">
 				<span class="step-number">1</span>
-				<span class="step-title">Your Context</span>
+				<span class="step-title">You Define</span>
 			</div>
-			<div class="step-content step-context">
-				<div class="context-item context-public">
-					<span class="context-label">Public</span>
-					<span class="context-value">Goal: Learn guitar</span>
-					<span class="context-value">Level: Beginner</span>
-					<span class="context-value">Style: Hands-on</span>
+			<div class="step-content">
+				<div class="context-list">
+					<div class="context-row">
+						<span class="context-icon"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></span>
+						<span class="context-text">Goal: Learn guitar</span>
+					</div>
+					<div class="context-row">
+						<span class="context-icon"><i class="fa-solid fa-clock" aria-hidden="true"></i></span>
+						<span class="context-text">Schedule: Tight (shift work)</span>
+					</div>
+					<div class="context-row">
+						<span class="context-icon"><i class="fa-solid fa-battery-half" aria-hidden="true"></i></span>
+						<span class="context-text">Energy: Low today</span>
+					</div>
+					<div class="context-row">
+						<span class="context-icon"><i class="fa-solid fa-hand" aria-hidden="true"></i></span>
+						<span class="context-text">Style: Hands-on learner</span>
+					</div>
 				</div>
-				<div class="context-item context-private">
-					<span class="context-label">Private</span>
-					<span class="context-value">Shift work schedule</span>
-					<span class="context-value">Apartment thin walls</span>
-					<span class="context-value">Budget constraints</span>
-				</div>
+				<p class="step-note">Your preferences, constraints, and current state</p>
 			</div>
 		</div>
 
@@ -69,106 +66,58 @@ S:🔒work|🔒housing`;
 			<div class="arrow-label">encode</div>
 		</div>
 
-		<!-- Step 2: VCP Token -->
+		<!-- Step 2: It Travels -->
 		<div class="flow-step">
 			<div class="step-header">
 				<span class="step-number">2</span>
-				<span class="step-title">VCP Token</span>
+				<span class="step-title">It Travels</span>
 			</div>
-			<div class="step-content step-token">
-				<pre class="token-preview">{exampleToken}</pre>
-				<div class="token-note">
-					<span class="token-note-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span> = private category (value hidden)
+			<div class="step-content step-travel">
+				<div class="token-compact">
+					<div class="token-icon"><i class="fa-solid fa-passport" aria-hidden="true"></i></div>
+					<div class="token-label">VCP Token</div>
+					<div class="token-size">~200 bytes</div>
 				</div>
+				<div class="travel-destinations">
+					<div class="travel-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+					<div class="destination-icons">
+						<span class="dest-icon" title="Music learning app"><i class="fa-solid fa-music" aria-hidden="true"></i></span>
+						<span class="dest-icon" title="Practice platform"><i class="fa-solid fa-headphones" aria-hidden="true"></i></span>
+						<span class="dest-icon" title="Retail service"><i class="fa-solid fa-store" aria-hidden="true"></i></span>
+					</div>
+				</div>
+				<p class="step-note">One compact token, every service</p>
 			</div>
 		</div>
 
 		<!-- Arrow -->
 		<div class="flow-arrow">
 			<div class="arrow-line"></div>
-			<div class="arrow-label">transmit</div>
+			<div class="arrow-label">adapt</div>
 		</div>
 
-		<!-- Step 3: Platform -->
+		<!-- Step 3: Services Adapt -->
 		<div class="flow-step">
 			<div class="step-header">
 				<span class="step-number">3</span>
-				<span class="step-title">Platform Sees</span>
+				<span class="step-title">Services Adapt</span>
 			</div>
-			<div class="step-content step-platform">
-				<div class="platform-sees">
-					<div class="sees-item sees-shared">
-						<span class="sees-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
-						<span>Guitar, Beginner, Hands-on</span>
+			<div class="step-content">
+				<div class="adapt-list">
+					<div class="adapt-row">
+						<span class="adapt-platform"><i class="fa-solid fa-music" aria-hidden="true"></i></span>
+						<span class="adapt-text">Quiet fingerpicking exercises, free tier</span>
 					</div>
-					<div class="sees-item sees-flag">
-						<span class="sees-icon"><i class="fa-solid fa-volume-xmark" aria-hidden="true"></i></span>
-						<span>Quiet mode needed</span>
+					<div class="adapt-row">
+						<span class="adapt-platform"><i class="fa-solid fa-headphones" aria-hidden="true"></i></span>
+						<span class="adapt-text">15-minute sessions for after shifts</span>
 					</div>
-					<div class="sees-item sees-flag">
-						<span class="sees-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
-						<span>Budget: Low</span>
-					</div>
-					<div class="sees-item sees-flag">
-						<span class="sees-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
-						<span>Energy variable</span>
+					<div class="adapt-row">
+						<span class="adapt-platform"><i class="fa-solid fa-store" aria-hidden="true"></i></span>
+						<span class="adapt-text">Nylon-string guitar, within budget</span>
 					</div>
 				</div>
-				<div class="platform-result">
-					<span class="result-icon">→</span>
-					<span class="result-text">Recommends quiet practice methods, free resources, flexible schedule</span>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Privacy Guarantee -->
-	<div class="privacy-guarantee">
-		<div class="guarantee-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
-		<div class="guarantee-content">
-			<h4>Privacy by Design</h4>
-			<p>
-				Platforms see <strong>that</strong> you need quiet practice, not <strong>why</strong>.
-				They see budget is limited, not your financial situation.
-				Flags influence adaptation; details stay private.
-			</p>
-		</div>
-	</div>
-
-	<!-- Token Example Box -->
-	<div class="token-example">
-		<div class="example-header">
-			<span class="example-title">CSM-1 Token Format</span>
-			<span class="example-badge">Compact State Message</span>
-		</div>
-		<div class="example-content">
-			<div class="example-row">
-				<code class="example-key">VCP:1.0</code>
-				<span class="example-desc">Protocol version</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">C:</code>
-				<span class="example-desc">Constitution (values framework)</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">P:</code>
-				<span class="example-desc">Persona + adherence level</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">G:</code>
-				<span class="example-desc">Goal context (public)</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">X:</code>
-				<span class="example-desc">Constraint flags with emoji shortcodes</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">F:</code>
-				<span class="example-desc">Active boolean flags</span>
-			</div>
-			<div class="example-row">
-				<code class="example-key">S:</code>
-				<span class="example-desc">Private markers (categories only, no values)</span>
+				<p class="step-note">Each service reads what it needs and adjusts</p>
 			</div>
 		</div>
 	</div>
@@ -199,7 +148,6 @@ S:🔒work|🔒housing`;
 		align-items: stretch;
 		justify-content: center;
 		gap: var(--space-lg);
-		margin-bottom: var(--space-xl);
 		padding: var(--space-lg) 0;
 	}
 
@@ -269,41 +217,139 @@ S:🔒work|🔒housing`;
 		padding: var(--space-md);
 	}
 
-	.context-item {
+	.step-note {
+		margin-top: var(--space-sm);
+		font-size: 0.6875rem;
+		color: var(--color-text-muted);
+		text-align: center;
+		font-style: italic;
+	}
+
+	/* Step 1: Context list */
+	.context-list {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-xs);
-		padding: var(--space-sm);
+	}
+
+	.context-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-xs) var(--space-sm);
 		border-radius: var(--radius-sm);
-		margin-bottom: var(--space-sm);
-	}
-
-	.context-item:last-child {
-		margin-bottom: 0;
-	}
-
-	.context-public {
-		background: var(--color-success-muted);
-		border: 1px solid rgba(34, 197, 94, 0.3);
-	}
-
-	.context-private {
-		background: var(--color-danger-muted);
-		border: 1px solid rgba(239, 68, 68, 0.3);
-	}
-
-	.context-label {
-		font-size: 0.625rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--color-text-muted);
-	}
-
-	.context-value {
+		background: rgba(255, 255, 255, 0.03);
 		font-size: 0.75rem;
+	}
+
+	.context-icon {
+		color: var(--color-primary);
+		font-size: 0.625rem;
+		flex-shrink: 0;
+		width: 16px;
+		text-align: center;
+	}
+
+	.context-text {
 		color: var(--color-text);
 	}
 
+	/* Step 2: Token travel */
+	.step-travel {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	.token-compact {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-md);
+		background: var(--color-primary-muted);
+		border: 1px solid rgba(99, 102, 241, 0.3);
+		border-radius: var(--radius-lg);
+		width: 100%;
+	}
+
+	.token-icon {
+		font-size: 1.5rem;
+		color: var(--color-primary);
+	}
+
+	.token-label {
+		font-weight: 600;
+		font-size: 0.8125rem;
+	}
+
+	.token-size {
+		font-size: 0.625rem;
+		color: var(--color-text-muted);
+		font-family: var(--font-mono);
+	}
+
+	.travel-destinations {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.travel-arrow {
+		color: var(--color-primary);
+		font-size: 0.875rem;
+	}
+
+	.destination-icons {
+		display: flex;
+		gap: var(--space-sm);
+	}
+
+	.dest-icon {
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: var(--radius-md);
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+	}
+
+	/* Step 3: Adaptation list */
+	.adapt-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+
+	.adapt-row {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-sm);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--radius-sm);
+		font-size: 0.75rem;
+		border-left: 2px solid var(--color-success);
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.adapt-platform {
+		flex-shrink: 0;
+		color: var(--color-text-muted);
+		width: 16px;
+		text-align: center;
+	}
+
+	.adapt-text {
+		color: var(--color-text);
+		line-height: 1.4;
+	}
+
+	/* Arrows */
 	.flow-arrow {
 		display: flex;
 		flex-direction: column;
@@ -340,154 +386,7 @@ S:🔒work|🔒housing`;
 		font-weight: 500;
 	}
 
-	.token-preview {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		line-height: 1.6;
-		background: var(--color-bg);
-		padding: var(--space-md);
-		border-radius: var(--radius-md);
-		margin: 0;
-		overflow-x: auto;
-		white-space: pre;
-	}
-
-	.token-note {
-		margin-top: var(--space-sm);
-		font-size: 0.625rem;
-		color: var(--color-text-muted);
-		display: flex;
-		align-items: center;
-		gap: var(--space-xs);
-	}
-
-	.platform-sees {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-	}
-
-	.sees-item {
-		display: flex;
-		align-items: center;
-		gap: var(--space-sm);
-		font-size: 0.75rem;
-		padding: var(--space-xs) var(--space-sm);
-		border-radius: var(--radius-sm);
-		background: rgba(255, 255, 255, 0.03);
-	}
-
-	.sees-icon {
-		flex-shrink: 0;
-	}
-
-	.sees-shared {
-		border-left: 2px solid var(--color-success);
-	}
-
-	.sees-flag {
-		border-left: 2px solid var(--color-warning);
-	}
-
-	.platform-result {
-		margin-top: var(--space-md);
-		padding-top: var(--space-md);
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		display: flex;
-		gap: var(--space-sm);
-		font-size: 0.75rem;
-		color: var(--color-text-muted);
-	}
-
-	.result-icon {
-		color: var(--color-primary);
-	}
-
-	.privacy-guarantee {
-		display: flex;
-		align-items: flex-start;
-		gap: var(--space-lg);
-		padding: var(--space-lg);
-		background: var(--color-primary-muted);
-		border: 1px solid rgba(99, 102, 241, 0.3);
-		border-radius: var(--radius-lg);
-		margin-bottom: var(--space-xl);
-	}
-
-	.guarantee-icon {
-		font-size: 2rem;
-		flex-shrink: 0;
-	}
-
-	.guarantee-content h4 {
-		margin-bottom: var(--space-xs);
-	}
-
-	.guarantee-content p {
-		color: var(--color-text-muted);
-		font-size: 0.875rem;
-		line-height: 1.6;
-	}
-
-	.guarantee-content strong {
-		color: var(--color-text);
-	}
-
-	.token-example {
-		background: var(--color-bg-card);
-		border-radius: var(--radius-lg);
-		overflow: hidden;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.example-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: var(--space-md);
-		background: rgba(255, 255, 255, 0.05);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.example-title {
-		font-weight: 600;
-		font-size: 0.875rem;
-	}
-
-	.example-badge {
-		font-size: 0.625rem;
-		padding: 2px 8px;
-		background: var(--color-primary-muted);
-		color: var(--color-primary);
-		border-radius: var(--radius-sm);
-		font-family: var(--font-mono);
-	}
-
-	.example-content {
-		padding: var(--space-md);
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-sm);
-	}
-
-	.example-row {
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-md);
-	}
-
-	.example-key {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--color-primary);
-		min-width: 80px;
-	}
-
-	.example-desc {
-		font-size: 0.8125rem;
-		color: var(--color-text-muted);
-	}
-
+	/* Responsive */
 	@media (max-width: 900px) {
 		.flow-diagram {
 			flex-direction: column;
@@ -500,7 +399,6 @@ S:🔒work|🔒housing`;
 			width: 100%;
 		}
 
-		/* Remove stagger delay on mobile */
 		.flow-diagram.visible .flow-step {
 			opacity: 1;
 			transform: translateY(0);
@@ -531,28 +429,7 @@ S:🔒work|🔒housing`;
 		}
 	}
 
-	@media (max-width: 640px) {
-		.privacy-guarantee {
-			flex-direction: column;
-			text-align: center;
-			align-items: center;
-		}
-
-		.example-row {
-			flex-direction: column;
-			gap: var(--space-xs);
-		}
-
-		.example-key {
-			min-width: auto;
-		}
-
-		.token-preview {
-			font-size: 0.6875rem;
-		}
-	}
-
-	/* Reduced motion preference */
+	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
 		.flow-step,
 		.flow-arrow {

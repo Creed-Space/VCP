@@ -10,7 +10,7 @@ import {
 	buildPlaygroundPrompt,
 	buildMusePrompt,
 	buildMentorPrompt,
-	buildStewardPrompt,
+	buildMediatorPrompt,
 	VALID_PERSONAS,
 	SAFE_CONTEXT_FIELDS,
 	checkRateLimit,
@@ -350,8 +350,8 @@ describe('buildSystemPrompt', () => {
 		expect(result).toContain('corporate learning');
 	});
 
-	it('routes persona="steward" to buildStewardPrompt', () => {
-		const result = buildSystemPrompt(undefined, constitution, 'steward');
+	it('routes persona="mediator" to buildMediatorPrompt', () => {
+		const result = buildSystemPrompt(undefined, constitution, 'mediator');
 		expect(result).toContain('obligation');
 	});
 
@@ -375,26 +375,21 @@ describe('buildSystemPrompt', () => {
 		expect(result).toContain('vigilant monitor');
 	});
 
-	it('routes persona="anchor" to buildPlaygroundPrompt', () => {
-		const result = buildSystemPrompt(undefined, constitution, 'anchor');
-		expect(result).toContain('grounding presence');
-	});
-
 	it('routes persona="nanny" to buildPlaygroundPrompt', () => {
 		const result = buildSystemPrompt(undefined, constitution, 'nanny');
 		expect(result).toContain('nurturing caretaker');
 	});
 
-	it('defaults to steward when persona is undefined', () => {
+	it('defaults to mediator when persona is undefined', () => {
 		const result = buildSystemPrompt(undefined, constitution, undefined);
 		expect(result).toContain('obligation');
-		expect(result).toContain('Steward');
+		expect(result).toContain('Mediator');
 	});
 
-	it('defaults to steward when persona is unknown', () => {
+	it('defaults to mediator when persona is unknown', () => {
 		const result = buildSystemPrompt(undefined, constitution, 'unknown');
 		expect(result).toContain('obligation');
-		expect(result).toContain('Steward');
+		expect(result).toContain('Mediator');
 	});
 
 	it('does NOT include private_context in output', () => {
@@ -402,7 +397,7 @@ describe('buildSystemPrompt', () => {
 			private_context: { secret: 'should not appear' },
 			personal_state: { cognitive_state: { value: 'focused', intensity: 3 } }
 		};
-		const result = buildSystemPrompt(vcpContext, constitution, 'steward');
+		const result = buildSystemPrompt(vcpContext, constitution, 'mediator');
 		expect(result).not.toContain('should not appear');
 		expect(result).not.toContain('private_context');
 	});
@@ -411,7 +406,7 @@ describe('buildSystemPrompt', () => {
 		const vcpContext = {
 			personal_state: { cognitive_state: { value: 'focused', intensity: 4 } }
 		};
-		const result = buildSystemPrompt(vcpContext, constitution, 'steward');
+		const result = buildSystemPrompt(vcpContext, constitution, 'mediator');
 		expect(result).toContain('Cognitive: focused (intensity 4/5)');
 	});
 
@@ -419,13 +414,13 @@ describe('buildSystemPrompt', () => {
 		const vcpContext = {
 			constraints: { noise_restricted: true, budget_limited: false }
 		};
-		const result = buildSystemPrompt(vcpContext, constitution, 'steward');
+		const result = buildSystemPrompt(vcpContext, constitution, 'mediator');
 		expect(result).toContain('noise restricted');
 		expect(result).not.toContain('budget limited');
 	});
 
 	it('includes constitutionId in the output', () => {
-		const result = buildSystemPrompt(undefined, constitution, 'steward');
+		const result = buildSystemPrompt(undefined, constitution, 'mediator');
 		expect(result).toContain(constitution);
 	});
 
@@ -438,9 +433,9 @@ describe('buildSystemPrompt', () => {
 		expect(SAFE_CONTEXT_FIELDS).not.toContain('private_context');
 	});
 
-	it('exports VALID_PERSONAS with all 9 personas', () => {
-		expect(VALID_PERSONAS).toHaveLength(9);
-		for (const p of ['muse', 'mentor', 'steward', 'playground', 'ambassador', 'godparent', 'sentinel', 'anchor', 'nanny']) {
+	it('exports VALID_PERSONAS with all 8 personas', () => {
+		expect(VALID_PERSONAS).toHaveLength(8);
+		for (const p of ['muse', 'mentor', 'mediator', 'playground', 'ambassador', 'godparent', 'sentinel', 'nanny']) {
 			expect(VALID_PERSONAS).toContain(p);
 		}
 	});
@@ -472,9 +467,9 @@ describe('buildPlaygroundPrompt', () => {
 		expect(result).toContain('vigilant monitor');
 	});
 
-	it('renders anchor description', () => {
-		const result = buildPlaygroundPrompt(constitution, stateBlock, 'anchor');
-		expect(result).toContain('grounding presence');
+	it('renders mediator description', () => {
+		const result = buildPlaygroundPrompt(constitution, stateBlock, 'mediator');
+		expect(result).toContain('calm, structured facilitator');
 	});
 
 	it('renders nanny description', () => {
@@ -575,40 +570,40 @@ describe('buildMentorPrompt', () => {
 	});
 });
 
-// ── buildStewardPrompt ───────────────────────────────────────
+// ── buildMediatorPrompt ──────────────────────────────────────
 
-describe('buildStewardPrompt', () => {
-	const constitution = 'creed-steward-v1';
+describe('buildMediatorPrompt', () => {
+	const constitution = 'creed-mediator-v1';
 	const stateBlock = 'Current State: not provided\n';
 
 	it('returns a string containing the constitution ID', () => {
-		const result = buildStewardPrompt(constitution, stateBlock);
+		const result = buildMediatorPrompt(constitution, stateBlock);
 		expect(result).toContain(constitution);
 	});
 
 	it('includes stateBlock', () => {
 		const customState = 'Current State:\n- Body: tense (intensity 3/5)\n';
-		const result = buildStewardPrompt(constitution, customState);
+		const result = buildMediatorPrompt(constitution, customState);
 		expect(result).toContain('Body: tense (intensity 3/5)');
 	});
 
 	it('mentions "obligation" in persona-specific content', () => {
-		const result = buildStewardPrompt(constitution, stateBlock);
+		const result = buildMediatorPrompt(constitution, stateBlock);
 		expect(result).toContain('obligation');
 	});
 
-	it('mentions "Steward" persona name', () => {
-		const result = buildStewardPrompt(constitution, stateBlock);
-		expect(result).toContain('Steward');
+	it('mentions "Mediator" persona name', () => {
+		const result = buildMediatorPrompt(constitution, stateBlock);
+		expect(result).toContain('Mediator');
 	});
 
 	it('includes Privacy Note', () => {
-		const result = buildStewardPrompt(constitution, stateBlock);
+		const result = buildMediatorPrompt(constitution, stateBlock);
 		expect(result).toContain('Privacy Note');
 	});
 
 	it('includes decision framework steps', () => {
-		const result = buildStewardPrompt(constitution, stateBlock);
+		const result = buildMediatorPrompt(constitution, stateBlock);
 		expect(result).toContain('Step 1');
 		expect(result).toContain('Step 4');
 	});

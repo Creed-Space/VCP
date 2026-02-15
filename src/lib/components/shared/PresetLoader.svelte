@@ -43,13 +43,20 @@
 		</div>
 	{/if}
 
-	{#if layout === 'cards'}
+	{#if presets.length === 0}
+		<div class="empty-state">
+			<i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+			<p>No presets available</p>
+		</div>
+	{:else if layout === 'cards'}
 		<div class="preset-cards">
 			{#each presets as preset (preset.id)}
 				<button
 					class="preset-card"
 					class:selected={selected === preset.id}
 					onclick={() => handleSelect(preset)}
+					aria-label="Load {preset.name} preset"
+					aria-pressed={selected === preset.id}
 				>
 					{#if preset.icon}
 						<span class="preset-icon"><i class="fa-solid {preset.icon}" aria-hidden="true"></i></span>
@@ -77,6 +84,8 @@
 					class="preset-item"
 					class:selected={selected === preset.id}
 					onclick={() => handleSelect(preset)}
+					aria-label="Load {preset.name} preset"
+					aria-pressed={selected === preset.id}
 				>
 					{#if preset.icon}
 						<span class="preset-icon"><i class="fa-solid {preset.icon}" aria-hidden="true"></i></span>
@@ -99,6 +108,8 @@
 					class:selected={selected === preset.id}
 					onclick={() => handleSelect(preset)}
 					title={preset.description}
+					aria-label="Load {preset.name} preset"
+					aria-pressed={selected === preset.id}
 				>
 					{#if preset.icon}
 						<i class="fa-solid {preset.icon}" aria-hidden="true"></i>
@@ -148,6 +159,11 @@
 
 	.preset-card:hover {
 		border-color: var(--color-primary);
+	}
+
+	.preset-card:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--color-primary);
 	}
 
 	.preset-card.selected {
@@ -221,6 +237,11 @@
 		border-color: var(--color-primary);
 	}
 
+	.preset-item:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--color-primary);
+	}
+
 	.preset-item.selected {
 		background: var(--color-primary-muted);
 		border-color: var(--color-primary);
@@ -276,10 +297,37 @@
 		color: var(--color-text);
 	}
 
+	.preset-chip:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 2px var(--color-primary);
+	}
+
 	.preset-chip.selected {
 		background: var(--color-primary-muted);
 		border-color: var(--color-primary);
 		color: var(--color-primary);
+	}
+
+	/* Empty state */
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-sm);
+		padding: var(--space-lg);
+		color: var(--color-text-muted);
+		text-align: center;
+	}
+
+	.empty-state i {
+		font-size: 1.5rem;
+		opacity: 0.5;
+	}
+
+	.empty-state p {
+		margin: 0;
+		font-size: 0.875rem;
 	}
 
 	@media (max-width: 640px) {

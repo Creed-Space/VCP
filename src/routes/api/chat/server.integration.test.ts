@@ -47,7 +47,7 @@ function validBody(overrides: Record<string, unknown> = {}) {
 	return {
 		query: 'How should I practice guitar today?',
 		constitution_id: 'demo-constitution-001',
-		persona: 'steward',
+		persona: 'mediator',
 		...overrides
 	};
 }
@@ -127,7 +127,7 @@ describe('POST /api/chat — Input Validation', () => {
 		const event = makeRequestEvent({
 			query: 'hello',
 			// constitution_id intentionally omitted
-			persona: 'steward'
+			persona: 'mediator'
 		});
 
 		const response = await (POST as (e: typeof event) => Promise<Response>)(event);

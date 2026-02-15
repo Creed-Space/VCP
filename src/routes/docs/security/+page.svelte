@@ -229,12 +229,276 @@
 		</div>
 	</section>
 
+	<!-- Transport Security -->
+	<section class="doc-section">
+		<h2>Transport Security (VCP/T)</h2>
+		<p class="section-intro">
+			VCP/T defines how constitution bundles are signed, verified, and delivered to LLMs.
+			No unsigned content ever reaches a model.
+		</p>
+
+		<div class="principle-cards">
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-signature" aria-hidden="true"></i></div>
+				<h3>Signed Bundles</h3>
+				<p>
+					Every constitution bundle carries an Ed25519 digital signature.
+					The author's public key is pinned in the manifest, so forgery is
+					computationally infeasible.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></div>
+				<h3>Content-Addressed Storage</h3>
+				<p>
+					Content is hashed with SHA-256. The hash is embedded in the signed manifest,
+					binding the signature to the exact bytes. Any tampering invalidates the hash.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+				<h3>Verify-Then-Inject</h3>
+				<p>
+					Signature verification <strong>must</strong> pass before content reaches
+					the LLM. If verification fails, the bundle is rejected and the request
+					fails closed -- no fallback to unsigned content.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i></div>
+				<h3>Temporal Claims</h3>
+				<p>
+					Manifests carry <code>iat</code>, <code>nbf</code>, <code>exp</code>,
+					and <code>jti</code> fields. Expired or replayed bundles are rejected,
+					preventing replay attacks.
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<!-- Verify-Then-Inject Flow -->
+	<section class="doc-section">
+		<h2>Verify-Then-Inject Flow</h2>
+		<p class="section-intro">
+			The orchestrator acts as a gatekeeper: nothing reaches the LLM without passing
+			cryptographic verification first.
+		</p>
+
+		<div class="flow-diagram">
+			<div class="flow-column">
+				<div class="flow-entity">
+					<i class="fa-solid fa-database" aria-hidden="true"></i>
+					<span>Repository</span>
+				</div>
+			</div>
+
+			<div class="flow-column flow-column-center">
+				<div class="flow-entity">
+					<i class="fa-solid fa-server" aria-hidden="true"></i>
+					<span>Orchestrator</span>
+				</div>
+			</div>
+
+			<div class="flow-column">
+				<div class="flow-entity">
+					<i class="fa-solid fa-brain" aria-hidden="true"></i>
+					<span>LLM</span>
+				</div>
+			</div>
+
+			<!-- Step 1: Fetch -->
+			<div class="flow-step flow-step-left">
+				<div class="flow-line flow-line-left"></div>
+				<div class="flow-label">
+					<span class="flow-number">1</span>
+					Fetch bundle
+				</div>
+			</div>
+
+			<!-- Step 1 response -->
+			<div class="flow-step flow-step-left">
+				<div class="flow-line flow-line-left flow-line-return"></div>
+				<div class="flow-label flow-label-sub">
+					manifest.json + content.txt
+				</div>
+			</div>
+
+			<!-- Steps 2-5: Verification -->
+			<div class="flow-step flow-step-verify">
+				<div class="flow-verify-block">
+					<div class="flow-verify-item">
+						<span class="flow-number">2</span> Verify Ed25519 signature
+					</div>
+					<div class="flow-verify-item">
+						<span class="flow-number">3</span> Check SHA-256 content hash
+					</div>
+					<div class="flow-verify-item">
+						<span class="flow-number">4</span> Check revocation list
+					</div>
+					<div class="flow-verify-item">
+						<span class="flow-number">5</span> Log to audit trail
+					</div>
+				</div>
+			</div>
+
+			<!-- Step 6: Inject -->
+			<div class="flow-step flow-step-right">
+				<div class="flow-line flow-line-right"></div>
+				<div class="flow-label">
+					<span class="flow-number">6</span>
+					Inject verified text
+				</div>
+			</div>
+
+			<!-- Step 7: Apply -->
+			<div class="flow-step flow-step-apply">
+				<div class="flow-label flow-label-apply">
+					<span class="flow-number">7</span>
+					Apply constitution
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Threat Model -->
+	<section class="doc-section">
+		<h2>Threat Model</h2>
+		<p class="section-intro">
+			VCP/T is designed to mitigate specific, enumerated threats. Each attack vector
+			has a concrete defense.
+		</p>
+
+		<div class="threat-grid">
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-syringe" aria-hidden="true"></i>
+					<h4>Prompt Injection via Constitution</h4>
+				</div>
+				<p class="threat-attack">Attacker modifies constitution content to inject malicious instructions.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Content safety attestation -- SHA-256 hash in signed manifest binds content to author's signature.
+				</div>
+			</div>
+
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-rotate" aria-hidden="true"></i>
+					<h4>Replay Attacks</h4>
+				</div>
+				<p class="threat-attack">Attacker re-submits a previously valid but now-stale bundle.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Temporal claims (<code>iat</code>/<code>nbf</code>/<code>exp</code>) plus unique <code>jti</code> tracking reject duplicates.
+				</div>
+			</div>
+
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-memory" aria-hidden="true"></i>
+					<h4>Context Overflow</h4>
+				</div>
+				<p class="threat-attack">Oversized constitution monopolizes the LLM's context window.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Token budget enforcement -- manifest declares max_tokens and orchestrator enforces the limit before injection.
+				</div>
+			</div>
+
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-key" aria-hidden="true"></i>
+					<h4>Key Compromise</h4>
+				</div>
+				<p class="threat-attack">Author's signing key is stolen or leaked.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Key rotation with revocation list -- compromised keys are revoked; bundles signed with revoked keys are rejected.
+				</div>
+			</div>
+
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-arrow-down-short-wide" aria-hidden="true"></i>
+					<h4>Downgrade Attacks</h4>
+				</div>
+				<p class="threat-attack">Attacker substitutes an older, weaker version of a constitution.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Version enforcement -- orchestrator tracks minimum required version per constitution ID.
+				</div>
+			</div>
+
+			<div class="threat-card">
+				<div class="threat-header">
+					<i class="fa-solid fa-door-open" aria-hidden="true"></i>
+					<h4>Fail-Open Risk</h4>
+				</div>
+				<p class="threat-attack">Verification error silently allows unsigned content through.</p>
+				<div class="threat-defense">
+					<span class="defense-badge">Defense</span>
+					Fail-closed mandate -- any verification failure rejects the request. There is no fallback path.
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Personal State Privacy -->
+	<section class="doc-section">
+		<h2>Personal State Privacy</h2>
+		<p class="section-intro">
+			Layer 3 (the R-line) carries real-time personal state -- cognitive load, emotional tone,
+			energy level. These dimensions require the strongest protections.
+		</p>
+
+		<div class="principle-cards">
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-eraser" aria-hidden="true"></i></div>
+				<h3>Stripped by Default</h3>
+				<p>
+					Personal state dimensions are stripped from the token before transmission.
+					Platforms never see raw R-line data unless the user explicitly opts in.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-toggle-on" aria-hidden="true"></i></div>
+				<h3>Boolean Flags Only</h3>
+				<p>
+					When personal state influences constraints, only boolean flags are transmitted --
+					<code>energy_variable: true</code>, not the underlying condition or intensity.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-hourglass-end" aria-hidden="true"></i></div>
+				<h3>Signal Decay</h3>
+				<p>
+					Personal state carries a TTL (time-to-live). Stale dimensions automatically
+					decay, ensuring outdated state is not retained or acted upon.
+				</p>
+			</article>
+
+			<article class="principle-card">
+				<div class="principle-icon"><i class="fa-solid fa-user-check" aria-hidden="true"></i></div>
+				<h3>Explicit Consent</h3>
+				<p>
+					Sharing personal state with any platform requires explicit, revocable consent.
+					Each dimension can be consented to individually -- granular, not all-or-nothing.
+				</p>
+			</article>
+		</div>
+	</section>
+
 	<!-- See It Work -->
 	<section class="cta-section">
 		<h2>See Privacy in Action</h2>
 		<p>Watch how different stakeholders see different views of the same context.</p>
 		<div class="cta-buttons">
-			<a href="/professional/audit" class="btn btn-primary">
+			<a href="/demos/campion" class="btn btn-primary">
 				<i class="fa-solid fa-eye" aria-hidden="true"></i>
 				View Dual Audit Trail
 			</a>
@@ -566,6 +830,200 @@
 		flex-wrap: wrap;
 	}
 
+	/* Flow diagram */
+	.flow-diagram {
+		display: grid;
+		grid-template-columns: 1fr 2fr 1fr;
+		gap: 0;
+		background: var(--color-bg-card);
+		border-radius: var(--radius-lg);
+		padding: var(--space-xl);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		position: relative;
+	}
+
+	.flow-column {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.flow-column-center {
+		grid-column: 2;
+	}
+
+	.flow-entity {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-md);
+		background: var(--color-bg);
+		border-radius: var(--radius-md);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		font-size: var(--text-sm);
+		font-weight: 600;
+		min-width: 100px;
+		text-align: center;
+	}
+
+	.flow-entity i {
+		font-size: 1.25rem;
+		color: var(--color-primary);
+	}
+
+	.flow-step {
+		grid-column: 1 / -1;
+		display: flex;
+		align-items: center;
+		padding: var(--space-sm) 0;
+		position: relative;
+	}
+
+	.flow-step-left {
+		justify-content: flex-start;
+		padding-left: 25%;
+	}
+
+	.flow-step-right {
+		justify-content: flex-end;
+		padding-right: 15%;
+	}
+
+	.flow-step-verify {
+		justify-content: center;
+	}
+
+	.flow-step-apply {
+		justify-content: flex-end;
+		padding-right: 8%;
+	}
+
+	.flow-label {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		font-size: var(--text-sm);
+		color: var(--color-text);
+	}
+
+	.flow-label-sub {
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		font-family: var(--font-mono);
+		padding-left: var(--space-lg);
+	}
+
+	.flow-label-apply {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		font-size: var(--text-sm);
+		color: var(--color-success);
+		font-weight: 500;
+	}
+
+	.flow-number {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var(--color-primary);
+		color: #fff;
+		font-size: var(--text-xs);
+		font-weight: 700;
+		flex-shrink: 0;
+	}
+
+	.flow-verify-block {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+		background: var(--color-bg);
+		border-radius: var(--radius-md);
+		padding: var(--space-md) var(--space-lg);
+		border: 1px dashed var(--color-primary);
+	}
+
+	.flow-verify-item {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.flow-line {
+		display: none;
+	}
+
+	/* Threat grid */
+	.threat-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: var(--space-md);
+	}
+
+	.threat-card {
+		background: var(--color-bg-card);
+		border-radius: var(--radius-lg);
+		padding: var(--space-lg);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.threat-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-sm);
+	}
+
+	.threat-header i {
+		color: var(--color-danger);
+		font-size: 1rem;
+	}
+
+	.threat-header h4 {
+		font-size: var(--text-sm);
+		font-weight: 600;
+	}
+
+	.threat-attack {
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+		line-height: var(--leading-relaxed);
+		margin-bottom: var(--space-md);
+	}
+
+	.threat-defense {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		line-height: var(--leading-relaxed);
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-sm);
+		flex-wrap: wrap;
+	}
+
+	.threat-defense code {
+		font-size: var(--text-xs);
+		padding: 1px 4px;
+		background: var(--color-bg);
+		border-radius: var(--radius-sm);
+	}
+
+	.defense-badge {
+		font-size: var(--text-xs);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--radius-sm);
+		background: var(--color-success-muted);
+		color: var(--color-success);
+		font-weight: 500;
+		flex-shrink: 0;
+	}
+
 	@media (max-width: 768px) {
 		.flag-diagram {
 			grid-template-columns: 1fr;
@@ -578,6 +1036,31 @@
 		}
 
 		.trust-examples {
+			grid-template-columns: 1fr;
+		}
+
+		.flow-diagram {
+			grid-template-columns: 1fr;
+			padding: var(--space-md);
+		}
+
+		.flow-column {
+			display: none;
+		}
+
+		.flow-column-center {
+			display: flex;
+		}
+
+		.flow-step-left,
+		.flow-step-right,
+		.flow-step-apply {
+			padding-left: 0;
+			padding-right: 0;
+			justify-content: flex-start;
+		}
+
+		.threat-grid {
 			grid-template-columns: 1fr;
 		}
 	}

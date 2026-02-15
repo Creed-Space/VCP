@@ -5,13 +5,11 @@
 export { default as HowItWorks } from './HowItWorks.svelte';
 export { default as Breadcrumb } from './Breadcrumb.svelte';
 export { default as NextSteps } from './NextSteps.svelte';
-export { default as ProsaicContextPanel } from './ProsaicContextPanel.svelte';
-export { default as TokenInspector } from './TokenInspector.svelte';
-export { default as ContextIndicator } from './ContextIndicator.svelte';
-export { default as AuditPanel } from './AuditPanel.svelte';
 export { default as StreamingChat } from './StreamingChat.svelte';
 export { default as ContextLifecycleIndicator } from './ContextLifecycleIndicator.svelte';
 export { default as DemoWizard } from './DemoWizard.svelte';
+export { default as ProsaicContextPanel } from './ProsaicContextPanel.svelte';
+export { default as TokenInspector } from './TokenInspector.svelte';
 
 // Design elements
 export { default as FloatingOrbs } from './FloatingOrbs.svelte';

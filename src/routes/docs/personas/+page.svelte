@@ -71,6 +71,16 @@
 			bestFor: ['Young users', 'New learners', 'Vulnerable populations', 'Controlled environments'],
 			example: 'For a teenager learning to code, Nanny filters out advanced topics and maintains age-appropriate boundaries.',
 			color: '#ec4899'
+		},
+		{
+			id: 'muse',
+			name: 'Muse',
+			icon: 'fa-wand-magic-sparkles',
+			tagline: 'Creative challenge, provocation and possibility',
+			description: 'The Muse provokes new thinking, questions assumptions, and opens possibility space. Not soft creative support — active intellectual disruption. Distinct from Godparent\'s exploratory mode: Muse challenges the frame itself.',
+			bestFor: ['Brainstorming sessions', 'Breaking creative blocks', 'Devil\'s advocate thinking', 'Connecting disparate ideas'],
+			example: 'When a team is stuck in groupthink, Muse asks the question nobody wants to ask — and opens a door nobody saw.',
+			color: 'var(--color-accent)'
 		}
 	];
 </script>

@@ -34,7 +34,7 @@ import {
 	getDecisionMoment,
 	getReflectionMoment,
 	getMartaPrivacyComparison,
-	getStewardResponse,
+	getMediatorResponse,
 	getReflectionResponse
 } from './marta';
 
@@ -618,8 +618,8 @@ describe('Marta persona', () => {
 			assertValidConstitution(martaProfile.constitution);
 		});
 
-		it('uses steward persona with adherence 4', () => {
-			expect(martaProfile.constitution.persona).toBe('steward');
+		it('uses mediator persona with adherence 4', () => {
+			expect(martaProfile.constitution.persona).toBe('mediator');
 			expect(martaProfile.constitution.adherence).toBe(4);
 		});
 
@@ -676,7 +676,7 @@ describe('Marta persona', () => {
 		});
 
 		it('includes persona and adherence', () => {
-			expect(encodeMartaContext()).toContain('persona:steward:4');
+			expect(encodeMartaContext()).toContain('persona:mediator:4');
 		});
 
 		it('uses double-pipe separator', () => {
@@ -747,17 +747,17 @@ describe('Marta persona', () => {
 		});
 	});
 
-	describe('getStewardResponse', () => {
+	describe('getMediatorResponse', () => {
 		it('has calm_structured tone', () => {
-			expect(getStewardResponse().tone).toBe('calm_structured');
+			expect(getMediatorResponse().tone).toBe('calm_structured');
 		});
 
 		it('has practical_options with at least 3 options', () => {
-			expect(getStewardResponse().practical_options.length).toBeGreaterThanOrEqual(3);
+			expect(getMediatorResponse().practical_options.length).toBeGreaterThanOrEqual(3);
 		});
 
 		it('each option has id, label, sustainability, and note', () => {
-			for (const opt of getStewardResponse().practical_options) {
+			for (const opt of getMediatorResponse().practical_options) {
 				expect(opt.id).toBeDefined();
 				expect(opt.label).toBeDefined();
 				expect(opt.sustainability).toBeDefined();
@@ -766,12 +766,12 @@ describe('Marta persona', () => {
 		});
 
 		it('includes a privacy note', () => {
-			expect(getStewardResponse().privacy_note).toBeDefined();
-			expect(getStewardResponse().privacy_note.length).toBeGreaterThan(0);
+			expect(getMediatorResponse().privacy_note).toBeDefined();
+			expect(getMediatorResponse().privacy_note.length).toBeGreaterThan(0);
 		});
 
 		it('has obligation_assessment with framework', () => {
-			const oa = getStewardResponse().obligation_assessment;
+			const oa = getMediatorResponse().obligation_assessment;
 			expect(oa.question).toBeDefined();
 			expect(oa.framework.length).toBeGreaterThanOrEqual(2);
 		});
@@ -845,7 +845,7 @@ describe('Cross-persona consistency', () => {
 			gentianProfile.constitution.persona,
 			martaProfile.constitution.persona
 		];
-		// Campion=ambassador, Gentian=muse, Marta=steward
+		// Campion=ambassador, Gentian=muse, Marta=mediator
 		expect(new Set(personas).size).toBe(3);
 	});
 

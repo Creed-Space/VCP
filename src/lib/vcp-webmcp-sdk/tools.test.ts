@@ -265,9 +265,8 @@ describe('vcp_list_personas execute', () => {
 		expect(text).toContain('ambassador');
 		expect(text).toContain('godparent');
 		expect(text).toContain('sentinel');
-		expect(text).toContain('anchor');
+		expect(text).toContain('mediator');
 		expect(text).toContain('nanny');
-		expect(text).toContain('steward');
 	});
 
 	it('uses custom personas when provided', async () => {

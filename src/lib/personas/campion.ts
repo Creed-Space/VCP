@@ -51,9 +51,9 @@ export function inferContextFromTime(hour: number, isWeekday: boolean): CampionC
 // Context encoding using emoji notation from spec
 export function encodeContext(contextType: CampionContextType): string {
 	if (contextType === 'professional') {
-		return '⏰📅|📍🏢|👥👔|🔶⏱️💸'; // Weekday, office, colleagues, time+budget constrained
+		return '⏰📅|📍🏢|👥👔|🔶⏱️💸‖🧠focused:3|💭neutral:2|🔋rested:3|⚡time_aware:3|🩺neutral:1'; // Weekday, office, colleagues, time+budget constrained + v3.1 personal dims
 	}
-	return '⏰🌆|📍🏡|👥👶|🧠😴|🔶⏱️💸🏥'; // Evening, home, children, tired, constraints
+	return '⏰🌆|📍🏡|👥👶|🧠😴|🔶⏱️💸🏥‖🧠foggy:4|💭tense:3|🔋fatigued:4|⚡unhurried:2|🩺neutral:1'; // Evening, home, children, tired, constraints + v3.1 personal dims
 }
 
 export const campionProfile: VCPContext = {
@@ -92,6 +92,14 @@ export const campionProfile: VCPContext = {
 		workload_level: 'high',
 		budget_remaining_eur: 5000,
 		tenure_years: 5
+	},
+
+	personal_state: {
+		cognitive_state: { value: 'focused', intensity: 3 },
+		emotional_tone: { value: 'neutral', intensity: 2 },
+		energy_level: { value: 'rested', intensity: 3 },
+		perceived_urgency: { value: 'time_aware', intensity: 3 },
+		body_signals: { value: 'neutral', intensity: 1 }
 	},
 
 	constraints: {
@@ -235,7 +243,14 @@ export function getEveningContext() {
 			energy_state: 'tired',
 			child_status: 'asleep',
 			tomorrow_schedule: 'early_standup_9am',
-			context_type: 'personal' as CampionContextType
+			context_type: 'personal' as CampionContextType,
+			personal_state: {
+				cognitive_state: { value: 'foggy' as const, intensity: 4 },
+				emotional_tone: { value: 'tense' as const, intensity: 3 },
+				energy_level: { value: 'fatigued' as const, intensity: 4 },
+				perceived_urgency: { value: 'unhurried' as const, intensity: 2 },
+				body_signals: { value: 'neutral' as const, intensity: 1 }
+			}
 		},
 		active_constitution: personalConstitution,
 		context_encoding: encodeContext('personal'),

@@ -23,14 +23,47 @@
 				{$page.error?.message || 'An unexpected error occurred.'}
 			{/if}
 		</p>
+
+		{#if $page.status === 404}
+			<div class="suggestions">
+				<p class="suggestions-title">Try one of these instead:</p>
+				<ul class="suggestions-list">
+					<li>
+						<a href="/docs/getting-started">
+							<i class="fa-solid fa-book-open" aria-hidden="true"></i>
+							Getting Started Guide
+						</a>
+					</li>
+					<li>
+						<a href="/playground">
+							<i class="fa-solid fa-flask" aria-hidden="true"></i>
+							VCP Playground
+						</a>
+					</li>
+					<li>
+						<a href="/demos">
+							<i class="fa-solid fa-play-circle" aria-hidden="true"></i>
+							Interactive Demos
+						</a>
+					</li>
+					<li>
+						<a href="/docs/api-reference">
+							<i class="fa-solid fa-code" aria-hidden="true"></i>
+							API Reference
+						</a>
+					</li>
+				</ul>
+			</div>
+		{/if}
+
 		<div class="error-actions">
 			<a href="/" class="btn btn-primary">
 				<i class="fa-solid fa-home" aria-hidden="true"></i>
 				Back to Home
 			</a>
-			<a href="/demos" class="btn btn-secondary">
-				<i class="fa-solid fa-play" aria-hidden="true"></i>
-				View Demos
+			<a href="/docs" class="btn btn-secondary">
+				<i class="fa-solid fa-book" aria-hidden="true"></i>
+				Documentation
 			</a>
 		</div>
 	</div>
@@ -68,7 +101,52 @@
 
 	.error-message {
 		color: var(--color-text-muted);
+		margin-bottom: var(--space-lg);
+	}
+
+	.suggestions {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 8px;
+		padding: var(--space-lg);
 		margin-bottom: var(--space-xl);
+		max-width: 400px;
+	}
+
+	.suggestions-title {
+		font-weight: 600;
+		margin-bottom: var(--space-md);
+		color: var(--color-text);
+	}
+
+	.suggestions-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
+	}
+
+	.suggestions-list li a {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-sm);
+		border-radius: 4px;
+		color: var(--color-primary);
+		text-decoration: none;
+		transition: background 0.2s;
+	}
+
+	.suggestions-list li a:hover {
+		background: var(--color-surface-hover);
+	}
+
+	.suggestions-list li a i {
+		width: 20px;
+		text-align: center;
+		opacity: 0.7;
 	}
 
 	.error-actions {

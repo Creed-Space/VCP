@@ -182,7 +182,7 @@ describe('encodeContextToCSM1', () => {
 		});
 
 		it('encodes all persona types', () => {
-			const personaTypes = ['muse', 'ambassador', 'godparent', 'sentinel', 'anchor', 'nanny', 'steward'] as const;
+			const personaTypes = ['muse', 'ambassador', 'godparent', 'sentinel', 'nanny', 'mediator'] as const;
 			for (const persona of personaTypes) {
 				const ctx = makeContext({
 					constitution: { id: 'c', version: '1', persona, adherence: 3 }
@@ -1092,13 +1092,13 @@ describe('round-trip: encode -> parse', () => {
 
 	it('preserves persona info', () => {
 		const ctx = makeContext({
-			constitution: { id: 'c', version: '1', persona: 'anchor', adherence: 1 },
+			constitution: { id: 'c', version: '1', persona: 'mediator', adherence: 1 },
 			public_profile: { display_name: 'Zara' }
 		});
 		const token = encodeContextToCSM1(ctx);
 		const parsed = parseCSM1Token(token);
 		// P line is P:<persona>:<adherence> (display_name goes in G line context, not P line)
-		expect(parsed['P']).toContain('anchor');
+		expect(parsed['P']).toContain('mediator');
 		expect(parsed['P']).toContain('1');
 	});
 

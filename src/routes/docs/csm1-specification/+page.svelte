@@ -24,8 +24,15 @@
 			<li><strong>Versioned</strong> — Forward compatible with future extensions</li>
 		</ul>
 
+		<div style="border-left: 4px solid var(--color-primary); background: rgba(99, 102, 241, 0.1); padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem;">
+			<strong>Version note:</strong> The VCP protocol is at <strong>v3.1</strong>. The CSM-1 <em>format</em> is at
+			<strong>v1.0</strong> — the token header reads <code>VCP:1.0</code>. These are separate version numbers:
+			the protocol version tracks the overall specification (layers, adaptation, personal state),
+			while the format version tracks the token grammar itself.
+		</div>
+
 		<h2>Token Format</h2>
-		<p>A CSM-1 token consists of 7 lines:</p>
+		<p>A CSM-1 token consists of 8 lines (the R-line was added in VCP 3.1 for personal state):</p>
 
 		<pre><code>{`VCP:<version>:<profile_id>
 C:<constitution_id>@<version>
@@ -33,7 +40,8 @@ P:<persona>:<adherence>
 G:<goal>:<experience>:<learning_style>
 X:<constraint_flags>
 F:<active_flags>
-S:<private_markers>`}</code></pre>
+S:<private_markers>
+R:<personal_state_dimensions>`}</code></pre>
 
 		<h3>Example Token</h3>
 		<pre><code>{`VCP:1.0:user_001
@@ -42,7 +50,8 @@ P:muse:3
 G:learn_guitar:beginner:visual
 X:🔇quiet:💰low:⏱️30minutes
 F:time_limited|budget_limited
-S:🔒work|🔒housing`}</code></pre>
+S:🔒work|🔒housing
+R:🧠focused:3|💭calm:4|🔋rested:3|⚡unhurried:2|🩺neutral:1`}</code></pre>
 
 		<h2>Line-by-Line Breakdown</h2>
 
@@ -145,6 +154,61 @@ S:🔒work|🔒housing`}</code></pre>
 		</ul>
 		<p>If no private context: <code>S:none</code></p>
 
+		<h3>Line 8: Personal State (R-line) — v3.1</h3>
+		<pre><code>R:&lt;emoji&gt;&lt;value&gt;:&lt;intensity&gt;|...</code></pre>
+		<p>
+			Pipe-separated personal state dimensions. Each dimension is an emoji symbol
+			followed by a categorical value and intensity (1-5):
+		</p>
+
+		<table>
+			<thead>
+				<tr><th>Symbol</th><th>Dimension</th><th>Values</th><th>Intensity</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>🧠</td><td>Cognitive State</td><td>focused, distracted, overloaded, foggy, reflective</td><td>1–5</td></tr>
+				<tr><td>💭</td><td>Emotional Tone</td><td>calm, tense, frustrated, neutral, uplifted</td><td>1–5</td></tr>
+				<tr><td>🔋</td><td>Energy Level</td><td>rested, low_energy, fatigued, wired, depleted</td><td>1–5</td></tr>
+				<tr><td>⚡</td><td>Perceived Urgency</td><td>unhurried, time_aware, pressured, critical</td><td>1–5</td></tr>
+				<tr><td>🩺</td><td>Body Signals</td><td>neutral, discomfort, pain, unwell, recovering</td><td>1–5</td></tr>
+			</tbody>
+		</table>
+		<p>
+			If intensity is omitted, it defaults to 3 (fail-open design). Extended sub-signals
+			can follow a second colon: <code>🩺unwell:4:migraine</code>.
+		</p>
+		<p>If no personal state: <code>R:none</code></p>
+
+		<h3>Situational Context Encoding</h3>
+		<p>
+			VCP 3.1 also defines a separate <strong>context wire format</strong> using the
+			Extended Enneagram Protocol — 9 situational dimensions plus the 5 personal state
+			dimensions above:
+		</p>
+		<pre><code>{`⏰🌅|📍🏡|👥👶|📡💻‖🧠focused:4|💭calm:5|🔋rested:4|⚡unhurried:2|🩺neutral:1
+└── situational (|) ──┘‖└──── personal state (|) ────────────────────────────────┘`}</code></pre>
+		<p>
+			The <code>|</code> pipe separates dimensions <em>within</em> a layer.
+			The <code>‖</code> double bar separates Layer 2 (situational) from Layer 3 (personal state).
+		</p>
+
+		<table>
+			<thead>
+				<tr><th>Symbol</th><th>Dimension</th><th>Example</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>⏰</td><td>Time</td><td>🌅morning, 🌙night, 📅weekday</td></tr>
+				<tr><td>📍</td><td>Space</td><td>🏡home, 🏢office, 🏫school</td></tr>
+				<tr><td>👥</td><td>Company</td><td>👤alone, 👶children, 👔colleagues</td></tr>
+				<tr><td>🌍</td><td>Culture</td><td>🇺🇸american, 🌍global</td></tr>
+				<tr><td>🎭</td><td>Occasion</td><td>➖normal, 🚨emergency</td></tr>
+				<tr><td>🌡️</td><td>Environment</td><td>🔇quiet, 🥵hot</td></tr>
+				<tr><td>🔷</td><td>Agency</td><td>👑leader, 🤝peer, 🔐limited</td></tr>
+				<tr><td>🔶</td><td>Constraints</td><td>○minimal, ⚖️legal, 💸economic</td></tr>
+				<tr><td>📡</td><td>System Context</td><td>💻personal_device, 🏢workplace_system</td></tr>
+			</tbody>
+		</table>
+
 		<h2>Encoding Rules</h2>
 
 		<h3>String Encoding</h3>
@@ -184,20 +248,22 @@ S:🔒work|🔒housing`}</code></pre>
 //   G: "learn_guitar:beginner:visual",
 //   X: "🔇quiet:💰low:⏱️30minutes",
 //   F: "time_limited|budget_limited",
-//   S: "🔒work|🔒housing"
+//   S: "🔒work|🔒housing",
+//   R: "🧠focused:3|💭calm:4|🔋rested:3|⚡unhurried:2|🩺neutral:1"
 // }`}</code></pre>
 
 		<h2>Display Formatting</h2>
 		<p>For visual display, tokens can be boxed:</p>
-		<pre><code>{`┌────────────────────────────────────────┐
-│ VCP:1.0:user_001                       │
-│ C:learning-assistant@1.0               │
-│ P:muse:3                               │
-│ G:learn_guitar:beginner:visual         │
-│ X:🔇quiet:💰low:⏱️30minutes            │
-│ F:time_limited|budget_limited          │
-│ S:🔒work|🔒housing                     │
-└────────────────────────────────────────┘`}</code></pre>
+		<pre><code>{`┌──────────────────────────────────────────────────────────────────┐
+│ VCP:1.0:user_001                                                 │
+│ C:learning-assistant@1.0                                         │
+│ P:muse:3                                                         │
+│ G:learn_guitar:beginner:visual                                   │
+│ X:🔇quiet:💰low:⏱️30minutes                                      │
+│ F:time_limited|budget_limited                                    │
+│ S:🔒work|🔒housing                                               │
+│ R:🧠focused:3|💭calm:4|🔋rested:3|⚡unhurried:2|🩺neutral:1       │
+└──────────────────────────────────────────────────────────────────┘`}</code></pre>
 
 		<h2>Security Considerations</h2>
 
@@ -212,8 +278,14 @@ S:🔒work|🔒housing`}</code></pre>
 		<ul>
 			<li>Encryption — Tokens are readable by anyone who receives them</li>
 			<li>Authentication — Tokens don't prove who created them</li>
-			<li>Integrity — Tokens can be modified in transit (use signing separately)</li>
+			<li>Integrity — Tokens can be modified in transit</li>
 		</ul>
+		<p>
+			Authentication and integrity are handled by the <strong>VCP Transport layer (VCP/T)</strong>,
+			which wraps CSM-1 tokens in <strong>signed bundles</strong> using the verify-then-inject pattern.
+			The orchestrator verifies signatures and content hashes before the LLM receives the text.
+			See <a href="/docs/concepts">Core Concepts</a> for the full protocol stack.
+		</p>
 
 		<h2>Extensions</h2>
 		<p>CSM-1 is designed for forward compatibility. Future versions may add:</p>
@@ -228,6 +300,8 @@ S:🔒work|🔒housing`}</code></pre>
 		<ul>
 			<li><a href="/docs/api-reference">API Reference</a> — Encoding/decoding functions</li>
 			<li><a href="/playground">Playground</a> — Build tokens interactively</li>
+			<li><a href="/demos/gentian">Gentian Demo</a> — See a CSM-1 token travel across platforms (portability)</li>
+			<li><a href="/demos/campion">Campion Demo</a> — Watch tokens switch between work and home contexts (adaptation)</li>
 		</ul>
 	{/snippet}
 </DocsLayout>

@@ -11,8 +11,11 @@ import type {
 	FilteredContext,
 	PlatformManifest,
 	ConsentRecord,
-	PortablePreferences
+	PortablePreferences,
+	PersonalState,
+	PersonalDimension
 } from './types';
+import { getDefaultDecayPolicy } from './decay';
 import { logAuditEntry } from './audit';
 
 // ============================================
@@ -85,7 +88,19 @@ function createContextStore(): Writable<VCPContext | null> & {
 		updateField: <K extends keyof VCPContext>(key: K, value: VCPContext[K]) => {
 			update((current) => {
 				if (!current) return current;
-				const updated = { ...current, [key]: value, updated: new Date().toISOString() };
+				let newValue = value;
+				if (key === 'personal_state' && newValue && typeof newValue === 'object') {
+					const ps = newValue as Record<string, unknown>;
+					const now = new Date().toISOString();
+					for (const dimKey of Object.keys(ps)) {
+						const dim = ps[dimKey];
+						if (dim && typeof dim === 'object' && !(dim as Record<string, unknown>).declared_at) {
+							ps[dimKey] = { ...(dim as Record<string, unknown>), declared_at: now };
+						}
+					}
+					newValue = ps as VCPContext[K];
+				}
+				const updated = { ...current, [key]: newValue, updated: new Date().toISOString() };
 				saveToStorage(CONTEXT_STORAGE_KEY, updated);
 				return updated;
 			});
@@ -427,4 +442,32 @@ export function mergeContext(existing: VCPContext, updates: Partial<VCPContext>)
 		},
 		updated: new Date().toISOString()
 	};
+}
+
+/**
+ * Refresh declared_at for dimensions with reset_on_engagement.
+ * Call this when the user sends a message to keep engaged signals fresh.
+ */
+export function refreshEngagementDecay(): void {
+	vcpContext.update((ctx) => {
+		if (!ctx?.personal_state) return ctx;
+
+		const now = new Date().toISOString();
+		const ps = ctx.personal_state;
+		let changed = false;
+
+		for (const key of Object.keys(ps) as (keyof PersonalState)[]) {
+			const dim = ps[key] as PersonalDimension<string> | undefined;
+			if (!dim) continue;
+
+			const policy = dim.decay_policy ?? getDefaultDecayPolicy(key);
+			if (policy.reset_on_engagement && dim.declared_at) {
+				(dim as PersonalDimension<string>).declared_at = now;
+				changed = true;
+			}
+		}
+
+		if (!changed) return ctx;
+		return { ...ctx, personal_state: { ...ps }, updated: now };
+	});
 }
