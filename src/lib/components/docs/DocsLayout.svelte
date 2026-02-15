@@ -304,6 +304,7 @@
 		top: 60px;
 		height: calc(100vh - 60px);
 		overflow-y: auto;
+		overscroll-behavior: contain;
 	}
 
 	/* Search */
