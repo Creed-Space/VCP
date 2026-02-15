@@ -233,7 +233,7 @@ const SHARED_MARKER = '✓';`}</code></pre>
 		<h2>Enums</h2>
 
 		<h3>PersonaType</h3>
-		<pre><code>type PersonaType = 'muse' | 'ambassador' | 'godparent' | 'sentinel' | 'anchor' | 'nanny';</code></pre>
+		<pre><code>type PersonaType = 'muse' | 'ambassador' | 'godparent' | 'sentinel' | 'nanny' | 'mediator';</code></pre>
 
 		<h3>ExperienceLevel</h3>
 		<pre><code>type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';</code></pre>

@@ -7,7 +7,7 @@
 // Core Enums
 // ============================================
 
-export type PersonaType = 'muse' | 'ambassador' | 'godparent' | 'sentinel' | 'anchor' | 'nanny';
+export type PersonaType = 'muse' | 'ambassador' | 'godparent' | 'sentinel' | 'nanny' | 'mediator';
 
 export type ScopeType =
 	| 'work'
@@ -19,7 +19,17 @@ export type ScopeType =
 	| 'finance'
 	| 'social'
 	| 'legal'
-	| 'safety';
+	| 'safety'
+	| 'stewardship'
+	| 'mediation'
+	| 'commerce'
+	| 'compliance'
+	| 'ethics'
+	| 'coordination'
+	| 'transparency'
+	| 'governance'
+	| 'epistemic'
+	| 'accuracy';
 
 export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
@@ -27,7 +37,7 @@ export type LearningStyle = 'visual' | 'auditory' | 'hands_on' | 'reading' | 'mi
 
 export type Pace = 'intensive' | 'steady' | 'relaxed';
 
-export type Motivation = 'career' | 'stress_relief' | 'social' | 'achievement' | 'curiosity';
+export type Motivation = 'career' | 'stress_relief' | 'social' | 'achievement' | 'curiosity' | 'personal_use';
 
 export type NoiseMode = 'normal' | 'quiet_preferred' | 'silent_required';
 
@@ -197,6 +207,57 @@ export interface ProsaicSubSignals {
 	valence?: number; // -1.0 to 1.0
 }
 
+// ============================================
+// Personal State Dimensions (VCP 3.1)
+// ============================================
+
+/** v3.1 replaces float-based prosaic dimensions with categorical + intensity */
+
+export type CognitiveState = 'focused' | 'distracted' | 'overloaded' | 'foggy' | 'reflective';
+export type EmotionalTone = 'calm' | 'tense' | 'frustrated' | 'neutral' | 'uplifted';
+export type EnergyLevel = 'rested' | 'low_energy' | 'fatigued' | 'wired' | 'depleted';
+export type PerceivedUrgency = 'unhurried' | 'time_aware' | 'pressured' | 'critical';
+export type BodySignals = 'neutral' | 'discomfort' | 'pain' | 'unwell' | 'recovering';
+
+export type SystemContext = 'personal_device' | 'workplace_system' | 'shared_terminal' | 'monitored_environment';
+
+export type DecayCurve = 'exponential' | 'linear' | 'step';
+export type LifecycleState = 'set' | 'active' | 'decaying' | 'stale' | 'expired';
+
+export interface StepThreshold {
+	after_seconds: number;
+	intensity: number;
+}
+
+export interface DecayPolicy {
+	curve: DecayCurve;
+	half_life_seconds: number;
+	baseline: number;
+	stale_threshold: number;
+	fresh_window_seconds: number;
+	pinned: boolean;
+	reset_on_engagement: boolean;
+	full_decay_seconds?: number;
+	step_thresholds?: StepThreshold[];
+}
+
+export interface PersonalDimension<T extends string> {
+	value: T;
+	intensity?: number; // 1-5, defaults to 3
+	declared_at?: string; // ISO timestamp
+	decay_policy?: DecayPolicy;
+	pinned?: boolean;
+	extended?: string; // Sub-signal (e.g., 'bathroom', 'migraine', 'hunger')
+}
+
+export interface PersonalState {
+	cognitive_state?: PersonalDimension<CognitiveState>;
+	emotional_tone?: PersonalDimension<EmotionalTone>;
+	energy_level?: PersonalDimension<EnergyLevel>;
+	perceived_urgency?: PersonalDimension<PerceivedUrgency>;
+	body_signals?: PersonalDimension<BodySignals>;
+}
+
 export interface VCPContext {
 	vcp_version: string;
 	profile_id: string;
@@ -210,8 +271,11 @@ export interface VCPContext {
 	availability?: Availability;
 	sharing_settings?: SharingSettings;
 	private_context?: PrivateContext;
-	/** Prosaic dimensions - immediate user state (⚡💊🧩💭) */
+	/** @deprecated Use personal_state (v3.1) */
 	prosaic?: ProsaicDimensions;
+	/** Personal state dimensions - v3.1 categorical with intensity */
+	personal_state?: PersonalState;
+	system_context?: SystemContext;
 	// Professional-specific additions
 	shared_with_manager?: Record<string, unknown>;
 }
@@ -377,6 +441,11 @@ export interface FeatureFlags {
 	PERS_COACH_VIEW: boolean;
 	PERS_FULL_AUDIT: boolean;
 
+	// Responsibility demo
+	RESP_DECISION_JOURNEY: boolean;
+	RESP_REFLECTION_JOURNEY: boolean;
+	RESP_LIVE_LLM: boolean;
+
 	// Shared
 	REAL_CRYPTO: boolean;
 	CLOUD_SYNC: boolean;
@@ -395,6 +464,10 @@ export const DEFAULT_FEATURES: FeatureFlags = {
 	PERS_MUSICSHOP: true,
 	PERS_COACH_VIEW: true,
 	PERS_FULL_AUDIT: true,
+
+	RESP_DECISION_JOURNEY: true,
+	RESP_REFLECTION_JOURNEY: true,
+	RESP_LIVE_LLM: true,
 
 	REAL_CRYPTO: false,
 	CLOUD_SYNC: false

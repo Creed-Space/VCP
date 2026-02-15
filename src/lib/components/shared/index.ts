@@ -26,4 +26,3 @@ export { default as TypeWriter } from './TypeWriter.svelte';
 export { default as SpotlightCard } from './SpotlightCard.svelte';
 export { default as ParticleField } from './ParticleField.svelte';
 export { default as MorphBlob } from './MorphBlob.svelte';
-

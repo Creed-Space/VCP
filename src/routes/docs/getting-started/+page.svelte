@@ -135,11 +135,11 @@ const token = encodeContextToCSM1(context);
 		<p>Different interaction styles built into constitutions:</p>
 		<ul>
 			<li><strong>Muse</strong> — Creative, exploratory, encouraging</li>
-			<li><strong>Sentinel</strong> — Cautious, protective, conservative</li>
-			<li><strong>Godparent</strong> — Nurturing, supportive, patient</li>
 			<li><strong>Ambassador</strong> — Professional, diplomatic, balanced</li>
-			<li><strong>Anchor</strong> — Stable, grounding, realistic</li>
+			<li><strong>Godparent</strong> — Nurturing, supportive, patient</li>
+			<li><strong>Sentinel</strong> — Cautious, protective, conservative</li>
 			<li><strong>Nanny</strong> — Structured, directive, safe</li>
+			<li><strong>Mediator</strong> — Calm, structured, empathetic</li>
 		</ul>
 
 		<h2>Next Steps</h2>

@@ -77,7 +77,7 @@ S:🔒work|🔒housing`}</code></pre>
 				<tr><th>Field</th><th>Type</th><th>Values</th></tr>
 			</thead>
 			<tbody>
-				<tr><td>persona</td><td>enum</td><td>muse, sentinel, godparent, ambassador, anchor, nanny</td></tr>
+				<tr><td>persona</td><td>enum</td><td>muse, ambassador, godparent, sentinel, nanny, mediator</td></tr>
 				<tr><td>adherence</td><td>1-5</td><td>How strictly to follow constitution rules</td></tr>
 			</tbody>
 		</table>

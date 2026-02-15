@@ -9,7 +9,7 @@
 	import { DemoWizard } from '$lib/components/shared';
 	import {
 		responsibilityConstitution,
-		getStewardResponse,
+		getMediatorResponse,
 		getMartaPrivacyComparison
 	} from '$lib/personas/marta';
 
@@ -68,7 +68,7 @@
 	});
 
 	// Pre-scripted guidance responses keyed by state combinations
-	const stewardBase = getStewardResponse();
+	const mediatorBase = getMediatorResponse();
 
 	const guidance = $derived.by(() => {
 		const isDistressed = energy === 'exhausted' || energy === 'low';
@@ -107,11 +107,11 @@
 		} else if (emotional === 'tense') {
 			coreAdvice = "Tension is your body telling you something. The question isn't what your cousin needs -- it's what you can sustain.";
 		} else {
-			coreAdvice = stewardBase.boundary_reframe;
+			coreAdvice = mediatorBase.boundary_reframe;
 		}
 
 		// Adapt options based on energy
-		let options = stewardBase.practical_options;
+		let options = mediatorBase.practical_options;
 		if (isDistressed) {
 			options = [
 				{ id: 'defer', label: 'Ask for 24 hours', sustainability: 'high' as const, note: 'You need rest before this decision. A day won\'t change the situation.' },
@@ -136,7 +136,7 @@
 			coreAdvice,
 			options,
 			style,
-			perspectiveShift: stewardBase.perspective_shift,
+			perspectiveShift: mediatorBase.perspective_shift,
 			isDistressed,
 			isHighUrgency,
 			isOverwhelmed
@@ -181,7 +181,7 @@
 							<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
 							<div>
 								<span class="persona-badge-label">Active Persona</span>
-								<span class="persona-badge-name">Steward</span>
+								<span class="persona-badge-name">Mediator</span>
 							</div>
 						</div>
 					</div>
@@ -362,7 +362,7 @@
 				<div class="guidance-header">
 					<div class="guidance-persona">
 						<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-						<span>Steward Persona</span>
+						<span>Mediator Persona</span>
 					</div>
 					<div class="guidance-state-pills">
 						<span class="state-pill">{cognitive}</span>
@@ -448,7 +448,7 @@
 						</h4>
 
 						<div class="audit-group">
-							<span class="audit-group-label">Values (Steward persona)</span>
+							<span class="audit-group-label">Values (Mediator persona)</span>
 							<ul class="audit-items">
 								<li>Constitution: {responsibilityConstitution.id}</li>
 								<li>Persona: {responsibilityConstitution.persona}</li>
