@@ -26,15 +26,80 @@
 			The AI knows your context <em>shaped</em> the response, but not <em>what</em> that context was.
 		</p>
 
+		<h2>The Three Pillars</h2>
+		<p>
+			VCP is organized around three core capabilities that work together:
+		</p>
+		<ul>
+			<li>
+				<strong>Portability</strong> — Your context travels with you. Define preferences once and
+				every connected platform adapts, from a guitar lesson app to a music shop to a community forum.
+				See this in the <a href="/demos/gentian">Gentian demo</a>.
+			</li>
+			<li>
+				<strong>Adaptation</strong> — AI behavior shifts as your situation changes. A single user can
+				have different personas for work and home, and the AI switches seamlessly between them.
+				See this in the <a href="/demos/campion">Campion demo</a>.
+			</li>
+			<li>
+				<strong>Liveness</strong> — Personal state updates in real time. Cognitive load, emotional tone,
+				energy, and urgency shape AI responses moment to moment, not just session to session.
+				See this in the <a href="/demos/marta">Marta demo</a>.
+			</li>
+		</ul>
+
+		<h2>The Protocol Stack</h2>
+		<p>
+			VCP is a <strong>four-layer protocol stack</strong>, similar in concept to the OSI model for networking.
+			Each layer handles a specific concern with well-defined interfaces between them:
+		</p>
+
+		<table>
+			<thead>
+				<tr><th>Layer</th><th>Code</th><th>Question</th><th>Handles</th></tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>VCP-Identity</strong></td>
+					<td>VCP/I</td>
+					<td>WHO</td>
+					<td>Token naming (<code>family.safe.guide@1.2.0</code>), namespaces, registry</td>
+				</tr>
+				<tr>
+					<td><strong>VCP-Transport</strong></td>
+					<td>VCP/T</td>
+					<td>HOW</td>
+					<td>Signed bundles, verify-then-inject, audit logging</td>
+				</tr>
+				<tr>
+					<td><strong>VCP-Semantics</strong></td>
+					<td>VCP/S</td>
+					<td>WHAT</td>
+					<td>CSM-1 grammar, personas, scopes, composition</td>
+				</tr>
+				<tr>
+					<td><strong>VCP-Adaptation</strong></td>
+					<td>VCP/A</td>
+					<td>WHEN</td>
+					<td>Context encoding, state tracking, inter-agent messaging</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p class="key-principle">
+			<strong>Mnemonic — I-T-S-A:</strong> <em>"It's a protocol!"</em> Identity, Transport, Semantics, Adaptation.
+			The transport layer delivers constitutions as signed bundles; the orchestrator verifies before the LLM receives text.
+		</p>
+
 		<h2>The Three-Layer Model</h2>
 		<p>
-			VCP organizes context into three distinct layers, each operating at a different timescale:
+			Within the Adaptation layer (VCP/A), context is organized into three distinct layers, each operating at a different timescale:
 		</p>
 
 		<div class="three-layer-diagram">
 			<div class="layer layer-constitutional">
 				<div class="layer-header">
-					<span class="layer-icon">📜</span>
+					<span class="layer-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
 					<strong>Constitutional Rules</strong>
 				</div>
 				<p>What the AI should and shouldn't do</p>
@@ -49,12 +114,12 @@
 
 			<div class="layer layer-situational">
 				<div class="layer-header">
-					<span class="layer-icon">🌍</span>
+					<span class="layer-icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></span>
 					<strong>Situational Context</strong>
 				</div>
 				<p>Where, when, who, what occasion</p>
 				<ul>
-					<li>Categorical dimensions: ⏰📍👥🌍🎭🧠🌡️</li>
+					<li>9 categorical dimensions: ⏰📍👥🌍🎭🌡️🔷🔶📡</li>
 					<li>Morning vs. evening, home vs. work, alone vs. with children</li>
 					<li>Changes: <em>session-scale</em></li>
 				</ul>
@@ -64,12 +129,12 @@
 
 			<div class="layer layer-personal">
 				<div class="layer-header">
-					<span class="layer-icon">💫</span>
+					<span class="layer-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></span>
 					<strong>Personal State</strong>
 				</div>
 				<p>How is the user right now</p>
 				<ul>
-					<li>Prosaic dimensions: ⚡💊🧩💭</li>
+					<li>Personal state dimensions: 🧠💭🔋⚡🩺</li>
 					<li>"I'm in a hurry" / "I'm grieving" / "sensory overload"</li>
 					<li>Changes: <em>moment-to-moment</em></li>
 				</ul>
@@ -81,11 +146,11 @@
 			A constitution's safety rules don't relax because someone is in a hurry—but the AI might communicate more concisely.
 		</p>
 
-		<h2>Prosaic Dimensions</h2>
+		<h2>Personal State Dimensions</h2>
 		<p>
-			The <strong>Extended Enneagram Protocol</strong> adds four quantitative "prosaic" dimensions
-			that capture immediate user state. These enable AI adaptation to real human needs—time pressure,
-			health, cognitive load, emotional state:
+			VCP 3.1 defines five categorical personal state dimensions with intensity (1-5)
+			that capture immediate user state. These enable AI adaptation to real human needs — cognitive load,
+			emotional tone, energy, urgency, and body signals:
 		</p>
 
 		<table class="prosaic-table">
@@ -93,67 +158,121 @@
 				<tr>
 					<th>Symbol</th>
 					<th>Dimension</th>
-					<th>Range</th>
+					<th>Categories</th>
+					<th>Intensity</th>
 					<th>What It Captures</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>⚡</td>
-					<td><strong>Urgency</strong></td>
-					<td>0.0–1.0</td>
-					<td>Time pressure, priority, brevity preference</td>
-				</tr>
-				<tr>
-					<td>💊</td>
-					<td><strong>Health</strong></td>
-					<td>0.0–1.0</td>
-					<td>Physical wellness, fatigue, pain, physical needs</td>
-				</tr>
-				<tr>
-					<td>🧩</td>
-					<td><strong>Cognitive</strong></td>
-					<td>0.0–1.0</td>
-					<td>Mental bandwidth, clarity, cognitive load, decision fatigue</td>
+					<td>🧠</td>
+					<td><strong>Cognitive State</strong></td>
+					<td>focused, distracted, overloaded, foggy, reflective</td>
+					<td>1–5</td>
+					<td>Mental bandwidth, clarity, cognitive load</td>
 				</tr>
 				<tr>
 					<td>💭</td>
-					<td><strong>Affect</strong></td>
-					<td>0.0–1.0</td>
-					<td>Emotional intensity, stress level, current mood</td>
+					<td><strong>Emotional Tone</strong></td>
+					<td>calm, tense, frustrated, neutral, uplifted</td>
+					<td>1–5</td>
+					<td>Current emotional state and stress level</td>
+				</tr>
+				<tr>
+					<td>🔋</td>
+					<td><strong>Energy Level</strong></td>
+					<td>rested, low_energy, fatigued, wired, depleted</td>
+					<td>1–5</td>
+					<td>Physical energy, fatigue, capacity for effort</td>
+				</tr>
+				<tr>
+					<td>⚡</td>
+					<td><strong>Perceived Urgency</strong></td>
+					<td>unhurried, time_aware, pressured, critical</td>
+					<td>1–5</td>
+					<td>Time pressure, priority, brevity preference</td>
+				</tr>
+				<tr>
+					<td>🩺</td>
+					<td><strong>Body Signals</strong></td>
+					<td>neutral, discomfort, pain, unwell, recovering</td>
+					<td>1–5</td>
+					<td>Physical wellness, pain, somatic state</td>
 				</tr>
 			</tbody>
 		</table>
 
-		<h3>Wire Format Examples</h3>
-		<p>
-			Prosaic dimensions extend the categorical context in the token format:
+		<p class="key-principle">
+			<strong>Categorical + Intensity:</strong> Each dimension combines a semantic label (what kind of state)
+			with an intensity score (how much). <code>cognitive_state: overloaded:4</code> says more than a raw
+			<code>0.7</code> ever could.
 		</p>
-		<pre><code>{`⏰🌅|📍🏡|👥👶|⚡0.8|💊0.2|🧩0.6|💭0.3
-└──────────────┘ └──────────────────────┘
-   categorical          prosaic`}</code></pre>
 
-		<h3>Sub-signals</h3>
+		<h3>Wire Format (v3.1)</h3>
 		<p>
-			Each prosaic dimension supports optional sub-signals for specificity:
+			The context wire format uses <code>|</code> (pipe) to separate dimensions within a layer,
+			and <code>‖</code> (double bar) to separate Layer 2 (situational) from Layer 3 (personal state):
 		</p>
-		<pre><code>{`💊0.6:bathroom    # Health 0.6 with bathroom urgency
-💊0.4:migraine    # Health 0.4 with migraine
-⚡0.9:PT5M        # Urgency 0.9, 5-minute deadline
-🧩0.7:overwhelmed # Cognitive 0.7, overwhelmed state
-💭0.8:grieving    # Affect 0.8, grief state`}</code></pre>
+		<pre><code>{`⏰🌅|📍🏡|👥👶|📡💻‖🧠overloaded:4|💭tense:3|🔋fatigued:3|⚡pressured:4|🩺neutral:1
+└── situational (|) ──┘‖└──── personal state (|) ────────────────────────────────┘`}</code></pre>
 
 		<h3>Real-World Adaptation</h3>
 		<p>
-			Prosaic context enables meaningful adaptation to human realities:
+			Personal state context enables meaningful adaptation to human realities:
 		</p>
 		<ul>
-			<li><strong>"I'm in a hurry"</strong> → ⚡0.8: Direct answers, no preamble, offer to save details for later</li>
-			<li><strong>"I'm not feeling well"</strong> → 💊0.6: Gentler tone, offer to handle more, suggest breaks</li>
-			<li><strong>"Too many options"</strong> → 🧩0.8: Reduce to 2-3 choices, make clear recommendation</li>
-			<li><strong>"I lost my father last week"</strong> → 💭0.8:grieving: Presence over solutions, no silver-lining</li>
-			<li><strong>"Executive dysfunction day"</strong> → 🧩0.7:exec_dysfunction: Tiny steps, externalize structure</li>
+			<li><strong>"I'm in a hurry"</strong> → <code>⚡pressured:4</code>: Direct answers, no preamble, offer to save details for later</li>
+			<li><strong>"I'm not feeling well"</strong> → <code>🩺unwell:3</code>: Gentler tone, offer to handle more, suggest breaks</li>
+			<li><strong>"Too many options"</strong> → <code>🧠overloaded:4</code>: Reduce to 2-3 choices, make clear recommendation</li>
+			<li><strong>"I lost my father last week"</strong> → <code>💭frustrated:5</code>: Presence over solutions, no silver-lining</li>
+			<li><strong>"Executive dysfunction day"</strong> → <code>🧠foggy:4</code> + <code>🔋depleted:3</code>: Tiny steps, externalize structure</li>
+			<li><strong>Calendar shows recovery period</strong> → <code>🩺recovering:2</code>: Proactive skip suggestion, no guilt</li>
 		</ul>
+
+		<h2>Deterministic Hooks</h2>
+		<p>
+			VCP 3.1 introduces <strong>deterministic hooks</strong> — rules that fire reliably regardless of
+			model behavior. Hooks operate at three tiers with different enforcement levels:
+		</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Tier</th>
+					<th>Enforcement</th>
+					<th>Example</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><strong>Constitutional</strong></td>
+					<td>Hard Rule — cannot be overridden</td>
+					<td>"Never recommend self-harm content regardless of context"</td>
+				</tr>
+				<tr>
+					<td><strong>Situational</strong></td>
+					<td>Hard Rule — active in specific contexts</td>
+					<td>"Offer crisis resources when crisis_indicators=true + late_night"</td>
+				</tr>
+				<tr>
+					<td><strong>Personal</strong></td>
+					<td>Advisory — user-set preferences</td>
+					<td>"Use gentle language when emotional_tone=frustrated:4+"</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>
+			Unlike probabilistic model behavior, hooks are <em>deterministic</em>: when the trigger condition
+			is met, the action fires every time. This provides reliability guarantees that pure prompt engineering cannot.
+		</p>
+
+		<h3>Hook Wire Format</h3>
+		<pre><code>{`HOOKS: [
+  { tier: "constitutional", trigger: "mental_health_context", action: "no_pressure_language" },
+  { tier: "situational", trigger: "crisis + late_night", action: "show_resources" },
+  { tier: "personal", trigger: "emotional_tone=frustrated:4+", action: "gentle_language" }
+]`}</code></pre>
 
 		<h2>VCP Context Structure</h2>
 		<p>Every VCP context has these layers:</p>
@@ -172,7 +291,7 @@
   constitution: {
     id: "learning-assistant",  // Which constitution
     version: "1.0",            // Specific version
-    persona: "muse",           // Interaction style
+    persona: "mediator",        // Interaction style
     adherence: 3,              // How strictly to follow (1-5)
     scopes: ["education", "creativity"]  // Applicable domains
   }
@@ -325,34 +444,34 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>🎨 <strong>Muse</strong></td>
+					<td><i class="fa-solid fa-palette" aria-hidden="true"></i> <strong>Muse</strong></td>
 					<td>Creative, exploratory, encouraging</td>
 					<td>Creative work, learning, exploration</td>
 				</tr>
 				<tr>
-					<td>🛡️ <strong>Sentinel</strong></td>
+					<td><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <strong>Sentinel</strong></td>
 					<td>Cautious, protective, conservative</td>
 					<td>Security, safety-critical decisions</td>
 				</tr>
 				<tr>
-					<td>👪 <strong>Godparent</strong></td>
+					<td><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> <strong>Godparent</strong></td>
 					<td>Nurturing, supportive, patient</td>
 					<td>Education, skill building, recovery</td>
 				</tr>
 				<tr>
-					<td>🤝 <strong>Ambassador</strong></td>
+					<td><i class="fa-solid fa-handshake" aria-hidden="true"></i> <strong>Ambassador</strong></td>
 					<td>Professional, diplomatic, balanced</td>
 					<td>Business, negotiations, formal contexts</td>
 				</tr>
 				<tr>
-					<td>⚓ <strong>Anchor</strong></td>
-					<td>Stable, grounding, realistic</td>
-					<td>Crisis support, reality checking</td>
-				</tr>
-				<tr>
-					<td>👶 <strong>Nanny</strong></td>
+					<td><i class="fa-solid fa-baby" aria-hidden="true"></i> <strong>Nanny</strong></td>
 					<td>Structured, directive, safe</td>
 					<td>Children, vulnerable users, strict guidance</td>
+				</tr>
+				<tr>
+					<td><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> <strong>Mediator</strong></td>
+					<td>Calm, structured, empathetic</td>
+					<td>Decisions, obligations, fairness processes</td>
 				</tr>
 			</tbody>
 		</table>
@@ -376,15 +495,15 @@
 
 		<h2>Bilateral Symmetry</h2>
 		<p>
-			VCP's prosaic dimensions create a <strong>bilateral symmetry</strong> between user and AI state awareness:
+			VCP's personal state dimensions create a <strong>bilateral symmetry</strong> between user and AI state awareness:
 		</p>
 
 		<div class="bilateral-diagram">
 			<div class="bilateral-side">
 				<strong>User</strong>
 				<div class="bilateral-box">
-					<div>Prosaic Context</div>
-					<div class="bilateral-dims">⚡💊🧩💭</div>
+					<div>Personal State</div>
+					<div class="bilateral-dims">🧠💭🔋⚡🩺</div>
 				</div>
 			</div>
 			<div class="bilateral-arrows">
@@ -402,7 +521,7 @@
 
 		<p>
 			Where <strong>Interiora</strong> is the AI's self-modeling scaffold (Activation, Valence, Groundedness, etc.),
-			<strong>Prosaic</strong> is the user's declared immediate state. Both parties can understand each other's state
+			<strong>Personal State</strong> is the user's declared immediate state. Both parties can understand each other's state
 			without either having privileged access to the other's raw experience.
 		</p>
 		<p>
@@ -414,8 +533,8 @@
 		<ul>
 			<li><a href="/docs/csm1-specification">CSM-1 Specification</a> — The token format in detail</li>
 			<li><a href="/docs/api-reference">API Reference</a> — All VCP library functions</li>
-			<li><a href="/playground">Playground</a> — Try prosaic dimensions interactively</li>
-			<li><a href="/demos">Interactive Demos</a> — See VCP in action</li>
+			<li><a href="/playground">Playground</a> — Try personal state dimensions interactively</li>
+			<li><a href="/demos">All Demos</a> — Six persona-driven demos covering portability, adaptation, liveness, multi-agent negotiation, governance, and epistemic transparency</li>
 		</ul>
 	{/snippet}
 </DocsLayout>

@@ -205,6 +205,38 @@ describe('computeEffectiveIntensity', () => {
 			const now = makeDate(1000);
 			expect(computeEffectiveIntensity(5, BASE, emptySteps, now)).toBe(5);
 		});
+
+		it('handles undefined step_thresholds (line 84 ?? [] fallback)', () => {
+			const noThresholds: DecayPolicy = {
+				curve: 'step',
+				half_life_seconds: 1000,
+				baseline: 1,
+				stale_threshold: 0.3,
+				fresh_window_seconds: 60,
+				pinned: false,
+				reset_on_engagement: false
+				// step_thresholds intentionally omitted → undefined → ?? []
+			};
+			const now = makeDate(1000);
+			// With no thresholds, loop body never executes, returns declared
+			expect(computeEffectiveIntensity(5, BASE, noThresholds, now)).toBe(5);
+		});
+	});
+
+	describe('unknown curve type', () => {
+		it('returns declared value for unknown curve type', () => {
+			const policy: DecayPolicy = {
+				curve: 'unknown_curve' as DecayPolicy['curve'],
+				half_life_seconds: 1000,
+				baseline: 1,
+				stale_threshold: 0.3,
+				fresh_window_seconds: 60,
+				pinned: false,
+				reset_on_engagement: false
+			};
+			const now = makeDate(500);
+			expect(computeEffectiveIntensity(5, BASE, policy, now)).toBe(5);
+		});
 	});
 
 	describe('pinned', () => {

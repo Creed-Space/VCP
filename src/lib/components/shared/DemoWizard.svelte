@@ -48,6 +48,8 @@
 	function next() {
 		if (isLastStep) {
 			onComplete?.();
+			currentStep = 0;
+			contentRef?.focus();
 			return;
 		}
 		goTo(currentStep + 1);
@@ -71,8 +73,7 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="demo-wizard" onkeydown={handleKeydown}>
+<div class="demo-wizard" role="region" aria-label="Demo: {title}" onkeydown={handleKeydown}>
 	<!-- Header -->
 	<div class="wizard-header">
 		<a href="/demos" class="wizard-back">

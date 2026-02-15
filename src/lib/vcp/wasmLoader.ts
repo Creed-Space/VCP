@@ -37,7 +37,7 @@ export async function loadVcpWasm(): Promise<VcpWasmModule | null> {
 			// import() of JS files inside the public directory).
 			const wasmJsUrl = new URL('/wasm/vcp_wasm.js', window.location.origin).href;
 			const wasm = await import(/* @vite-ignore */ wasmJsUrl);
-			await wasm.default('/wasm/vcp_wasm_bg.wasm');
+			await wasm.default({ module_or_path: '/wasm/vcp_wasm_bg.wasm' });
 			wasmModule = wasm as unknown as VcpWasmModule;
 			return wasmModule;
 		} catch (err) {

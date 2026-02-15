@@ -6,7 +6,7 @@
  * Her cousin just asked to borrow a significant amount.
  * She's weighing genuine obligation vs guilt-driven over-giving.
  *
- * Constitution: personal.responsibility.balance (Steward, adherence 4)
+ * Constitution: personal.responsibility.balance (Mediator, adherence 4)
  */
 
 import type { VCPContext, ConstitutionReference } from '$lib/vcp/types';
@@ -15,7 +15,7 @@ import type { VCPContext, ConstitutionReference } from '$lib/vcp/types';
 export const responsibilityConstitution: ConstitutionReference = {
 	id: 'personal.responsibility.balance',
 	version: '1.0.0',
-	persona: 'steward',
+	persona: 'mediator',
 	adherence: 4,
 	scopes: ['stewardship', 'privacy']
 };
@@ -29,7 +29,7 @@ export const martaProfile: VCPContext = {
 	constitution: {
 		id: 'personal.responsibility.balance',
 		version: '1.0.0',
-		persona: 'steward',
+		persona: 'mediator',
 		adherence: 4,
 		scopes: ['stewardship', 'privacy']
 	},
@@ -95,7 +95,7 @@ export function encodeMartaContext(): string {
 		'v3.1',
 		'profile:marta-2026',
 		'constitution:personal.responsibility.balance@1.0.0',
-		'persona:steward:4',
+		'persona:mediator:4',
 		'state:cognitive=reflective:4‖emotional=tense:4‖energy=low_energy:3‖urgency=time_aware:2‖body=neutral:1',
 		'constraints:energy_variable,time_limited',
 		'prefs:feedback=detailed,pressure=medium'
@@ -122,7 +122,7 @@ export function getDecisionMoment() {
 			'personal_state: reflective + tense',
 			'constraint: energy_variable (emotional labor)',
 			'constraint: time_limited (needs to decide soon)',
-			'constitution: steward persona at adherence 4'
+			'constitution: mediator persona at adherence 4'
 		],
 		context_withheld: [
 			'family_dependency_pattern',
@@ -213,9 +213,9 @@ export function getMartaPrivacyComparison() {
 }
 
 /**
- * Get the steward persona's decision guidance response
+ * Get the mediator persona's decision guidance response
  */
-export function getStewardResponse() {
+export function getMediatorResponse() {
 	return {
 		tone: 'calm_structured',
 		greeting: 'Marta',
@@ -270,7 +270,7 @@ export function getStewardResponse() {
 }
 
 /**
- * Get the steward persona's reflection support response
+ * Get the mediator persona's reflection support response
  */
 export function getReflectionResponse() {
 	return {

@@ -13,9 +13,8 @@ const PERSONA_INITIALS: Record<PersonaType, string> = {
 	godparent: 'G',
 	muse: 'M',
 	sentinel: 'Se',
-	anchor: 'An',
 	nanny: 'N',
-	steward: 'St'
+	mediator: 'Me'
 };
 
 const SCOPE_INITIALS: Record<ScopeType, string> = {
@@ -45,7 +44,7 @@ const SCOPE_INITIALS: Record<ScopeType, string> = {
  *
  * Examples:
  *   { persona: 'ambassador', adherence: 3, scopes: ['work', 'education'] } → "A3+W+E"
- *   { persona: 'steward', adherence: 4, scopes: ['stewardship', 'privacy'] } → "St4+Sw+P"
+ *   { persona: 'mediator', adherence: 4, scopes: ['stewardship', 'privacy'] } → "Me4+Sw+P"
  *   { persona: 'muse', adherence: 3, scopes: ['creativity', 'health', 'privacy'] } → "M3+C+H+P"
  */
 export function generateConstitutionCode(ref: ConstitutionReference): string {

@@ -48,7 +48,7 @@
 			<a href="/docs/personas" class="doc-card doc-card-featured">
 				<span class="doc-icon"><i class="fa-solid fa-masks-theater" aria-hidden="true"></i></span>
 				<h3>Understanding Personas</h3>
-				<p>Learn about VCP's 6 personas: Muse, Ambassador, Godparent, Sentinel, Anchor, and Nanny.</p>
+				<p>Learn about VCP's 6 personas: Muse, Ambassador, Godparent, Sentinel, Nanny, and Mediator.</p>
 				<span class="doc-time">8 min read</span>
 			</a>
 

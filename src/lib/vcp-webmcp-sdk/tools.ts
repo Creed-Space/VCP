@@ -68,9 +68,8 @@ const DEFAULT_PERSONAS: PersonaInfo[] = [
 	{ id: 'ambassador', name: 'Ambassador', description: 'Diplomatic and professional. Balanced communication.', use: 'General purpose, formal contexts' },
 	{ id: 'godparent', name: 'Godparent', description: 'Protective and nurturing. Prioritizes wellbeing.', use: 'Health, children, vulnerable contexts' },
 	{ id: 'sentinel', name: 'Sentinel', description: 'Watchful and risk-aware. Flags concerns proactively.', use: 'Security, privacy, boundary enforcement' },
-	{ id: 'anchor', name: 'Anchor', description: 'Grounding and present-focused. Reduces overwhelm.', use: 'Stress, overwhelm, stability needs' },
+	{ id: 'mediator', name: 'Mediator', description: 'Calm, structured, empathetic. Helps navigate obligation and fairness.', use: 'Decisions, obligations, long-term planning' },
 	{ id: 'nanny', name: 'Nanny', description: 'Gentle and patient. Handles immediate practical needs.', use: 'Daily routines, immediate care, patience-heavy tasks' },
-	{ id: 'steward', name: 'Steward', description: 'Responsible and sustainable. Balances obligation with capacity.', use: 'Decisions, obligations, long-term planning' }
 ];
 
 // ---------------------------------------------------------------------------
@@ -117,7 +116,7 @@ function createChatTool(config: VCPWebMCPConfig): WebMCPToolDefinition {
 				persona: {
 					type: 'string',
 					enum: personaIds,
-					description: 'AI persona to use. Defaults to steward.'
+					description: 'AI persona to use. Defaults to mediator.'
 				}
 			},
 			required: ['query']
