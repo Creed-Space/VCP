@@ -2,7 +2,7 @@
 	/**
 	 * VCP Playground - Interactive token builder and inspector
 	 */
-	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary, toWireFormat } from '$lib/vcp/token';
+	import { encodeContextToCSM1, getEmojiLegend, getTransmissionSummary, toWireFormat, parseCSM1Token } from '$lib/vcp/token';
 	import type { VCPContext, ConstraintFlags, PortablePreferences, PersonalState, CognitiveState, EmotionalTone, EnergyLevel, PerceivedUrgency, BodySignals } from '$lib/vcp/types';
 	import { Breadcrumb, ContextLifecycleIndicator } from '$lib/components/shared';
 	import { loadVcpWasm, type VcpWasmModule } from '$lib/vcp/wasmLoader';
@@ -273,16 +273,32 @@
 			wireDecodeResult = null;
 			return;
 		}
-		if (!wasmMod) {
-			wireDecodeResult = { success: false, error: 'WASM not available' };
-			return;
+		// Convert wire format (‖ separators) back to newline-separated CSM1
+		const asNewlines = wireInput.includes('‖') ? wireInput.replace(/‖/g, '\n') : wireInput;
+
+		// Try WASM parse_csm1_token first (handles the CSM1 format)
+		if (wasmMod) {
+			try {
+				const parsed = wasmMod.parse_csm1_token(asNewlines);
+				wireDecodeResult = { success: true, data: parsed };
+				return;
+			} catch {
+				// Fall through to JS parser
+			}
 		}
+
+		// Fallback: JS-based CSM1 parser
 		try {
-			const parsed = wasmMod.parse_context_wire(wireInput);
-			wireDecodeResult = { success: true, data: parsed };
-		} catch (e) {
-			wireDecodeResult = { success: false, error: String(e) };
+			const parsed = parseCSM1Token(asNewlines);
+			if (Object.keys(parsed).length > 0) {
+				wireDecodeResult = { success: true, data: parsed };
+				return;
+			}
+		} catch {
+			// Fall through to error
 		}
+
+		wireDecodeResult = { success: false, error: 'Could not parse token. Expected CSM1 format.' };
 	}
 
 	function validateIdentity() {
