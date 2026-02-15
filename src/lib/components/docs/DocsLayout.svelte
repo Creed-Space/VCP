@@ -338,6 +338,12 @@
 		transition: all var(--transition-fast);
 	}
 
+	/* Hide native search clear button (we have a custom one) */
+	.search-input::-webkit-search-cancel-button {
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
 	.search-input::placeholder {
 		color: var(--color-text-subtle);
 	}
