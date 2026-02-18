@@ -297,7 +297,10 @@
 
 <style>
 	.doc-section {
-		margin-bottom: var(--space-2xl);
+		margin-bottom: var(--space-3xl);
+		padding-bottom: var(--space-3xl);
+		border-bottom: 2px solid transparent;
+		border-image: linear-gradient(90deg, transparent, var(--color-primary), transparent) 1;
 	}
 
 	.doc-section h2 {

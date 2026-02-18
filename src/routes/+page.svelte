@@ -177,7 +177,7 @@
 		</div>
 	</section>
 
-	<GlowDivider color="rgba(34, 197, 94, 0.4)" />
+	<GlowDivider color="rgba(139, 92, 246, 0.5)" />
 
 	<!-- ======== Section 5: Before/After Comparison ======== -->
 	<section class="comparison-section">
@@ -188,39 +188,6 @@
 
 			<div class="comparison-grid">
 				<ScrollReveal delay={0}>
-					<div class="comparison-card comparison-before">
-						<div class="comparison-header">
-							<span class="comparison-badge comparison-badge-old">Without VCP</span>
-						</div>
-						<ul class="comparison-list">
-							<li>
-								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-								Re-enter preferences on every platform
-							</li>
-							<li>
-								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-								AI doesn't know your current state
-							</li>
-							<li>
-								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-								No control over your data in transit
-							</li>
-							<li>
-								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-								Static profiles that don't reflect you
-							</li>
-						</ul>
-					</div>
-				</ScrollReveal>
-
-				<ScrollReveal delay={100} direction="fade">
-					<div class="comparison-arrow">
-						<div class="arrow-line"></div>
-						<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-					</div>
-				</ScrollReveal>
-
-				<ScrollReveal delay={200}>
 					<div class="comparison-card comparison-after">
 						<div class="comparison-header">
 							<span class="comparison-badge comparison-badge-new">With VCP</span>
@@ -241,6 +208,32 @@
 							<li>
 								<i class="fa-solid fa-check" aria-hidden="true"></i>
 								Living context that evolves with you
+							</li>
+						</ul>
+					</div>
+				</ScrollReveal>
+
+				<ScrollReveal delay={200}>
+					<div class="comparison-card comparison-before">
+						<div class="comparison-header">
+							<span class="comparison-badge comparison-badge-old">Without VCP</span>
+						</div>
+						<ul class="comparison-list">
+							<li>
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+								Re-enter preferences on every platform
+							</li>
+							<li>
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+								AI doesn't know your current state
+							</li>
+							<li>
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+								No control over your data in transit
+							</li>
+							<li>
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+								Static profiles that don't reflect you
 							</li>
 						</ul>
 					</div>
@@ -472,7 +465,7 @@
 
 	.aurora-hero {
 		position: relative;
-		min-height: 85vh;
+		min-height: 78vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -815,7 +808,7 @@
 
 	.comparison-grid {
 		display: grid;
-		grid-template-columns: 1fr auto 1fr;
+		grid-template-columns: 1fr 1fr;
 		gap: var(--space-lg);
 		align-items: center;
 		max-width: 900px;
@@ -891,20 +884,6 @@
 		flex-shrink: 0;
 	}
 
-	.comparison-arrow {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-sm);
-		color: var(--color-primary);
-		font-size: 1.25rem;
-	}
-
-	.arrow-line {
-		width: 1px;
-		height: 40px;
-		background: linear-gradient(to bottom, transparent, var(--color-primary));
-	}
 
 	/* =============================================
 	   Section 6: Showcase Demo Cards
@@ -1185,10 +1164,6 @@
 		transition: all 0.3s ease;
 	}
 
-	.mosaic-tile:hover {
-		transform: scale(1.05);
-		border-color: rgba(99, 102, 241, 0.3);
-	}
 
 	.mosaic-tile i {
 		font-size: 1.5rem;
@@ -1359,6 +1334,14 @@
 		font-size: 1.25rem;
 	}
 
+	.section-title {
+		text-wrap: balance;
+	}
+
+	.section-description {
+		text-wrap: balance;
+	}
+
 	/* =============================================
 	   Responsive
 	   ============================================= */
@@ -1379,10 +1362,6 @@
 			margin-right: auto;
 		}
 
-		.comparison-arrow {
-			transform: rotate(90deg);
-			margin: var(--space-md) auto;
-		}
 
 		.stacked-row,
 		.stacked-row-reverse {

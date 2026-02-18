@@ -144,7 +144,7 @@
 		<div class="container flex items-center justify-between">
 			<a href="/" class="logo" aria-label="Value Context Protocol Home">
 				<span class="logo-icon" aria-hidden="true"><img src="/favicon.svg" alt="" width="40" height="40" /></span>
-				<span class="logo-text">Value <span class="logo-highlight">Context</span> Protocol</span>
+				<span class="logo-text"><span class="logo-highlight">Value</span> Context Protocol</span>
 			</a>
 
 			<!-- Desktop Nav - ACCESSIBILITY FIX 2026-02-02: Moved nav inside, removed outer nav wrapper -->
@@ -341,27 +341,13 @@
 	.logo-text {
 		font-weight: 400;
 		font-size: 1.2rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: white;
 		letter-spacing: 0.03em;
 	}
 
 	.logo-highlight {
 		font-weight: 700;
 		color: white;
-		background: linear-gradient(135deg, #c4b5fd, #a78bfa);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	.logo:hover .logo-text {
-		color: rgba(255, 255, 255, 0.85);
-	}
-
-	.logo:hover .logo-highlight {
-		background: linear-gradient(135deg, #ddd6fe, #a78bfa);
-		-webkit-background-clip: text;
-		background-clip: text;
 	}
 
 	/* Desktop Nav */

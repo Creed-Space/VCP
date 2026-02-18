@@ -3,10 +3,10 @@
 </script>
 
 <svelte:head>
-	<title>CSM-1 Specification - VCP Documentation</title>
+	<title>CSM-1 Specification (Token Format) - VCP Documentation</title>
 	<meta name="description" content="Complete specification for the Compact State Message (CSM-1) token format." />
 	<link rel="canonical" href="https://valuecontextprotocol.org/docs/csm1-specification/" />
-	<meta property="og:title" content="CSM-1 Specification - VCP Documentation" />
+	<meta property="og:title" content="CSM-1 Specification (Token Format) - VCP Documentation" />
 	<meta property="og:description" content="Complete specification for the Compact State Message (CSM-1) token format." />
 	<meta property="og:url" content="https://valuecontextprotocol.org/docs/csm1-specification/" />
 	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
@@ -14,7 +14,7 @@
 </svelte:head>
 
 <DocsLayout
-	title="CSM-1 Specification"
+	title="CSM-1 Specification (Token Format)"
 	description="Complete specification for the Compact State Message format."
 >
 	{#snippet children()}
@@ -124,7 +124,7 @@ R:🧠focused:3|💭calm:4|🔋rested:3|⚡unhurried:2|🩺neutral:1`}</code></p
 				<tr><td>💰</td><td>Budget tier</td><td><code>💰low</code></td></tr>
 				<tr><td>🆓</td><td>Free only</td><td><code>🆓</code></td></tr>
 				<tr><td>💎</td><td>Premium budget</td><td><code>💎high</code></td></tr>
-				<tr><td>⚡</td><td>Energy variable</td><td><code>⚡var</code></td></tr>
+				<tr><td>⚡</td><td>Energy variable</td><td><code>⚡ene</code></td></tr>
 				<tr><td>⏰</td><td>Time limited</td><td><code>⏰lim</code></td></tr>
 				<tr><td>⏱️</td><td>Session length</td><td><code>⏱️30minutes</code></td></tr>
 				<tr><td>📅</td><td>Irregular schedule</td><td><code>📅irreg</code></td></tr>

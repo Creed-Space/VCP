@@ -518,7 +518,7 @@
 
 <style>
 	.doc-section {
-		margin-bottom: var(--space-2xl);
+		margin-bottom: var(--space-3xl);
 	}
 
 	.doc-section h2 {
@@ -533,12 +533,15 @@
 
 	/* Principle cards */
 	.principle-cards {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: var(--space-lg);
 	}
 
 	.principle-card {
+		flex: 0 1 calc(33.333% - var(--space-lg));
+		min-width: 260px;
 		background: var(--color-bg-card);
 		border-radius: var(--radius-lg);
 		padding: var(--space-lg);

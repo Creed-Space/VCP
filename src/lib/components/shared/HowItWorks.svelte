@@ -141,6 +141,7 @@
 		margin-left: auto;
 		margin-right: auto;
 		line-height: var(--leading-relaxed);
+		text-wrap: balance;
 	}
 
 	.flow-diagram {
@@ -215,10 +216,14 @@
 
 	.step-content {
 		padding: var(--space-md);
+		display: flex;
+		flex-direction: column;
+		flex: 1;
 	}
 
 	.step-note {
-		margin-top: var(--space-sm);
+		margin-top: auto;
+		padding-top: var(--space-sm);
 		font-size: 0.6875rem;
 		color: var(--color-text-muted);
 		text-align: center;

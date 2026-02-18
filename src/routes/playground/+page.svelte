@@ -453,12 +453,12 @@
 				<span>Enterprise — Corporate Training</span>
 				<span class="demo-link-concept">Automatic context switching</span>
 			</a>
-			<a href="/demos/noor" class="demo-link-card">
+			<a href="/demos/ren" class="demo-link-card">
 				<i class="fa-solid fa-network-wired" aria-hidden="true"></i>
 				<span>Multi-agent — Coordinated AI</span>
 				<span class="demo-link-concept">Cross-agent context negotiation</span>
 			</a>
-			<a href="/demos/ren" class="demo-link-card">
+			<a href="/demos/hana" class="demo-link-card">
 				<i class="fa-solid fa-microscope" aria-hidden="true"></i>
 				<span>Epistemic — Research Integrity</span>
 				<span class="demo-link-concept">Source-aware reasoning</span>

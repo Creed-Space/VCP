@@ -167,23 +167,6 @@
 				</div>
 
 				<div class="side-by-side">
-					<div class="comparison-panel without">
-						<div class="panel-label-header">
-							<i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
-							<span>Without VCP</span>
-						</div>
-						<div class="panel-body">
-							<div class="ai-output-plain">
-								<p><strong>Diagnostic Assessment:</strong></p>
-								<p>The patient's symptoms are consistent with a respiratory infection. Amoxicillin is recommended as first-line treatment. Expected recovery is approximately two weeks. The underlying cause may be immunosuppression related to chronic stress.</p>
-							</div>
-							<div class="panel-problem">
-								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-								<span>Every statement reads with equal certainty. No way to distinguish 92% from 35% confidence.</span>
-							</div>
-						</div>
-					</div>
-
 					<div class="comparison-panel with">
 						<div class="panel-label-header">
 							<i class="fa-solid fa-eye" aria-hidden="true"></i>
@@ -209,6 +192,23 @@
 							<div class="panel-solution">
 								<i class="fa-solid fa-check" aria-hidden="true"></i>
 								<span>Each claim has visible confidence, evidence type, and verification flags.</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="comparison-panel without">
+						<div class="panel-label-header">
+							<i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
+							<span>Without VCP</span>
+						</div>
+						<div class="panel-body">
+							<div class="ai-output-plain">
+								<p><strong>Diagnostic Assessment:</strong></p>
+								<p>The patient's symptoms are consistent with a respiratory infection. Amoxicillin is recommended as first-line treatment. Expected recovery is approximately two weeks. The underlying cause may be immunosuppression related to chronic stress.</p>
+							</div>
+							<div class="panel-problem">
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+								<span>Every statement reads with equal certainty. No way to distinguish 92% from 35% confidence.</span>
 							</div>
 						</div>
 					</div>

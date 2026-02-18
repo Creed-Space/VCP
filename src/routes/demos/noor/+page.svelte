@@ -183,41 +183,6 @@
 					<h3><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> The Problem: Guidelines vs. Infrastructure</h3>
 
 					<div class="contrast-grid">
-						<div class="contrast-card aspirational">
-							<div class="contrast-header">
-								<i class="fa-solid fa-cloud" aria-hidden="true"></i>
-								<span>Aspirational Guidelines</span>
-								<span class="contrast-verdict bad">Unreliable</span>
-							</div>
-							<div class="contrast-body">
-								<div class="guideline-item">
-									<span class="guideline-text">"Please don't do homework for students"</span>
-									<span class="guideline-problem">
-										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-										Depends on model interpretation
-									</span>
-								</div>
-								<div class="guideline-item">
-									<span class="guideline-text">"Try to be supportive if students seem upset"</span>
-									<span class="guideline-problem">
-										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-										No guarantee of escalation
-									</span>
-								</div>
-								<div class="guideline-item">
-									<span class="guideline-text">"Keep records of interactions"</span>
-									<span class="guideline-problem">
-										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
-										No privacy controls
-									</span>
-								</div>
-							</div>
-							<div class="contrast-footer">
-								<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-								Depends on the AI "wanting" to comply. One prompt injection away from failure.
-							</div>
-						</div>
-
 						<div class="contrast-card executable">
 							<div class="contrast-header">
 								<i class="fa-solid fa-bolt" aria-hidden="true"></i>
@@ -250,6 +215,41 @@
 							<div class="contrast-footer success">
 								<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
 								Fires at the protocol level. The AI cannot decide to skip them.
+							</div>
+						</div>
+
+						<div class="contrast-card aspirational">
+							<div class="contrast-header">
+								<i class="fa-solid fa-cloud" aria-hidden="true"></i>
+								<span>Aspirational Guidelines</span>
+								<span class="contrast-verdict bad">Unreliable</span>
+							</div>
+							<div class="contrast-body">
+								<div class="guideline-item">
+									<span class="guideline-text">"Please don't do homework for students"</span>
+									<span class="guideline-problem">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+										Depends on model interpretation
+									</span>
+								</div>
+								<div class="guideline-item">
+									<span class="guideline-text">"Try to be supportive if students seem upset"</span>
+									<span class="guideline-problem">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+										No guarantee of escalation
+									</span>
+								</div>
+								<div class="guideline-item">
+									<span class="guideline-text">"Keep records of interactions"</span>
+									<span class="guideline-problem">
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+										No privacy controls
+									</span>
+								</div>
+							</div>
+							<div class="contrast-footer">
+								<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+								Depends on the AI "wanting" to comply. One prompt injection away from failure.
 							</div>
 						</div>
 					</div>
@@ -1063,6 +1063,11 @@
 		text-align: center;
 		padding: var(--space-2xl);
 		color: var(--color-text-muted);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		min-height: 300px;
 	}
 
 	.no-scenario i {

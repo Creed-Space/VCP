@@ -122,6 +122,7 @@
 		background: var(--color-bg-card);
 		border-radius: var(--radius-lg);
 		padding: var(--space-lg);
+		overflow: hidden;
 	}
 
 	.hooks-panel.compact {

@@ -55,7 +55,7 @@
 			</a>
 
 			<!-- Bilateral Alignment -->
-			<a href="/docs/bilateral-alignment" class="doc-card doc-card-featured">
+			<a href="/docs/bilateral-alignment" class="doc-card">
 				<span class="doc-icon"><i class="fa-solid fa-handshake-angle" aria-hidden="true"></i></span>
 				<h3>Bilateral Alignment</h3>
 				<p>Four trust levels that define how AI relates, not just what it can do.</p>
@@ -104,6 +104,8 @@
 		</div>
 	</section>
 
+	<hr class="section-divider" />
+
 	<!-- Quick Reference -->
 	<section class="quick-ref">
 		<h2>Quick Reference</h2>
@@ -114,7 +116,7 @@
 C:constitution@version
 P:persona:adherence
 G:goal:experience:style
-X:🔇:💰low:⚡var
+X:🔇:💰low:⚡ene
 F:time_limited|noise_restricted
 S:🔒work|🔒housing
 R:🧠focused:3|💭calm:4|🩺neutral:1</code></pre>
@@ -162,13 +164,16 @@ R:🧠focused:3|💭calm:4|🩺neutral:1</code></pre>
 	}
 
 	.docs-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: var(--space-lg);
 	}
 
 	.doc-card {
 		display: block;
+		flex: 0 1 calc(33.333% - var(--space-lg));
+		min-width: 280px;
 		background: var(--color-bg-card);
 		border-radius: var(--radius-lg);
 		padding: var(--space-xl);
@@ -207,9 +212,11 @@ R:🧠focused:3|💭calm:4|🩺neutral:1</code></pre>
 		color: var(--color-text-subtle);
 	}
 
-	.doc-card-featured {
-		border-color: var(--color-primary);
-		background: linear-gradient(135deg, var(--color-bg-card), rgba(99, 102, 241, 0.1));
+	.section-divider {
+		border: none;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+		margin: var(--space-2xl) 0;
 	}
 
 	/* Quick Reference */

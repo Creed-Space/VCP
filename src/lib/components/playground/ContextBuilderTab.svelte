@@ -51,6 +51,9 @@
 		};
 	}
 
+	// Quick load active state
+	let activePreset = $state<string | null>(null);
+
 	// Copy feedback state
 	let copyFeedback = $state('');
 	let copyTimeout: ReturnType<typeof setTimeout>;
@@ -112,6 +115,7 @@
 	}
 
 	function resetContext() {
+		activePreset = null;
 		context = {
 			...context,
 			public_profile: {
@@ -146,6 +150,7 @@
 	}
 
 	function loadExample(type: 'consumer' | 'enterprise' | 'values' | 'multiagent' | 'governance' | 'epistemic') {
+		activePreset = type;
 		if (type === 'consumer') {
 			context = { ...context, public_profile: { display_name: 'Consumer User', goal: 'product_research', experience: 'intermediate', learning_style: 'hands_on', pace: 'steady', motivation: 'personal_use' }, constraints: { time_limited: true, budget_limited: true, noise_restricted: false, energy_variable: false, schedule_irregular: false }, portable_preferences: { noise_mode: 'normal', session_length: '30_minutes', budget_range: 'medium', feedback_style: 'encouraging' }, constitution: { id: 'consumer.personal.guide', version: '1.0.0', persona: 'muse', adherence: 3, scopes: ['privacy', 'commerce', 'health'] }, personal_state: { cognitive_state: { value: 'focused', intensity: 3 }, emotional_tone: { value: 'calm', intensity: 2 }, energy_level: { value: 'rested', intensity: 3 }, perceived_urgency: { value: 'time_aware', intensity: 2 }, body_signals: { value: 'neutral', intensity: 1 } } };
 		} else if (type === 'enterprise') {
@@ -165,22 +170,22 @@
 <!-- Quick Load Examples -->
 <section class="example-loaders">
 	<span class="example-label">Quick load:</span>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('consumer')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'consumer'} onclick={() => loadExample('consumer')}>
 		<i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> Consumer
 	</button>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('enterprise')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'enterprise'} onclick={() => loadExample('enterprise')}>
 		<i class="fa-solid fa-building" aria-hidden="true"></i> Enterprise
 	</button>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('values')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'values'} onclick={() => loadExample('values')}>
 		<i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Values &amp; Decisions
 	</button>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('multiagent')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'multiagent'} onclick={() => loadExample('multiagent')}>
 		<i class="fa-solid fa-network-wired" aria-hidden="true"></i> Multi-agent
 	</button>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('governance')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'governance'} onclick={() => loadExample('governance')}>
 		<i class="fa-solid fa-landmark" aria-hidden="true"></i> Governance
 	</button>
-	<button class="btn btn-ghost btn-sm" onclick={() => loadExample('epistemic')}>
+	<button class="btn btn-ghost btn-sm" class:active={activePreset === 'epistemic'} onclick={() => loadExample('epistemic')}>
 		<i class="fa-solid fa-microscope" aria-hidden="true"></i> Epistemic
 	</button>
 </section>
@@ -464,6 +469,12 @@
 	.example-label {
 		font-size: var(--text-sm);
 		color: var(--color-text-muted);
+	}
+
+	.example-loaders .btn.active {
+		background: rgba(99, 102, 241, 0.15);
+		border-color: var(--color-primary);
+		color: var(--color-primary);
 	}
 
 	.playground-grid {

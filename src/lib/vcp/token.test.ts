@@ -259,7 +259,7 @@ describe('encodeContextToCSM1', () => {
 		it('encodes energy_variable constraint', () => {
 			const ctx = makeContext({ constraints: { energy_variable: true } });
 			const xLine = encodeContextToCSM1(ctx).split('\n')[4];
-			expect(xLine).toContain('⚡var');
+			expect(xLine).toContain('⚡ene');
 		});
 
 		it('encodes multiple constraints together', () => {
@@ -269,7 +269,7 @@ describe('encodeContextToCSM1', () => {
 			const xLine = encodeContextToCSM1(ctx).split('\n')[4];
 			expect(xLine).toContain('🔇');
 			expect(xLine).toContain('⏰lim');
-			expect(xLine).toContain('⚡var');
+			expect(xLine).toContain('⚡ene');
 		});
 
 		it('encodes quiet_preferred preference', () => {

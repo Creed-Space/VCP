@@ -111,14 +111,14 @@ describe('Playground page', () => {
 	// ------------------------------------------------------------------
 	// 3. Demo links point to correct routes
 	// ------------------------------------------------------------------
-	it('has demo links to /demos/campion, /demos/noor, /demos/ren', () => {
+	it('has demo links to /demos/campion, /demos/ren, /demos/hana', () => {
 		const { container } = renderPage();
 		const demoLinks = container.querySelectorAll('.demo-link-card');
 		const hrefs = Array.from(demoLinks).map((a) => a.getAttribute('href'));
 
 		expect(hrefs).toContain('/demos/campion');
-		expect(hrefs).toContain('/demos/noor');
 		expect(hrefs).toContain('/demos/ren');
+		expect(hrefs).toContain('/demos/hana');
 	});
 
 	// ------------------------------------------------------------------

@@ -3,11 +3,7 @@
 	 * About VCP - Overview page explaining the protocol
 	 * Leads with the portability/adaptation/liveness triangle
 	 */
-	import { Breadcrumb, NextSteps, MorphBlob, ScrollReveal } from '$lib/components/shared';
-
-	const breadcrumbItems = [
-		{ label: 'About VCP', icon: 'fa-circle-info' }
-	];
+	import { GlowDivider, NextSteps, MorphBlob, ScrollReveal } from '$lib/components/shared';
 
 	const pillars = [
 		{
@@ -23,7 +19,7 @@
 			color: 'var(--color-professional, #059669)'
 		},
 		{
-			icon: 'fa-signal',
+			icon: 'fa-heart-pulse',
 			title: 'Liveness',
 			description: 'Your real-time state shapes AI guidance moment to moment. Rushed? Stressed? The AI adjusts its tone and depth instantly.',
 			color: '#3b82f6'
@@ -35,7 +31,7 @@
 			icon: 'fa-shield-halved',
 			title: 'Constitutional Rules',
 			subtitle: 'What the AI should and should not do.',
-			examples: 'Personas, safety boundaries, rulesets, adherence levels',
+			examples: 'Personas, safety boundaries, rulesets, adherence levels, etc.',
 			timescale: 'Changes rarely',
 			colorClass: 'layer-constitutional'
 		},
@@ -43,7 +39,7 @@
 			icon: 'fa-compass',
 			title: 'Situational Context',
 			subtitle: 'Where, when, who, what occasion.',
-			examples: 'Morning vs. evening, alone vs. with children, home vs. work',
+			examples: 'Morning vs. evening, alone vs. with children, home vs. work, etc.',
 			timescale: 'Changes per session',
 			colorClass: 'layer-situational'
 		},
@@ -51,7 +47,7 @@
 			icon: 'fa-fingerprint',
 			title: 'Personal State',
 			subtitle: 'How you are right now.',
-			examples: 'Cognitive load, emotional tone, energy, urgency, body state',
+			examples: 'Cognitive load, emotional tone, energy, urgency, body state, etc.',
 			timescale: 'Changes moment to moment',
 			colorClass: 'layer-personal'
 		}
@@ -140,8 +136,6 @@
 </svelte:head>
 
 <div class="container">
-	<Breadcrumb items={breadcrumbItems} />
-
 	<!-- Hero -->
 	<section class="page-hero about-hero">
 		<MorphBlob
@@ -158,9 +152,11 @@
 		<p class="page-hero-explainer">
 			VCP is not a product. It is an open protocol that lets you define your preferences,
 			constraints, and current state once — and have every compatible AI and service adapt
-			to you automatically, in real time.
+			to you automatically, in&nbsp;real&nbsp;time.
 		</p>
 	</section>
+
+	<GlowDivider />
 
 	<!-- Three Pillars -->
 	<section class="content-section">
@@ -184,6 +180,8 @@
 			{/each}
 		</div>
 	</section>
+
+	<GlowDivider />
 
 	<!-- How It Works -->
 	<section class="content-section">
@@ -228,6 +226,8 @@
 		</div>
 	</section>
 
+	<GlowDivider />
+
 	<!-- Protocol Stack -->
 	<section class="content-section">
 		<h2>The Protocol Stack</h2>
@@ -268,6 +268,8 @@
 		</div>
 	</section>
 
+	<GlowDivider />
+
 	<!-- Three-Layer Model -->
 	<section class="content-section">
 		<h2>The Three-Layer Model</h2>
@@ -293,6 +295,8 @@
 		</div>
 	</section>
 
+	<GlowDivider />
+
 	<!-- What Makes It Different -->
 	<section class="content-section">
 		<h2>Not a Magic Mirror</h2>
@@ -303,27 +307,29 @@
 
 		<div class="contrast-table">
 			<div class="contrast-row contrast-header">
-				<div class="contrast-cell">Common Approaches</div>
 				<div class="contrast-cell">VCP Approach</div>
+				<div class="contrast-cell">Common Approaches</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">AI infers your state</div>
 				<div class="contrast-cell">You <strong>declare</strong> your state</div>
+				<div class="contrast-cell">AI infers your state</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">Context locked to one platform</div>
 				<div class="contrast-cell">Context <strong>travels</strong> across platforms</div>
+				<div class="contrast-cell">Context locked to one platform</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">Static profile, set and forget</div>
 				<div class="contrast-cell"><strong>Live</strong> state, always current</div>
+				<div class="contrast-cell">Static profile, set and forget</div>
 			</div>
 			<div class="contrast-row">
-				<div class="contrast-cell">Platform decides what to share</div>
 				<div class="contrast-cell">You <strong>control</strong> what is shared</div>
+				<div class="contrast-cell">Platform decides what to share</div>
 			</div>
 		</div>
 	</section>
+
+	<GlowDivider />
 
 	<!-- MCP Integration -->
 	<section class="content-section">
@@ -336,17 +342,17 @@
 		<div class="mcp-explainer">
 			<div class="mcp-row">
 				<div class="mcp-card">
-					<span class="mcp-label">MCP</span>
-					<h3>Transport</h3>
-					<p>Connects AI agents to tools and data sources. The plumbing.</p>
+					<span class="mcp-label mcp-label-vcp">VCP</span>
+					<h3>Policy</h3>
+					<p>Encodes values, context, and constitutional rules. The meaning.</p>
 				</div>
 				<div class="mcp-plus">
 					<i class="fa-solid fa-plus" aria-hidden="true"></i>
 				</div>
 				<div class="mcp-card">
-					<span class="mcp-label mcp-label-vcp">VCP</span>
-					<h3>Policy</h3>
-					<p>Encodes values, context, and constitutional rules. The meaning.</p>
+					<span class="mcp-label">MCP</span>
+					<h3>Transport</h3>
+					<p>Connects AI agents to tools and data sources. The plumbing.</p>
 				</div>
 			</div>
 			<p class="mcp-result">
@@ -356,6 +362,8 @@
 			</p>
 		</div>
 	</section>
+
+	<GlowDivider />
 
 	<!-- Demo Links -->
 	<section class="content-section">
@@ -443,7 +451,7 @@
 	/* How It Works */
 	.how-it-works {
 		display: flex;
-		align-items: flex-start;
+		align-items: stretch;
 		gap: var(--space-md);
 		overflow-x: auto;
 		padding: var(--space-md) 0;

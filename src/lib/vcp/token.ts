@@ -265,7 +265,7 @@ function encodeConstraints(
 	// From constraints
 	if (constraints?.noise_restricted) parts.push('🔇');
 	if (constraints?.time_limited) parts.push('⏰lim');
-	if (constraints?.energy_variable) parts.push('⚡var');
+	if (constraints?.energy_variable) parts.push('⚡ene');
 
 	// From preferences
 	if (prefs?.noise_mode === 'quiet_preferred') parts.push('🔇quiet');

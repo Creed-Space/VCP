@@ -31,7 +31,7 @@
 	}
 
 	const steps = [
-		{ title: 'Meet the Agents', subtitle: 'Ren\'s solar cooperative and its AI agent fleet', icon: 'fa-users' },
+		{ title: 'Meet Ren & the Agents', subtitle: 'Ren\'s solar cooperative and its AI agent fleet', icon: 'fa-users' },
 		{ title: 'Watch the Auction', subtitle: 'See how carried context shapes bidding behavior', icon: 'fa-gavel' },
 		{ title: 'See What Traveled', subtitle: 'What was shared, what stayed hidden', icon: 'fa-eye' }
 	];
@@ -384,7 +384,7 @@
 			<!-- Step 3: See What Traveled -->
 			<div class="step-content">
 				<div class="reveal-intro">
-					<h3>What each agent carried vs. what opponents could see</h3>
+					<h3>What each agent carried vs. What opponents could see</h3>
 					<p>VCP gives agents control over their own context boundaries. Some information is shared to facilitate fair markets. Other information stays protected.</p>
 				</div>
 
@@ -435,7 +435,7 @@
 				<div class="payoff-card">
 					<i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
 					<div>
-						<strong>The payoff:</strong> VCP is not just for humans. AI agents carry context too -- values,
+						<strong>The payoff:</strong> VCP is not just for humans. AI agents carry context too — values,
 						state, constraints, and strategy. That context shapes how they act, even when negotiating with
 						other agents. And just like humans, agents get to decide what they share and what they protect.
 					</div>
@@ -618,6 +618,7 @@
 		font-size: 0.75rem;
 		color: var(--color-text);
 		font-weight: 500;
+		text-align: right;
 	}
 
 	/* Step Callout */

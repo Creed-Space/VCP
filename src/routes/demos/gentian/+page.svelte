@@ -770,6 +770,8 @@
 
 	.platform-body {
 		padding: var(--space-lg);
+		display: flex;
+		flex-direction: column;
 	}
 
 	.platform-section {
@@ -807,6 +809,7 @@
 		padding: var(--space-sm);
 		background: rgba(255, 255, 255, 0.03);
 		border-radius: var(--radius-sm);
+		margin-top: auto;
 	}
 
 	/* ============================================ */
@@ -879,6 +882,7 @@
 		gap: var(--space-md);
 		background: none;
 		border: none;
+		border-radius: var(--radius-lg);
 		cursor: pointer;
 		padding: var(--space-sm);
 		flex-shrink: 0;

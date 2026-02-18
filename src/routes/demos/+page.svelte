@@ -188,6 +188,7 @@
 	</div>
 
 	<section class="production-demos">
+		<h2>Powered by VCP</h2>
 		<div class="production-grid">
 			{#each productionApps as app}
 				<a href={app.href} class="production-card card card-hover" target="_blank" rel="noopener noreferrer">

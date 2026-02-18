@@ -60,6 +60,7 @@
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
+		if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
 		if (e.key === 'ArrowRight' || (e.key === 'Enter' && !isLastStep)) {
 			e.preventDefault();
 			next();
