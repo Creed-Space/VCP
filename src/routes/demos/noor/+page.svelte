@@ -149,11 +149,15 @@
 <svelte:head>
 	<title>Noor: Governance & Executable Rules - VCP Demo</title>
 	<meta name="description" content="See how VCP turns aspirational guidelines into executable hooks for an AI homework-help tool." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/noor/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Noor's School District — VCP Demo" />
 	<meta property="og:description" content="Turn 'don't do homework for students' from an aspiration into executable, enforceable AI constraints." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/noor/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Noor's School District — VCP Demo" />
+	<meta name="twitter:description" content="Turn aspirational guidelines into executable, enforceable AI constraints." />
 </svelte:head>
 
 <DemoWizard title="Noor's School District" badge="Governance" badgeVariant="warning" {steps} onComplete={resetScenarios}>

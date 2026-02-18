@@ -216,11 +216,15 @@
 <svelte:head>
 	<title>Ren: Multi-Agent Energy Market - VCP Demo</title>
 	<meta name="description" content="See how AI agents carry cooperative values through VCP in a simulated energy market auction." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/ren/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Ren's Energy Cooperative — VCP Demo" />
 	<meta property="og:description" content="See AI agents negotiate energy bids carrying their cooperative's sustainability values as private context." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/ren/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Ren's Energy Cooperative — VCP Demo" />
+	<meta name="twitter:description" content="See AI agents negotiate energy bids carrying their cooperative's sustainability values as private context." />
 </svelte:head>
 
 <DemoWizard title="Ren's Energy Cooperative" badge="Multi-Agent" badgeVariant="primary" {steps} onComplete={resetAuction}>

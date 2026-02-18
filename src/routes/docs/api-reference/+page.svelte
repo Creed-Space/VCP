@@ -5,6 +5,12 @@
 <svelte:head>
 	<title>API Reference - VCP Documentation</title>
 	<meta name="description" content="Full API documentation for all VCP library functions." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/api-reference/" />
+	<meta property="og:title" content="API Reference - VCP Documentation" />
+	<meta property="og:description" content="Full API documentation for all VCP library functions." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/api-reference/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <DocsLayout

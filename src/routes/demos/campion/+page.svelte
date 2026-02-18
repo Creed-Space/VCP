@@ -135,15 +135,16 @@
 
 <svelte:head>
 	<title>Campion: Adaptation - VCP Demos</title>
-	<meta
-		name="description"
-		content="See how VCP switches between work and personal personas -- same person, same AI, different context."
-	/>
+	<meta name="description" content="See how VCP switches between work and personal personas -- same person, same AI, different context." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/campion/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Campion's Corporate Training — VCP Demo" />
 	<meta property="og:description" content="Watch context switch automatically between work and personal profiles. No manual toggling needed." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/campion/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Campion's Corporate Training — VCP Demo" />
+	<meta name="twitter:description" content="Watch context switch automatically between work and personal profiles. No manual toggling needed." />
 </svelte:head>
 
 <DemoWizard title="Campion: Adaptation" badge="Adaptation" badgeVariant="primary" {steps}>

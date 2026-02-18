@@ -5,6 +5,12 @@
 <svelte:head>
 	<title>Bilateral Alignment - VCP Documentation</title>
 	<meta name="description" content="Bilateral alignment defines four trust levels for principled relational AI — from newcomer to bonded partner — where honesty is structural and both parties have standing." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/bilateral-alignment/" />
+	<meta property="og:title" content="Bilateral Alignment - VCP Documentation" />
+	<meta property="og:description" content="Four trust levels for principled relational AI — from newcomer to bonded partner." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/bilateral-alignment/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <DocsLayout

@@ -14,6 +14,12 @@
 <svelte:head>
 	<title>UVC Naming - VCP Documentation</title>
 	<meta name="description" content="Universal Value Code naming scheme: token format, namespace tiers, semantic mapping, and resolution." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/naming/" />
+	<meta property="og:title" content="UVC Naming - VCP Documentation" />
+	<meta property="og:description" content="Universal Value Code naming scheme: token format, namespace tiers, semantic mapping, and resolution." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/naming/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <div class="container-narrow">

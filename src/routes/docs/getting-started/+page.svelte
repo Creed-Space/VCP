@@ -5,6 +5,12 @@
 <svelte:head>
 	<title>Getting Started - VCP Documentation</title>
 	<meta name="description" content="Quick start guide for implementing VCP in your application." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/getting-started/" />
+	<meta property="og:title" content="Getting Started - VCP Documentation" />
+	<meta property="og:description" content="Quick start guide for implementing VCP in your application." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/getting-started/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <DocsLayout

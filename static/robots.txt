@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://vcp-demo.onrender.com/sitemap.xml
+Sitemap: https://valuecontextprotocol.org/sitemap.xml
 
 # Old routes (redirected)
 Disallow: /professional
@@ -11,3 +11,10 @@ Disallow: /coordination
 Disallow: /self-modeling
 Disallow: /psychosecurity
 Disallow: /sharing
+
+# Internal/utility routes
+Disallow: /design/
+Disallow: /design-prototype/
+Disallow: /safety-index/
+Disallow: /compass/
+Disallow: /transparency/

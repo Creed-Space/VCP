@@ -5,6 +5,12 @@
 <svelte:head>
 	<title>Core Concepts - VCP Documentation</title>
 	<meta name="description" content="Understand the fundamental concepts of VCP: context, constitutions, privacy filtering." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/concepts/" />
+	<meta property="og:title" content="Core Concepts - VCP Documentation" />
+	<meta property="og:description" content="Understand the fundamental concepts of VCP: context, constitutions, privacy filtering." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/concepts/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <DocsLayout

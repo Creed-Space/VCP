@@ -1,0 +1,38 @@
+name: Update Footer Year
+
+on:
+  schedule:
+    # Runs at 00:15 AM UTC on January 1st each year
+    - cron: '15 0 1 1 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-year:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get current year
+        id: year
+        run: echo "CURRENT_YEAR=$(date +%Y)" >> $GITHUB_OUTPUT
+
+      - name: Update footer year patterns
+        env:
+          YEAR: ${{ steps.year.outputs.CURRENT_YEAR }}
+        run: |
+          # Update "© YYYY" in Svelte files
+          find . -name "*.svelte" -exec sed -i -E "s/© [0-9]{4}/© $YEAR/g" {} \;
+
+          # Update "&copy; YYYY" in Svelte files
+          find . -name "*.svelte" -exec sed -i -E "s/\&copy; [0-9]{4}/\&copy; $YEAR/g" {} \;
+
+      - name: Commit if changed
+        env:
+          YEAR: ${{ steps.year.outputs.CURRENT_YEAR }}
+        run: |
+          git diff --quiet || (git config user.email "github-actions[bot]@users.noreply.github.com" && git config user.name "github-actions[bot]" && git add -A && git commit -m "chore: Update footer year to $YEAR" && git push)

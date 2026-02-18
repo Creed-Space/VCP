@@ -128,6 +128,15 @@
 <svelte:head>
 	<title>About VCP - Value Context Protocol</title>
 	<meta name="description" content="Learn about the Value Context Protocol — a context protocol that lets your preferences, constraints, and state travel with you across every AI and service." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/about/" />
+	<meta property="og:title" content="About VCP - Value Context Protocol" />
+	<meta property="og:description" content="Learn about the Value Context Protocol — a context protocol that lets your preferences, constraints, and state travel with you across every AI and service." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/about/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="About VCP - Value Context Protocol" />
+	<meta name="twitter:description" content="Learn about the Value Context Protocol — a context protocol that lets your preferences, constraints, and state travel with you across every AI and service." />
 </svelte:head>
 
 <div class="container">

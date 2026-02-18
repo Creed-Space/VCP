@@ -14,6 +14,12 @@
 <svelte:head>
 	<title>Security Model - VCP Documentation</title>
 	<meta name="description" content="Learn how VCP protects your data through privacy-by-design architecture, selective sharing, and complete audit trails." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/security/" />
+	<meta property="og:title" content="Security Model - VCP Documentation" />
+	<meta property="og:description" content="Learn how VCP protects your data through privacy-by-design architecture, selective sharing, and complete audit trails." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/security/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <div class="container-narrow">

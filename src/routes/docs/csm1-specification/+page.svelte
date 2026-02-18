@@ -5,6 +5,12 @@
 <svelte:head>
 	<title>CSM-1 Specification - VCP Documentation</title>
 	<meta name="description" content="Complete specification for the Compact State Message (CSM-1) token format." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/csm1-specification/" />
+	<meta property="og:title" content="CSM-1 Specification - VCP Documentation" />
+	<meta property="og:description" content="Complete specification for the Compact State Message (CSM-1) token format." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/csm1-specification/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <DocsLayout

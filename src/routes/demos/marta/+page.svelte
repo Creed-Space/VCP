@@ -149,15 +149,16 @@
 
 <svelte:head>
 	<title>Marta: Liveness - VCP Demos</title>
-	<meta
-		name="description"
-		content="See how VCP personal state dimensions shape real-time AI guidance -- not a static profile, a living context."
-	/>
+	<meta name="description" content="See how VCP personal state dimensions shape real-time AI guidance -- not a static profile, a living context." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/marta/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Marta's Responsibility Journey — VCP Demo" />
 	<meta property="og:description" content="Experience how real-time personal state shapes AI guidance during a family financial decision." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/marta/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Marta's Responsibility Journey — VCP Demo" />
+	<meta name="twitter:description" content="Experience how real-time personal state shapes AI guidance during a family financial decision." />
 </svelte:head>
 
 <DemoWizard title="Marta: Liveness" badge="Liveness" badgeVariant="warning" {steps}>

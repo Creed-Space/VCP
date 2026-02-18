@@ -88,6 +88,12 @@
 <svelte:head>
 	<title>Understanding Personas - VCP Documentation</title>
 	<meta name="description" content="Learn about VCP's 6 AI personas: Muse, Ambassador, Godparent, Sentinel, Nanny, and Mediator. Each shapes how AI interacts with you." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/personas/" />
+	<meta property="og:title" content="Understanding Personas - VCP Documentation" />
+	<meta property="og:description" content="Learn about VCP's 6 AI personas: Muse, Ambassador, Godparent, Sentinel, Nanny, and Mediator." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/personas/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <div class="container">

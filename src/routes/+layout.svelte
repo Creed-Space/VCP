@@ -151,8 +151,8 @@
 			<nav class="nav-links desktop-nav" aria-label="Main navigation">
 				<a href="/about" class="nav-link" class:active={isActive('/about')}>About</a>
 				<a href="/demos" class="nav-link" class:active={isActive('/demos')}>Demos</a>
-				<a href="/docs" class="nav-link" class:active={isActive('/docs')}>Docs</a>
 				<a href="/playground" class="nav-link" class:active={isActive('/playground') || isActive('/transparency') || isActive('/compass')}>Playground</a>
+				<a href="/docs" class="nav-link" class:active={isActive('/docs')}>Docs</a>
 				{#if agentActive}
 					<span class="webmcp-indicator" aria-live="polite">
 						<i class="fa-solid fa-robot" aria-hidden="true"></i>
@@ -202,11 +202,11 @@
 				<a href="/demos" class="mobile-nav-link" class:active={isActive('/demos')} onclick={() => (mobileMenuOpen = false)}>
 					Interactive Demos
 				</a>
-				<a href="/docs" class="mobile-nav-link" class:active={isActive('/docs')} onclick={() => (mobileMenuOpen = false)}>
-					Documentation
-				</a>
 				<a href="/playground" class="mobile-nav-link" class:active={isActive('/playground') || isActive('/transparency') || isActive('/compass')} onclick={() => (mobileMenuOpen = false)}>
 					Playground
+				</a>
+				<a href="/docs" class="mobile-nav-link" class:active={isActive('/docs')} onclick={() => (mobileMenuOpen = false)}>
+					Documentation
 				</a>
 				<hr class="mobile-nav-divider" />
 				<!-- UX FIX 2026-01-31: Add onclick to close menu on external link click -->
@@ -253,7 +253,7 @@
 					</div>
 				</div>
 
-				<div class="footer-links">
+				<nav class="footer-links" aria-label="Footer navigation">
 					<div class="footer-section">
 						<h4>Explore</h4>
 						<a href="/about">About VCP</a>
@@ -282,13 +282,12 @@
 							GitHub <span class="external-link-icon" aria-hidden="true">↗</span>
 						</a>
 					</div>
-				</div>
+				</nav>
 			</div>
 
 			<div class="footer-bottom">
-				<p>
-					Value Context Protocol — an open standard
-				</p>
+				<p>Value Context Protocol — an open standard</p>
+				<p>&copy; 2026 Creed Space &mdash; Code released under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" class="license-link">MIT License</a></p>
 			</div>
 		</div>
 	</footer>
@@ -710,10 +709,22 @@
 		padding-top: var(--space-lg);
 		border-top: 1px solid rgba(255, 255, 255, 0.1);
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
 		align-items: center;
+		gap: var(--space-xs);
+		text-align: center;
 		font-size: 0.8125rem;
 		color: var(--color-text-muted);
+	}
+
+	.footer-bottom :global(.license-link) {
+		color: var(--color-text-muted);
+		text-decoration: underline;
+		text-decoration-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.footer-bottom :global(.license-link:hover) {
+		color: var(--color-text);
 	}
 
 	/* ============================================

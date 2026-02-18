@@ -11,7 +11,16 @@
 
 <svelte:head>
 	<title>Documentation - VCP</title>
-	<meta name="description" content="Technical documentation for the Value Context Protocol." />
+	<meta name="description" content="Technical documentation for the Value Context Protocol — guides, API reference, and specifications." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/docs/" />
+	<meta property="og:title" content="Documentation - VCP" />
+	<meta property="og:description" content="Technical documentation for the Value Context Protocol — guides, API reference, and specifications." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/docs/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Documentation - VCP" />
+	<meta name="twitter:description" content="Technical documentation for the Value Context Protocol." />
 </svelte:head>
 
 <div class="container">

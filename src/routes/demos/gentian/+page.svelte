@@ -111,15 +111,16 @@
 
 <svelte:head>
 	<title>Gentian: Portability - VCP Demos</title>
-	<meta
-		name="description"
-		content="See how VCP context travels with Gentian across guitar learning platforms -- one profile, every platform adapts."
-	/>
+	<meta name="description" content="See how VCP context travels with Gentian across guitar learning platforms -- one profile, every platform adapts." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/gentian/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Gentian's Guitar Journey — VCP Demo" />
 	<meta property="og:description" content="See how context travels across 4 music platforms. Set preferences once, every app adapts instantly." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/gentian/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Gentian's Guitar Journey — VCP Demo" />
+	<meta name="twitter:description" content="See how context travels across 4 music platforms. Set preferences once, every app adapts instantly." />
 </svelte:head>
 
 <DemoWizard title="Gentian: Portability" badge="Portability" badgeVariant="success" {steps}>

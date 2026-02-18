@@ -235,6 +235,15 @@
 <svelte:head>
 	<title>Playground - VCP</title>
 	<meta name="description" content="Interactive VCP playground — build context tokens, explore intent inference, and discover your philosophical profile." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/playground/" />
+	<meta property="og:title" content="Playground - VCP" />
+	<meta property="og:description" content="Interactive VCP playground — build context tokens, explore intent inference, and discover your philosophical profile." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/playground/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Playground - VCP" />
+	<meta name="twitter:description" content="Build context tokens, explore intent inference, and discover your philosophical profile." />
 </svelte:head>
 
 <div class="container">

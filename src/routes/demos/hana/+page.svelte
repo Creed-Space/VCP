@@ -131,11 +131,15 @@
 <svelte:head>
 	<title>Dr. Hana: Epistemic Transparency - VCP Demo</title>
 	<meta name="description" content="See how VCP makes AI diagnostic confidence inspectable and adapts presentation to the doctor's cognitive state." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/hana/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Dr. Hana's Diagnostic Tool — VCP Demo" />
 	<meta property="og:description" content="Inspect AI diagnostic confidence — distinguishing 92% certainty from 35% speculation in real time." />
-	<meta property="og:image" content="/vcp-logo.png" />
-	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/hana/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Dr. Hana's Diagnostic Tool — VCP Demo" />
+	<meta name="twitter:description" content="Inspect AI diagnostic confidence — distinguishing 92% certainty from 35% speculation in real time." />
 </svelte:head>
 
 <DemoWizard title="Dr. Hana's Practice" badge="Epistemics" badgeVariant="info" {steps}>

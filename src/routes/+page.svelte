@@ -7,12 +7,19 @@
 </script>
 
 <svelte:head>
-	<title>VCP - Context That Travels With You</title>
-	<meta name="description" content="VCP is a protocol that lets your context — preferences, constraints, values, and current state — travel with you across every AI and service. Define it once, carry it everywhere." />
+	<title>VCP - Context That Travels With You | Value Context Protocol</title>
+	<meta name="description" content="VCP is an open protocol that lets your context — preferences, constraints, values, and state — travel with you across every AI and service. Define it once, carry it everywhere." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/" />
 	<meta property="og:title" content="VCP - Context That Travels With You" />
 	<meta property="og:description" content="Set your preferences once. Every AI and service adapts — in real time, across platforms, always current." />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="/vcp-logo.png" />
+	<meta property="og:url" content="https://valuecontextprotocol.org/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta property="og:site_name" content="Value Context Protocol" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="VCP - Context That Travels With You" />
+	<meta name="twitter:description" content="Set your preferences once. Every AI and service adapts — in real time, across platforms, always current." />
+	<meta name="twitter:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
 </svelte:head>
 
 <div class="landing">

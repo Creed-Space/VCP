@@ -100,11 +100,16 @@
 
 <svelte:head>
 	<title>Interactive Demos - VCP</title>
-	<meta
-		name="description"
-		content="See how context flows through real scenarios — from everyday convenience to advanced AI coordination. Pick a story and try VCP."
-	/>
-	<meta property="og:image" content="/vcp-logo.png" />
+	<meta name="description" content="See how context flows through real scenarios — from everyday convenience to advanced AI coordination. Pick a story and try VCP." />
+	<link rel="canonical" href="https://valuecontextprotocol.org/demos/" />
+	<meta property="og:title" content="Interactive Demos - VCP" />
+	<meta property="og:description" content="See how context flows through real scenarios — from everyday convenience to advanced AI coordination. Pick a story and try VCP." />
+	<meta property="og:url" content="https://valuecontextprotocol.org/demos/" />
+	<meta property="og:image" content="https://valuecontextprotocol.org/vcp-logo.png" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Interactive Demos - VCP" />
+	<meta name="twitter:description" content="See how context flows through real scenarios — from everyday convenience to advanced AI coordination." />
 </svelte:head>
 
 <div class="container">
