@@ -175,9 +175,13 @@
 		safeReplaceState(url.toString(), {});
 	}
 
-	// Compass "Apply to Context Builder" callback
-	function handleCompassApply(constitutionId: string, _genPrefs: Record<string, number>) {
+	// Compass auto-sync: silently update context builder as preferences change
+	function handleCompassSync(constitutionId: string, _genPrefs: Record<string, number>) {
 		context.constitution = { ...context.constitution, id: constitutionId };
+	}
+
+	// Compass navigate: switch to context builder tab
+	function handleCompassNavigate() {
 		activeTab = 'context';
 	}
 
@@ -324,7 +328,7 @@
 		aria-labelledby="tab-compass"
 		hidden={activeTab !== 'compass'}
 	>
-		<CompassTab onApplyToContext={handleCompassApply} />
+		<CompassTab onSyncContext={handleCompassSync} onNavigateToContext={handleCompassNavigate} />
 	</div>
 
 	<!-- LLM Chat Panel -->

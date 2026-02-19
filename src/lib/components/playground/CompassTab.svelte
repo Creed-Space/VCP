@@ -4,11 +4,13 @@
 	 * Maps everyday preferences to constitution modules, generation preferences,
 	 * and dimensional modifiers in real time.
 	 */
-	import { deriveConstitutions, deriveGenerationPrefs, deriveDimensionalModifiers } from '$lib/vcp/compass';
-	import type { CompassProfile } from '$lib/vcp/compass';
+	import { untrack } from 'svelte';
+	import { deriveConstitutions, deriveGenerationPrefs, deriveDimensionalModifiers, CONSTITUTION_MAP } from '$lib/vcp/compass';
+	import type { CompassProfile, ConstitutionInfo } from '$lib/vcp/compass';
 
-	let { onApplyToContext }: {
-		onApplyToContext?: (constitutionId: string, genPrefs: Record<string, number>) => void;
+	let { onSyncContext, onNavigateToContext }: {
+		onSyncContext?: (constitutionId: string, genPrefs: Record<string, number>) => void;
+		onNavigateToContext?: () => void;
 	} = $props();
 
 	let profile = $state<CompassProfile>({
@@ -49,6 +51,48 @@
 		trust_default: 'Trust Default', rule_rigidity: 'Rule Rigidity'
 	};
 
+	/** Unique accent color per question for preference↔derivation tracing */
+	const questionColors: Record<string, string> = {
+		optimize_for:        '#f97316',
+		epistemology:        '#06b6d4',
+		metaethics:          '#8b5cf6',
+		communication_style: '#34d399',
+		risk_tolerance:      '#f59e0b',
+		explanations:        '#60a5fa',
+	};
+
+	/** Derivation titles/descriptions for gen prefs and modifiers (mirrors constitution card layout) */
+	const commStyleTitles: Record<string, { title: string; desc: string }> = {
+		gentle: { title: 'Gentle Communication', desc: 'Softer tone with higher formality, lower directness' },
+		balanced: { title: 'Balanced Communication', desc: 'Middle ground on formality and directness' },
+		direct: { title: 'Direct Communication', desc: 'Lower formality, higher directness — no sugarcoating' },
+	};
+	const explTitles: Record<string, { title: string; desc: string }> = {
+		minimal: { title: 'Minimal Explanations', desc: 'Just the answer — low depth, low technical level' },
+		brief: { title: 'Brief Explanations', desc: 'Moderate depth with balanced technical detail' },
+		detailed: { title: 'Full Reasoning', desc: 'Deep analysis with high technical detail' },
+	};
+	const riskTitles: Record<string, { title: string; desc: string }> = {
+		conservative: { title: 'Conservative Risk', desc: 'Lower trust default, higher rule rigidity' },
+		calculated: { title: 'Calculated Risk', desc: 'Neutral trust and rigidity — balanced approach' },
+		aggressive: { title: 'Bold Risk', desc: 'Higher trust default, lower rule rigidity' },
+	};
+
+	/** Map gen-pref keys back to the question that produced them */
+	const genPrefSourceMap: Record<string, keyof CompassProfile> = {
+		formality: 'communication_style',
+		directness: 'communication_style',
+		depth: 'explanations',
+		technical_level: 'explanations',
+	};
+
+	function getConstitutionSource(c: ConstitutionInfo): keyof CompassProfile | null {
+		if (profile.metaethics && CONSTITUTION_MAP[profile.metaethics]?.id === c.id) return 'metaethics';
+		if (profile.epistemology && CONSTITUTION_MAP[profile.epistemology]?.id === c.id) return 'epistemology';
+		if (profile.optimize_for && CONSTITUTION_MAP[profile.optimize_for]?.id === c.id) return 'optimize_for';
+		return null;
+	}
+
 	function resetProfile() {
 		profile = { metaethics: null, epistemology: null, optimize_for: null, risk_tolerance: null, communication_style: null, explanations: null };
 	}
@@ -61,10 +105,16 @@
 		}
 	}
 
-	function handleApply() {
-		if (!onApplyToContext || constitutions.length === 0) return;
-		onApplyToContext(constitutions[0].path, genPrefs);
-	}
+	// Auto-sync derived values to context builder whenever they change.
+	// untrack the callback so the parent's read of context.constitution
+	// (via spread) doesn't become a dependency of this effect.
+	$effect(() => {
+		if (constitutions.length > 0) {
+			const id = constitutions[0].path;
+			const prefs = genPrefs;
+			untrack(() => onSyncContext?.(id, prefs));
+		}
+	});
 </script>
 
 <!-- Mapping Chain -->
@@ -89,7 +139,7 @@
 		</div>
 
 		{#each questions as q}
-			<div class="question-group">
+			<div class="question-group" style="--q-color: {questionColors[q.key]}">
 				<span class="question-label">
 					<i class="fa-solid {q.icon}" aria-hidden="true"></i>
 					{q.label}
@@ -116,9 +166,9 @@
 	<div class="panel panel-output">
 		<div class="panel-header">
 			<h2><i class="fa-solid fa-bolt" aria-hidden="true"></i> Live Derivation</h2>
-			{#if onApplyToContext && hasSelections && constitutions.length > 0}
-				<button class="btn btn-primary btn-sm" onclick={handleApply}>
-					<i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Apply to Context Builder
+			{#if onNavigateToContext && hasSelections && constitutions.length > 0}
+				<button class="btn btn-primary btn-sm" onclick={onNavigateToContext}>
+					<i class="fa-solid fa-play" aria-hidden="true"></i> See your choices in action
 				</button>
 			{/if}
 		</div>
@@ -129,66 +179,55 @@
 				<p>Select preferences on the left to see how they shape AI behavior.</p>
 			</div>
 		{:else}
-			{#if constitutions.length > 0}
-				<div class="output-section">
-					<h3><i class="fa-solid fa-scroll" aria-hidden="true"></i> Active Constitution Modules</h3>
-					<div class="constitution-cards">
-						{#each constitutions as c}
-							<div class="constitution-card">
-								<div class="card-title">{c.title}</div>
-								<div class="card-desc">{c.description}</div>
-								<div class="card-path">
-									<i class="fa-solid fa-folder-open" aria-hidden="true"></i>
-									{c.path}
-								</div>
-							</div>
-						{/each}
+			<div class="derivation-list">
+				{#each constitutions as c}
+					{@const source = getConstitutionSource(c)}
+					<div class="derivation-item" style="--q-color: {source ? questionColors[source] : 'var(--color-primary)'}">
+						<div class="deriv-source">
+							<i class="fa-solid {source ? (questions.find(q => q.key === source)?.icon ?? 'fa-link') : 'fa-scroll'}" aria-hidden="true"></i>
+							{source ? questions.find(q => q.key === source)?.label : 'Constitution'}
+						</div>
+						<div class="deriv-title">{c.title}</div>
+						<div class="deriv-detail">{c.description}</div>
 					</div>
-				</div>
-			{/if}
+				{/each}
 
-			{#if Object.keys(genPrefs).length > 0}
-				<div class="output-section">
-					<h3><i class="fa-solid fa-sliders" aria-hidden="true"></i> Generation Preferences</h3>
-					<div class="pref-bars">
-						{#each Object.entries(genPrefs) as [key, value]}
-							<div class="pref-bar-row">
-								<span class="pref-label">{prefLabels[key] ?? key}</span>
-								<div class="pref-bar-track">
-									<div class="pref-bar-fill" style="width: {value * 100}%"></div>
-								</div>
-								<span class="pref-value">{Math.round(value * 100)}%</span>
-							</div>
-						{/each}
+				{#if profile.communication_style}
+					{@const info = commStyleTitles[profile.communication_style]}
+					<div class="derivation-item" style="--q-color: {questionColors['communication_style']}">
+						<div class="deriv-source">
+							<i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
+							How should AI talk to you?
+						</div>
+						<div class="deriv-title">{info.title}</div>
+						<div class="deriv-detail">Formality {Math.round((genPrefs.formality ?? 0) * 100)}% · Directness {Math.round((genPrefs.directness ?? 0) * 100)}%</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
 
-			{#if Object.keys(modifiers).length > 0}
-				<div class="output-section">
-					<h3><i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i> Dimensional Modifiers</h3>
-					<div class="modifier-list">
-						{#each Object.entries(modifiers) as [key, value]}
-							<div class="modifier-row">
-								<span class="modifier-label">{modifierLabels[key] ?? key}</span>
-								<div class="modifier-gauge">
-									<div class="modifier-center"></div>
-									<div
-										class="modifier-indicator"
-										class:positive={value > 0}
-										class:negative={value < 0}
-										class:neutral={value === 0}
-										style="left: {50 + value * 200}%"
-									></div>
-								</div>
-								<span class="modifier-value" class:positive={value > 0} class:negative={value < 0}>
-									{value > 0 ? '+' : ''}{value.toFixed(2)}
-								</span>
-							</div>
-						{/each}
+				{#if profile.explanations}
+					{@const info = explTitles[profile.explanations]}
+					<div class="derivation-item" style="--q-color: {questionColors['explanations']}">
+						<div class="deriv-source">
+							<i class="fa-solid fa-list-check" aria-hidden="true"></i>
+							How detailed should explanations be?
+						</div>
+						<div class="deriv-title">{info.title}</div>
+						<div class="deriv-detail">Depth {Math.round((genPrefs.depth ?? 0) * 100)}% · Technical Level {Math.round((genPrefs.technical_level ?? 0) * 100)}%</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
+
+				{#if profile.risk_tolerance}
+					{@const riskInfo = riskTitles[profile.risk_tolerance]}
+					<div class="derivation-item" style="--q-color: {questionColors['risk_tolerance']}">
+						<div class="deriv-source">
+							<i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+							How much risk is OK?
+						</div>
+						<div class="deriv-title">{riskInfo.title}</div>
+						<div class="deriv-detail">Trust {modifiers.trust_default > 0 ? '+' : ''}{modifiers.trust_default?.toFixed(2)} · Rigidity {modifiers.rule_rigidity > 0 ? '+' : ''}{modifiers.rule_rigidity?.toFixed(2)}</div>
+					</div>
+				{/if}
+			</div>
 		{/if}
 	</div>
 </div>
@@ -244,8 +283,18 @@
 	.reset-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--color-text); }
 	.reset-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
-	.question-group { margin-bottom: var(--space-lg); }
+	/* Preference question cards — boxed with colored left accent */
+	.question-group {
+		margin-bottom: var(--space-md);
+		padding: var(--space-md);
+		background: color-mix(in srgb, var(--q-color) 5%, transparent);
+		border: 1px solid color-mix(in srgb, var(--q-color) 15%, transparent);
+		border-left: 3px solid var(--q-color);
+		border-radius: var(--radius-md);
+		transition: background var(--transition-fast);
+	}
 	.question-group:last-child { margin-bottom: 0; }
+	.question-group:hover { background: color-mix(in srgb, var(--q-color) 8%, transparent); }
 
 	.question-label {
 		display: flex; align-items: center; gap: var(--space-sm);
@@ -253,7 +302,7 @@
 		margin-bottom: var(--space-xs);
 	}
 
-	.question-label i { color: var(--color-accent, var(--color-primary)); width: 16px; text-align: center; }
+	.question-label i { color: var(--q-color, var(--color-primary)); width: 16px; text-align: center; }
 
 	.question-desc {
 		font-size: var(--text-sm); color: var(--color-text-subtle, var(--color-text-muted));
@@ -269,107 +318,48 @@
 		font-size: var(--text-sm); cursor: pointer; transition: all var(--transition-fast);
 	}
 
-	.option-btn:hover { background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.3); color: var(--color-text); }
+	.option-btn:hover {
+		background: color-mix(in srgb, var(--q-color) 10%, transparent);
+		border-color: color-mix(in srgb, var(--q-color) 30%, transparent);
+		color: var(--color-text);
+	}
 	.option-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 	.option-btn.selected {
-		background: var(--color-primary-muted); border-color: var(--color-primary);
-		color: var(--color-primary-hover, #818cf8); font-weight: 500;
+		background: color-mix(in srgb, var(--q-color) 15%, transparent);
+		border-color: var(--q-color);
+		color: var(--q-color); font-weight: 500;
 	}
 
 	.empty-state { text-align: center; padding: var(--space-2xl) var(--space-lg); color: var(--color-text-subtle, var(--color-text-muted)); }
 	.empty-state i { font-size: 2rem; margin-bottom: var(--space-md); color: var(--color-primary-muted); display: block; }
 	.empty-state p { font-size: var(--text-sm); line-height: var(--leading-relaxed, 1.6); }
 
-	.output-section { margin-bottom: var(--space-lg); }
-	.output-section:last-child { margin-bottom: 0; }
+	/* Lightweight derivation list — colored left accents, no full card boxes */
+	.derivation-list { display: flex; flex-direction: column; }
 
-	.output-section h3 {
-		display: flex; align-items: center; gap: var(--space-sm);
-		font-size: var(--text-sm); font-weight: 600; color: var(--color-text-muted);
-		text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-md);
+	.derivation-item {
+		padding: var(--space-sm) var(--space-md);
+		border-left: 3px solid var(--q-color, var(--color-primary));
+		border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+		transition: background var(--transition-fast);
 	}
+	.derivation-item:last-child { border-bottom: none; }
+	.derivation-item:hover { background: color-mix(in srgb, var(--q-color) 5%, transparent); }
 
-	.output-section h3 i { color: var(--color-accent, var(--color-primary)); }
-	.constitution-cards { display: flex; flex-direction: column; gap: var(--space-sm); }
-
-	.constitution-card {
-		padding: var(--space-md); background: rgba(99, 102, 241, 0.05);
-		border: 1px solid rgba(99, 102, 241, 0.15); border-radius: var(--radius-md);
-		transition: all var(--transition-fast);
+	.deriv-source {
+		display: flex; align-items: center; gap: var(--space-xs);
+		font-size: var(--text-xs); color: var(--q-color);
+		font-weight: 500; margin-bottom: 2px;
 	}
+	.deriv-source i { font-size: 0.625rem; }
 
-	.constitution-card:hover { background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); }
-	.card-title { font-weight: 600; font-size: var(--text-base); color: var(--color-text); margin-bottom: var(--space-xs); }
-	.card-desc { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-sm); }
+	.deriv-title { font-weight: 600; font-size: var(--text-sm); color: var(--color-text); }
 
-	.card-path {
+	.deriv-detail {
 		font-size: var(--text-xs); color: var(--color-text-subtle, var(--color-text-muted));
-		font-family: monospace; display: flex; align-items: center; gap: var(--space-xs);
+		margin-top: 1px;
 	}
-
-	.card-path i { font-size: 0.625rem; }
-	.pref-bars { display: flex; flex-direction: column; gap: var(--space-md); }
-
-	.pref-bar-row {
-		display: grid; grid-template-columns: 120px 1fr 48px;
-		align-items: center; gap: var(--space-sm);
-	}
-
-	.pref-label { font-size: var(--text-sm); color: var(--color-text-muted); font-weight: 500; }
-
-	.pref-bar-track {
-		height: 8px; background: rgba(255, 255, 255, 0.06);
-		border-radius: 4px; overflow: hidden;
-	}
-
-	.pref-bar-fill {
-		height: 100%;
-		background: linear-gradient(90deg, var(--color-primary), var(--color-accent, #8b5cf6));
-		border-radius: 4px; transition: width 0.3s ease;
-	}
-
-	.pref-value {
-		font-size: var(--text-sm); color: var(--color-accent, var(--color-primary));
-		font-weight: 600; text-align: right; font-variant-numeric: tabular-nums;
-	}
-
-	.modifier-list { display: flex; flex-direction: column; gap: var(--space-md); }
-
-	.modifier-row {
-		display: grid; grid-template-columns: 120px 1fr 60px;
-		align-items: center; gap: var(--space-sm);
-	}
-
-	.modifier-label { font-size: var(--text-sm); color: var(--color-text-muted); font-weight: 500; }
-
-	.modifier-gauge {
-		height: 8px; background: rgba(255, 255, 255, 0.06);
-		border-radius: 4px; position: relative;
-	}
-
-	.modifier-center {
-		position: absolute; left: 50%; top: -2px;
-		width: 1px; height: 12px; background: rgba(255, 255, 255, 0.2);
-	}
-
-	.modifier-indicator {
-		position: absolute; top: -3px; width: 14px; height: 14px;
-		border-radius: 50%; transform: translateX(-50%);
-		transition: left 0.3s ease; border: 2px solid;
-	}
-
-	.modifier-indicator.positive { background: var(--color-success-muted); border-color: var(--color-success); }
-	.modifier-indicator.negative { background: var(--color-warning-muted); border-color: var(--color-warning); }
-	.modifier-indicator.neutral { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
-
-	.modifier-value {
-		font-size: var(--text-sm); font-weight: 600; text-align: right;
-		font-variant-numeric: tabular-nums; color: var(--color-text-muted);
-	}
-
-	.modifier-value.positive { color: var(--color-success); }
-	.modifier-value.negative { color: var(--color-warning); }
 
 	@media (max-width: 900px) {
 		.two-panel { grid-template-columns: 1fr; }
@@ -381,7 +371,5 @@
 		.chain-arrow { transform: rotate(90deg); }
 		.option-grid { padding-left: 0; }
 		.question-desc { padding-left: 0; }
-		.pref-bar-row { grid-template-columns: 90px 1fr 40px; }
-		.modifier-row { grid-template-columns: 90px 1fr 50px; }
 	}
 </style>
